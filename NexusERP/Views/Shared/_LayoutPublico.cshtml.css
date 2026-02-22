@@ -1,48 +1,41 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿/* Views/Shared/_LayoutPublico.cshtml.css */
 
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+html, body {
+    margin: 0;
+    padding: 0;
 }
 
-a {
-  color: #0077cc;
+body {
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    /* La magia para que el scroll y el menú fijo funcionen */
+    min-height: 100vh;
+    padding-top: 100px;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+main {
+    flex: 1 0 auto;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+footer {
+    flex-shrink: 0;
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+/* Estilos específicos de la barra de navegación */
+.header-blur {
+    backdrop-filter: blur(10px);
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+.navbar-bg {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+.nav-link {
+    transition: color 0.3s ease;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
-}
+    .nav-link:hover {
+        color: var(--secondary-color) !important;
+    }
