@@ -1,48 +1,126 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿/* Views/Shared/_LayoutERP.cshtml.css */
 
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+/* Contenedor principal a pantalla completa */
+.erp-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #f8f9fa; /* Fondo gris claro general */
 }
 
-a {
-  color: #0077cc;
+/* --- BARRA LATERAL (SIDEBAR) --- */
+.erp-sidebar {
+    width: 260px;
+    background-color: var(--primary-color); /* Tu azul oscuro #2d3e50 */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.erp-brand {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.sidebar-nav {
+    flex-grow: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+    .sidebar-link:hover {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Estado Activo (Como el botón "Accounting" en tu foto) */
+    .sidebar-link.active {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-left-color: var(--secondary-color); /* Rayita lateral azul clara */
+    }
+
+/* --- CONTENIDO PRINCIPAL --- */
+.erp-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* --- BARRA SUPERIOR (TOPBAR) --- */
+.erp-topbar {
+    height: 70px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    border-bottom: 1px solid #e9ecef;
+    flex-shrink: 0;
+}
+
+.search-bar-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    background-color: #f1f3f5;
+    border: none;
+    border-radius: 6px;
+    color: #495057;
+}
+
+    .search-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(59, 155, 173, 0.25); /* Focus color con tu secondary-color */
+    }
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+}
+
+/* Avatar del Usuario */
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Área donde va el @RenderBody() */
+.erp-content-body {
+    flex-grow: 1;
+    overflow-y: auto; /* El scroll va aquí, no en el body de la página */
+    padding: 2rem;
 }
