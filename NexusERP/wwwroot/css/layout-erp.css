@@ -1,22 +1,19 @@
-﻿/* Views/Shared/_LayoutERP.cshtml.css */
+﻿/* wwwroot/css/layout-erp.css */
 
-/* Contenedor principal a pantalla completa */
 .erp-wrapper {
     display: flex;
     height: 100vh;
     overflow: hidden;
-    background-color: #f8f9fa; /* Fondo gris claro general */
+    background-color: #f8f9fa;
 }
 
-/* --- BARRA LATERAL (SIDEBAR) --- */
 .erp-sidebar {
     width: 260px;
-    background-color: var(--primary-color); /* Tu azul oscuro #2d3e50 */
+    background-color: #2d3e50;
     color: white;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    transition: width 0.3s ease;
 }
 
 .erp-brand {
@@ -37,26 +34,24 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1.5rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7) !important;
+    text-decoration: none !important;
     font-weight: 500;
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
 }
 
     .sidebar-link:hover {
-        color: white;
+        color: white !important;
         background-color: rgba(255, 255, 255, 0.05);
     }
 
-    /* Estado Activo (Como el botón "Accounting" en tu foto) */
     .sidebar-link.active {
-        color: white;
+        color: white !important;
         background-color: rgba(255, 255, 255, 0.1);
-        border-left-color: var(--secondary-color); /* Rayita lateral azul clara */
+        border-left-color: #3b9bad;
     }
 
-/* --- CONTENIDO PRINCIPAL --- */
 .erp-main {
     flex-grow: 1;
     display: flex;
@@ -64,7 +59,6 @@
     overflow: hidden;
 }
 
-/* --- BARRA SUPERIOR (TOPBAR) --- */
 .erp-topbar {
     height: 70px;
     background-color: white;
@@ -86,14 +80,17 @@
     width: 100%;
     padding: 0.5rem 1rem 0.5rem 2.5rem;
     background-color: #f1f3f5;
-    border: none;
+    border: 1px solid transparent;
     border-radius: 6px;
     color: #495057;
+    transition: all 0.2s ease;
 }
 
     .search-input:focus {
         outline: none;
-        box-shadow: 0 0 0 2px rgba(59, 155, 173, 0.25); /* Focus color con tu secondary-color */
+        background-color: white;
+        border-color: #3b9bad;
+        box-shadow: 0 0 0 3px rgba(59, 155, 173, 0.15);
     }
 
 .search-icon {
@@ -104,11 +101,10 @@
     color: #adb5bd;
 }
 
-/* Avatar del Usuario */
 .user-avatar {
     width: 38px;
     height: 38px;
-    background-color: var(--secondary-color);
+    background-color: #3b9bad;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -118,9 +114,8 @@
     font-size: 0.9rem;
 }
 
-/* Área donde va el @RenderBody() */
 .erp-content-body {
     flex-grow: 1;
-    overflow-y: auto; /* El scroll va aquí, no en el body de la página */
+    overflow-y: auto;
     padding: 2rem;
 }
