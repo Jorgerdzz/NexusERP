@@ -13,10 +13,6 @@ public partial class Empresa
 
     public string Cif { get; set; } = null!;
 
-    public string? Direccion { get; set; }
-
-    public string? LogoUrl { get; set; }
-
     public DateTime? FechaAlta { get; set; }
 
     public bool? Activo { get; set; }

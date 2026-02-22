@@ -245,11 +245,9 @@ public partial class NexusContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("CIF");
-            entity.Property(e => e.Direccion).HasMaxLength(255);
             entity.Property(e => e.FechaAlta)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.LogoUrl).HasMaxLength(500);
             entity.Property(e => e.NombreComercial).HasMaxLength(150);
             entity.Property(e => e.RazonSocial).HasMaxLength(150);
         });
