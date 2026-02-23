@@ -1,7 +1,7 @@
 ﻿@{
-    var controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
+    string controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
 
-    var controladoresPublicos = new[] { "Home" };
+    string[] controladoresPublicos = new[] { "Home" };
 
     if (controladoresPublicos.Contains(controladorActual))
     {

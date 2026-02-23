@@ -37,8 +37,8 @@
         </div>
     </div>
 
-    <div class="p-4 bg-white shadow rounded" id="accountStep">
-        <form id="accountForm">
+    <form id="registerForm" method="post">
+        <div class="p-4 bg-white shadow rounded" id="accountStep">
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
             <div class="mb-3">
@@ -72,20 +72,14 @@
 
             <div class="text-center small text-secondary pt-3 border-top mt-3">
                 ¿Ya tienes cuenta?
-                <a asp-controller="Account" asp-action="Login" class="text-link text-decoration-none fw-medium">
+                <a asp-controller="Account" asp-action="LogIn" class="text-link text-decoration-none fw-medium">
                     Inicia sesión
                 </a>
             </div>
-        </form>
-    </div>
+        </div>
 
-    <div class="p-4 bg-white shadow rounded d-none" id="companyStep">
-        <form asp-action="Register" asp-controller="Account" method="post" id="companyForm">
 
-            <input type="hidden" asp-for="NombreUsuario" id="hiddenNombreUsuario" />
-            <input type="hidden" asp-for="Email" id="hiddenEmail" />
-            <input type="hidden" asp-for="Password" id="hiddenPassword" />
-
+        <div class="p-4 bg-white shadow rounded d-none" id="companyStep">
             <div class="text-center mb-4">
                 <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 info-box" style="width: 64px; height: 64px;">
                     <svg style="width: 32px; height: 32px; color: #3b9bad" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,8 +137,10 @@
                     Crear cuenta
                 </button>
             </div>
-        </form>
-    </div>
+
+        </div>
+
+    </form>
 
     <div class="text-center mt-3 text-white small" style="opacity: 0.7">
         <p class="d-flex align-items-center justify-content-center gap-2 mb-0">
@@ -155,6 +151,9 @@
 </div>
 
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         $(document).ready(function () {
             const accountStep = $('#accountStep');
@@ -163,38 +162,28 @@
             const step2 = $('#step2');
             const continueBtn = $('#continueBtn');
             const backBtn = $('#backBtn');
+            const form = $('#registerForm');
 
             // Validar y continuar al paso 2
             continueBtn.on('click', function () {
-                const nombre = $('input[name="NombreUsuario"]').val();
-                const email = $('input[name="Email"]').val();
-                const password = $('input[name="Password"]').val();
+                let esValidoPaso1 = true;
+                let datosUsuario = ['NombreUsuario', 'Email', 'Password'];
 
-                if (!nombre || !email || !password) {
-                    // Ahora que tienes SweetAlert, ¡podemos usarlo en lugar de un feo alert() nativo!
+                datosUsuario.forEach(function(dato){
+                    if(!$('[name="' + dato + '"]').valid()){
+                        esValidoPaso1 = false;
+                    }
+                });
+
+                if(!esValidoPaso1){
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Campos incompletos',
-                        text: 'Por favor, completa todos los campos antes de continuar.',
+                        title: 'Datos incompletos',
+                        text: 'Revisa los campos marcados en rojo.',
                         confirmButtonColor: '#3b9bad'
                     });
                     return;
-                }
-
-                if (password.length < 6) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Contraseña muy corta',
-                        text: 'La contraseña debe tener al menos 6 caracteres.',
-                        confirmButtonColor: '#3b9bad'
-                    });
-                    return;
-                }
-
-                // Guardar valores en campos ocultos
-                $('#hiddenNombreUsuario').val(nombre);
-                $('#hiddenEmail').val(email);
-                $('#hiddenPassword').val(password);
+                };
 
                 // Cambiar de paso
                 accountStep.addClass('d-none');

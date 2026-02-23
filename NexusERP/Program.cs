@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using NexusERP.Data;
+using NexusERP.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddTransient<AccountRepository>();
 
 string connectionString = builder.Configuration.GetConnectionString("NexusConnection");
 builder.Services.AddDbContext<NexusContext>(options => options.UseSqlServer(connectionString));
