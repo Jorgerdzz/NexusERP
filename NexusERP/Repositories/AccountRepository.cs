@@ -17,13 +17,13 @@ namespace NexusERP.Repositories
             this.context = context;
         }
 
-        public async Task<(bool exito, string mensaje)> RegistrarCuentaAsync(RegistroViewModel model)
+        public async Task<(bool exito, string mensaje, Usuario? usuarioCreado)> RegistrarCuentaAsync(RegistroViewModel model)
         {
             bool emailExiste = await this.context.Usuarios.AnyAsync(u => u.Email == model.Email);
-            if (emailExiste) return (false, "Email ya registrado en el sistema");
+            if (emailExiste) return (false, "Email ya registrado en el sistema", null);
 
             bool cifExiste = await this.context.Empresas.AnyAsync(e => e.Cif == model.CIF);
-            if (emailExiste) return (false, "Ya existe una empresa registrada con ese CIF");
+            if (emailExiste) return (false, "Ya existe una empresa registrada con ese CIF", null);
 
             using var transaction = await this.context.Database.BeginTransactionAsync();
 
@@ -57,13 +57,13 @@ namespace NexusERP.Repositories
                 await this.context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                return (true, "Cuenta creada con éxito");
+                return (true, "Cuenta creada con éxito", user);
 
             }
             catch
             {
                 await transaction.RollbackAsync();
-                return (false, "Error al crear la cuenta");
+                return (false, "Error al crear la cuenta", null);
             }
         }
 
@@ -79,6 +79,29 @@ namespace NexusERP.Repositories
                 }
                 return builder.ToString();
             }
+        }
+
+        public async Task<(bool acceso, string mensaje, Usuario? user)> ComprobarUsuarioAsync(LoginViewModel model)
+        {
+            var consulta = from datos in this.context.Usuarios
+                       where datos.Email == model.Email
+                       select datos;
+            Usuario user = await consulta.FirstOrDefaultAsync();
+
+            if(user == null)
+            {
+                return (false, "El correo electrónico no está registrado.", null);
+            }
+
+            if(user.PasswordHash == this.HashearPassword(model.Password))
+            {
+                return (true, "Usuario logueado correctamente", user);
+            }
+            else
+            {
+                return (false, "La contraseña es incorrecta.", null);
+            }
+            
         }
 
     }
