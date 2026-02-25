@@ -78,8 +78,9 @@ namespace NexusERP.Controllers
 
         }
 
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
