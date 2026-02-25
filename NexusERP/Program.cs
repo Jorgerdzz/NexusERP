@@ -1,24 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using NexusERP.Data;
 using NexusERP.Repositories;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<AccountRepository>();
 
 string connectionString = builder.Configuration.GetConnectionString("NexusConnection");
 builder.Services.AddDbContext<NexusContext>(options => options.UseSqlServer(connectionString));
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/LogIn"; //Si alguien sin sesión intenta acceder al dashboard, lo mandamos al login
-        options.AccessDeniedPath = "/Account/AccessDenied"; //Si un empleado quiere entrar a contabilidad
-        options.ExpireTimeSpan = TimeSpan.FromHours(8);
-    });
 
 var app = builder.Build();
 
@@ -33,10 +26,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

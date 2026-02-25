@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using NexusERP.Enums;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
-using System.Security.Claims;
+using NexusERP.Extensions;
 using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
@@ -33,13 +32,12 @@ namespace NexusERP.Controllers
                 return View(model);
             }
 
-            var resultado = await this.repo.RegistrarCuentaAsync(model);
+            var resultado = await this.repo.RegisterUserAsync(model);
 
             if (resultado.exito && resultado.usuarioCreado != null)
             {
                 TempData["EXITO"] = resultado.mensaje;
-                await CrearCookieDeSesionAsync(resultado.usuarioCreado);
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("LogIn");
             }
             else
             {
@@ -63,10 +61,10 @@ namespace NexusERP.Controllers
                 return View(model);
             }
 
-            var resultado = await this.repo.ComprobarUsuarioAsync(model);
+            var resultado = await this.repo.LogInUserAsync(model);
             if (resultado.acceso && resultado.user != null)
             {
-                await CrearCookieDeSesionAsync(resultado.user, model.Recordarme);
+                HttpContext.Session.SetObject("USUARIO_LOGUEADO", resultado.user);
                 return RedirectToAction("Index", "Dashboard");
 
             }
@@ -80,38 +78,13 @@ namespace NexusERP.Controllers
 
         public async Task<IActionResult> LogOut()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
 
         public IActionResult AccessDenied()
         {
             return View();
-        }
-
-        private async Task CrearCookieDeSesionAsync(Usuario user, bool recordar=false)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Nombre),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Id.ToString()),
-                new Claim("EmpresaId", user.EmpresaId.ToString())
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = recordar
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
-
         }
 
     }

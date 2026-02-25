@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NexusERP.Models;
+using NexusERP.ViewModels;
 
 namespace NexusERP.Data;
 
@@ -37,6 +38,8 @@ public partial class NexusContext : DbContext
     public virtual DbSet<Nomina> Nominas { get; set; }
 
     public virtual DbSet<NominaDetalle> NominaDetalles { get; set; }
+
+    public virtual DbSet<SeguridadUsuario> SeguridadUsuarios { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -328,6 +331,20 @@ public partial class NexusContext : DbContext
             entity.HasOne(d => d.Nomina).WithMany(p => p.NominaDetalles)
                 .HasForeignKey(d => d.NominaId)
                 .HasConstraintName("FK__NominaDet__Nomin__778AC167");
+        });
+
+        modelBuilder.Entity<SeguridadUsuario>(entity =>
+        {
+            entity.HasKey(e => e.IdSeguridad).HasName("PK__Segurida__D7A19C259EB43EA6");
+
+            entity.ToTable("SeguridadUsuario");
+
+            entity.Property(e => e.Salt).HasMaxLength(50);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.SeguridadUsuarios)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Id_Usuario");
         });
 
         modelBuilder.Entity<Usuario>(entity =>

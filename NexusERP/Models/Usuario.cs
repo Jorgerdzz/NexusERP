@@ -13,15 +13,17 @@ public partial class Usuario
 
     public string Email { get; set; } = null!;
 
-    public string PasswordHash { get; set; } = null!;
-
     public int Rol { get; set; }
 
     public int? EmpleadoId { get; set; }
 
     public bool? Activo { get; set; }
 
+    public string? Password { get; set; }
+
     public virtual Empleado? Empleado { get; set; }
 
     public virtual Empresa Empresa { get; set; } = null!;
+
+    public virtual ICollection<SeguridadUsuario> SeguridadUsuarios { get; set; } = new List<SeguridadUsuario>();
 }

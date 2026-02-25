@@ -12,7 +12,5 @@ namespace NexusERP.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Recordarme en este equipo")]
-        public bool Recordarme { get; set; }
     }
 }

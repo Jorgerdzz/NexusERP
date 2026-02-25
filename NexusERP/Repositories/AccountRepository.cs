@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NexusERP.Data;
 using NexusERP.Enums;
+using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.ViewModels;
 using System.Security.Cryptography;
@@ -17,13 +18,13 @@ namespace NexusERP.Repositories
             this.context = context;
         }
 
-        public async Task<(bool exito, string mensaje, Usuario? usuarioCreado)> RegistrarCuentaAsync(RegistroViewModel model)
+        public async Task<(bool exito, string mensaje, Usuario? usuarioCreado)> RegisterUserAsync(RegistroViewModel model)
         {
             bool emailExiste = await this.context.Usuarios.AnyAsync(u => u.Email == model.Email);
             if (emailExiste) return (false, "Email ya registrado en el sistema", null);
 
             bool cifExiste = await this.context.Empresas.AnyAsync(e => e.Cif == model.CIF);
-            if (emailExiste) return (false, "Ya existe una empresa registrada con ese CIF", null);
+            if (cifExiste) return (false, "Ya existe una empresa registrada con ese CIF", null);
 
             using var transaction = await this.context.Database.BeginTransactionAsync();
 
@@ -38,22 +39,33 @@ namespace NexusERP.Repositories
                     Activo = true
                 };
 
-                this.context.Add(empresa);
+                await this.context.Empresas.AddAsync(empresa);
                 await this.context.SaveChangesAsync();
 
                 Usuario user = new Usuario
                 {
-                    
                     EmpresaId = empresa.Id,
-
                     Nombre = model.NombreUsuario,
                     Email = model.Email,
-                    PasswordHash = HashearPassword(model.Password),
                     Rol = (int)RolesUsuario.Admin,
-                    Activo = true
+                    Activo = true,
+                    Password = model.Password
                 };
 
-                this.context.Usuarios.Add(user);
+                await this.context.Usuarios.AddAsync(user);
+                await this.context.SaveChangesAsync();
+
+                SeguridadUsuario userSecurity = new SeguridadUsuario
+                {
+                    IdUsuario = user.Id,
+                    Salt = HelperTools.GenerateSalt(),
+                    PasswordHash = HelperCryptography.EncryptPassword(model.Password, HelperTools.GenerateSalt())
+                };
+
+                userSecurity.Salt = HelperTools.GenerateSalt();
+                userSecurity.PasswordHash = HelperCryptography.EncryptPassword(model.Password, userSecurity.Salt);
+
+                await this.context.SeguridadUsuarios.AddAsync(userSecurity);
                 await this.context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
@@ -67,39 +79,35 @@ namespace NexusERP.Repositories
             }
         }
 
-        private string HashearPassword(string password)
+        public async Task<(bool acceso, string mensaje, Usuario? user)> LogInUserAsync(LoginViewModel model)
         {
-            using(SHA256 sha256Hash = SHA256.Create())
-            {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
-        }
+            var datosLogin = await (from u in this.context.Usuarios
+                                    join s in this.context.SeguridadUsuarios on u.Id equals s.IdUsuario
+                                    where u.Email == model.Email
+                                    select new { Usuario = u, Seguridad = s })
+                                    .FirstOrDefaultAsync();
 
-        public async Task<(bool acceso, string mensaje, Usuario? user)> ComprobarUsuarioAsync(LoginViewModel model)
-        {
-            var consulta = from datos in this.context.Usuarios
-                       where datos.Email == model.Email
-                       select datos;
-            Usuario user = await consulta.FirstOrDefaultAsync();
-
-            if(user == null)
+            if(datosLogin == null)
             {
                 return (false, "El correo electrónico no está registrado.", null);
             }
-
-            if(user.PasswordHash == this.HashearPassword(model.Password))
-            {
-                return (true, "Usuario logueado correctamente", user);
-            }
             else
             {
-                return (false, "La contraseña es incorrecta.", null);
+                string saltBD = datosLogin.Seguridad.Salt;
+                byte[] passwordHashBD = datosLogin.Seguridad.PasswordHash;
+
+                byte[] passwordGenerado = HelperCryptography.EncryptPassword(model.Password, saltBD);
+
+                bool esValido = HelperTools.CompareArrays(passwordGenerado, passwordHashBD);
+
+                if (esValido)
+                {
+                    return (true, "Usuario logueado correctamente", datosLogin.Usuario);
+                }
+                else
+                {
+                    return (false, "La contraseña es incorrecta.", null);
+                }
             }
             
         }
