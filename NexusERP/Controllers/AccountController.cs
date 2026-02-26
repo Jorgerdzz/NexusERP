@@ -70,7 +70,8 @@ namespace NexusERP.Controllers
                     Nombre = resultado.user.Nombre,
                     Email = resultado.user.Email,
                     Rol = (RolesUsuario)resultado.user.Rol,
-                    EmpresaId = resultado.user.EmpresaId
+                    EmpresaId = resultado.user.EmpresaId,
+                    NombreEmpresa = resultado.user.Empresa.NombreComercial
                 };
                 HttpContext.Session.SetObject("USUARIO_LOGUEADO", user);
                 return RedirectToAction("Index", "Dashboard");

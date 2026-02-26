@@ -83,8 +83,9 @@ namespace NexusERP.Repositories
         {
             var datosLogin = await (from u in this.context.Usuarios
                                     join s in this.context.SeguridadUsuarios on u.Id equals s.IdUsuario
+                                    join e in this.context.Empresas on u.EmpresaId equals e.Id
                                     where u.Email == model.Email
-                                    select new { Usuario = u, Seguridad = s })
+                                    select new { Usuario = u, Seguridad = s, Empresa = e })
                                     .FirstOrDefaultAsync();
 
             if(datosLogin == null)

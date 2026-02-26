@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.ViewModels;
 
@@ -8,13 +9,15 @@ namespace NexusERP.Data;
 
 public partial class NexusContext : DbContext
 {
+    private readonly HelperSessionContextAccessor contextAccessor;
     public NexusContext()
     {
     }
 
-    public NexusContext(DbContextOptions<NexusContext> options)
+    public NexusContext(DbContextOptions<NexusContext> options, HelperSessionContextAccessor contextAccessor)
         : base(options)
     {
+        this.contextAccessor = contextAccessor;
     }
 
     public virtual DbSet<ApuntesContable> ApuntesContables { get; set; }
@@ -368,6 +371,13 @@ public partial class NexusContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Usuarios__Empres__49C3F6B7");
         });
+
+        modelBuilder.Entity<Empleado>().HasQueryFilter(e => e.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
+        modelBuilder.Entity<Departamento>().HasQueryFilter(d => d.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
+        modelBuilder.Entity<Nomina>().HasQueryFilter(n => n.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
+        modelBuilder.Entity<AsientosContable>().HasQueryFilter(a => a.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
+        modelBuilder.Entity<ControlGasto>().HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
+        modelBuilder.Entity<CuentasContable>().HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
 
         OnModelCreatingPartial(modelBuilder);
     }

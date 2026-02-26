@@ -1,5 +1,7 @@
 ﻿@{
-    var controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
+    string controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
+    UsuarioSessionModel usuarioActual = Context.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
+    
 }
 
 <!DOCTYPE html>
@@ -56,7 +58,7 @@
                     Payroll
                 </a>
 
-                <a asp-controller="Departaments" asp-action="Index" class="sidebar-link @(controladorActual == "Departments" ? "active" : "")">
+                <a asp-controller="Departaments" asp-action="Index" class="sidebar-link @(controladorActual == "Departaments" ? "active" : "")">
                     <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                     Departments
                 </a>
@@ -99,8 +101,8 @@
                         <button class="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown">
                             <div class="user-avatar">JO</div>
                             <div class="text-start d-none d-sm-block">
-                                <div class="fw-bold" style="font-size: 0.9rem; line-height: 1.2">Jorge</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">jdfa</div>
+                                <div class="fw-bold" style="font-size: 0.9rem; line-height: 1.2">@usuarioActual.Nombre</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">@usuarioActual.NombreEmpresa</div>
                             </div>
                             <svg width="16" height="16" class="text-muted ms-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
@@ -108,7 +110,7 @@
                             <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">Mi Perfil</a></li>
                             <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">Configuración</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><form asp-controller="Account" asp-action="LogOut" method="post"><button type="submit" class="dropdown-item text-danger">Cerrar Sesión</button></form></li>
+                            <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="LogOut">Cerrar Sesión</></a></li>
                         </ul>
                     </div>
                 </div>
