@@ -11,8 +11,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<HelperSessionContextAccessor>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-builder.Services.AddTransient<AccountRepository>();
 
+//Repositories
+builder.Services.AddTransient<AccountRepository>();
+builder.Services.AddTransient<DepartamentsRepository>();
 
 
 string connectionString = builder.Configuration.GetConnectionString("NexusConnection");

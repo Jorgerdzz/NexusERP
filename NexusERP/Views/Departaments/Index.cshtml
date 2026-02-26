@@ -1,6 +1,220 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@* Reemplaza esto con tu ViewModel cuando lo creemos *@
+@* @model NexusERP.ViewModels.DepartamentosIndexViewModel *@
+@model List<Departamento>
+
 @{
+    ViewData["Title"] = "Departamentos y Equipo";
 }
-<h1>Departamentos</h1>
+
+<style>
+    .text-primary-custom {
+        color: #3b9bad;
+    }
+
+    .bg-primary-custom {
+        background-color: #3b9bad;
+        color: white;
+    }
+
+    .btn-primary-custom {
+        background-color: #3b9bad;
+        color: white;
+        border: none;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: #2a7a8a;
+            color: white;
+        }
+
+    .card-custom {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .card-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.75rem;
+        background-color: rgba(59, 155, 173, 0.1);
+        color: #3b9bad;
+    }
+
+    .table-custom th {
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom-width: 2px;
+    }
+
+    .table-custom td {
+        vertical-align: middle;
+        font-size: 0.875rem;
+        color: #374151;
+    }
+
+    .badge-soft-success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .badge-soft-primary {
+        background-color: rgba(59, 155, 173, 0.15);
+        color: #2a7a8a;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="fw-bold mb-1" style="color: #1f2937;">Departamentos y Equipo</h2>
+            <p class="text-muted mb-0 small">Gestiona las áreas, presupuestos y personal de tu empresa.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3">
+                <svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Añadir Empleado
+            </button>
+            <button class="btn btn-primary-custom d-flex align-items-center gap-2 px-3">
+                <svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                Nuevo Departamento
+            </button>
+        </div>
+    </div>
+
+    <!-- CARDS DE DEPARTAMENTOS -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 mb-4">
+
+        <!-- EJEMPLO CARTA 1 (Esto luego irá en un foreach) -->
+        <div class="col">
+            <div class="card card-custom h-100 bg-white p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-bold mb-0" style="color: #374151;">Ingeniería</h5>
+                    <div class="icon-box">
+                        <svg style="width: 20px; height: 20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex align-items-baseline gap-2 mb-2">
+                        <span class="fs-3 fw-bold text-dark">12</span>
+                        <span class="text-muted small">empleados</span>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">Salario Promedio:</span>
+                        <span class="fw-medium">42.500 €</span>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span class="text-muted">Presupuesto Anual:</span>
+                        <span class="fw-bold text-primary-custom">550.000 €</span>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción (Lo que me pediste) -->
+                <div class="d-flex gap-2 mt-auto pt-3 border-top">
+                    <button class="btn btn-sm btn-light flex-fill d-flex align-items-center justify-content-center gap-1 text-muted" title="Ver Detalles">
+                        <svg style="width: 16px; height: 16px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        Ver
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary flex-fill d-flex align-items-center justify-content-center gap-1" style="border-color: #3b9bad; color: #3b9bad" title="Añadir Empleado">
+                        <svg style="width: 16px; height: 16px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Añadir
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EJEMPLO CARTA 2 -->
+        <div class="col">
+            <div class="card card-custom h-100 bg-white p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-bold mb-0" style="color: #374151;">Ventas</h5>
+                    <div class="icon-box">
+                        <svg style="width: 20px; height: 20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex align-items-baseline gap-2 mb-2">
+                        <span class="fs-3 fw-bold text-dark">5</span>
+                        <span class="text-muted small">empleados</span>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">Salario Promedio:</span>
+                        <span class="fw-medium">32.000 €</span>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span class="text-muted">Presupuesto Anual:</span>
+                        <span class="fw-bold text-primary-custom">200.000 €</span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-auto pt-3 border-top">
+                    <button class="btn btn-sm btn-light flex-fill d-flex align-items-center justify-content-center gap-1 text-muted"><svg style="width: 16px; height: 16px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Ver</button>
+                    <button class="btn btn-sm btn-outline-primary flex-fill d-flex align-items-center justify-content-center gap-1" style="border-color: #3b9bad; color: #3b9bad"><svg style="width: 16px; height: 16px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Añadir</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLA DE EMPLEADOS -->
+    <div class="card card-custom bg-white p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0" style="color: #374151;">Miembros del Equipo</h5>
+            <select class="form-select form-select-sm w-auto" style="border-radius: 0.5rem;">
+                <option>Todos los Departamentos</option>
+                <option>Ingeniería</option>
+                <option>Ventas</option>
+            </select>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Puesto</th>
+                        <th>Departamento</th>
+                        <th>Salario</th>
+                        <th>F. Contratación</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Fila 1 -->
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-dark">Juan Pérez</div>
+                            <div class="small text-muted">juan.perez@tuempresa.com</div>
+                        </td>
+                        <td>Desarrollador Senior</td>
+                        <td><span class="badge badge-soft-primary rounded-pill px-3 py-2">Ingeniería</span></td>
+                        <td class="fw-medium">45.000 €</td>
+                        <td>15 Ene 2023</td>
+                        <td><span class="badge badge-soft-success rounded-pill px-3 py-2">Activo</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-link text-muted p-0 me-2"><svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>
+                            <button class="btn btn-sm btn-link text-danger p-0"><svg style="width: 18px; height: 18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
