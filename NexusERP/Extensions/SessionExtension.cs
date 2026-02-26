@@ -6,11 +6,7 @@ namespace NexusERP.Extensions
     {
         public static void SetObject(this ISession session, string key, object value)
         {
-            var settings = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
-            string json = JsonConvert.SerializeObject(value, settings);
+            string json = JsonConvert.SerializeObject(value);
             session.SetString(key, json);
         }
 

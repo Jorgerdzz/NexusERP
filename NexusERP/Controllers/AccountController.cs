@@ -64,7 +64,15 @@ namespace NexusERP.Controllers
             var resultado = await this.repo.LogInUserAsync(model);
             if (resultado.acceso && resultado.user != null)
             {
-                HttpContext.Session.SetObject("USUARIO_LOGUEADO", resultado.user);
+                UsuarioSessionModel user = new UsuarioSessionModel
+                {
+                    IdUsuario = resultado.user.Id,
+                    Nombre = resultado.user.Nombre,
+                    Email = resultado.user.Email,
+                    Rol = (RolesUsuario)resultado.user.Rol,
+                    EmpresaId = resultado.user.EmpresaId
+                };
+                HttpContext.Session.SetObject("USUARIO_LOGUEADO", user);
                 return RedirectToAction("Index", "Dashboard");
 
             }
