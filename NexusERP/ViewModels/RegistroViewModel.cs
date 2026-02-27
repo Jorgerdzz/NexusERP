@@ -23,7 +23,7 @@ namespace NexusERP.ViewModels
         public string Email { get; set; }
 
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
-        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres.")]
+        [MinLength(4, ErrorMessage = "La contraseña debe tener al menos 4 caracteres.")]
         [DataType(DataType.Password)] 
         public string Password { get; set; }
     }

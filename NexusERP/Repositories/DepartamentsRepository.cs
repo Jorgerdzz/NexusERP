@@ -29,7 +29,7 @@ namespace NexusERP.Repositories
             return await consulta.FirstOrDefaultAsync();
         }
 
-        public async Task<bool> CrearDepartamentoAsync(Departamento departamento)
+        public async Task<bool> CreateDepartamentoAsync(Departamento departamento)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace NexusERP.Repositories
             }
         }
 
-        public async Task<bool> ActualizarDepartamentoAsync(Departamento departamento)
+        public async Task<bool> UpdateDepartamentoAsync(Departamento departamento)
         {
             try
             {

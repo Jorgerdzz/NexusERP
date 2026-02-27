@@ -1,0 +1,236 @@
+﻿@{
+    ViewData["Title"] = "Detalle de Departamento";
+    // Cuando le inyectes la lógica, aquí arriba recuperarás tu modelo.
+}
+
+<div class="container-fluid py-4">
+
+    <!-- HEADER: Botón Volver y Acciones -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <a asp-controller="Departaments" asp-action="Index" class="btn btn-link text-decoration-none text-muted d-flex align-items-center gap-2 p-0 px-2 py-1 btn-volver">
+                <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver a departamentos
+            </a>
+        </div>
+        <div class="d-flex gap-2">
+            <!-- Botón Importar CSV (Abre Modal) -->
+            <a href="#modal-import-csv" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 fw-medium" style="border-radius: 0.5rem;">
+                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Importar CSV
+            </a>
+            <!-- Botón Añadir Empleado (Abre Modal) -->
+            <a href="#modal-add-employee" class="btn btn-primary-custom d-flex align-items-center gap-2 px-3 fw-medium" style="border-radius: 0.5rem;">
+                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Añadir Empleado
+            </a>
+        </div>
+    </div>
+
+    <!-- TARJETAS DE ESTADÍSTICAS -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 mb-4">
+        <!-- Tarjeta 1: Nombre Departamento -->
+        <div class="col">
+            <div class="card card-stats border-0 shadow-sm h-100 bg-gradient-custom">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted small mb-1">Departamento</p>
+                        <h3 class="fw-bold mb-0 text-primary-custom">Ingeniería</h3>
+                    </div>
+                    <div class="icon-circle bg-secondary-light text-secondary-custom">
+                        <svg style="width: 24px; height: 24px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2: Empleados -->
+        <div class="col">
+            <div class="card card-stats border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <p class="text-muted small mb-1">Empleados</p>
+                    <h3 class="fw-bold text-dark mb-0">12</h3>
+                    <p class="text-muted mt-1 mb-0" style="font-size: 0.75rem;">Total activos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 3: Presupuesto -->
+        <div class="col">
+            <div class="card card-stats border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <p class="text-muted small mb-1">Presupuesto Anual</p>
+                    <h3 class="fw-bold text-secondary-custom mb-0">550.000 €</h3>
+                    <p class="text-muted mt-1 mb-0" style="font-size: 0.75rem;">Con overhead 20%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 4: Salario Promedio -->
+        <div class="col">
+            <div class="card card-stats border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <p class="text-muted small mb-1">Salario Promedio</p>
+                    <h3 class="fw-bold text-dark mb-0">45.800 €</h3>
+                    <p class="text-muted mt-1 mb-0" style="font-size: 0.75rem;">Por empleado</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLA DE EMPLEADOS -->
+    <div class="card border-0 shadow-sm" style="border-radius: 1rem;">
+        <div class="card-body p-4">
+            <div class="mb-4">
+                <h5 class="fw-bold text-dark mb-1">Empleados del Departamento</h5>
+                <p class="text-muted small mb-0">12 empleados activos en Ingeniería</p>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 custom-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Posición</th>
+                            <th class="text-end">Salario</th>
+                            <th>Fecha Alta</th>
+                            <th>Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Fila de ejemplo 1 -->
+                        <tr>
+                            <td>
+                                <p class="fw-medium text-dark mb-0" style="font-size: 0.9rem;">Juan Pérez</p>
+                                <p class="text-muted mb-0" style="font-size: 0.8rem;">juan.perez@nexus.com</p>
+                            </td>
+                            <td class="text-muted small">Desarrollador Senior</td>
+                            <td class="text-end fw-medium small">45.000 €</td>
+                            <td class="text-muted small">15 Ene 2023</td>
+                            <td><span class="badge badge-active">Activo</span></td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-action btn-edit" title="Editar">
+                                        <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                    </button>
+                                    <button class="btn btn-sm btn-action btn-delete" title="Eliminar">
+                                        <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Fila de ejemplo 2 -->
+                        <tr>
+                            <td>
+                                <p class="fw-medium text-dark mb-0" style="font-size: 0.9rem;">Ana García</p>
+                                <p class="text-muted mb-0" style="font-size: 0.8rem;">ana.garcia@nexus.com</p>
+                            </td>
+                            <td class="text-muted small">Diseñadora UX/UI</td>
+                            <td class="text-end fw-medium small">38.500 €</td>
+                            <td class="text-muted small">03 Mar 2022</td>
+                            <td><span class="badge badge-inactive">Inactivo</span></td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-action btn-edit"><svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
+                                    <button class="btn btn-sm btn-action btn-delete"><svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODALES (Basados en puro CSS con :target) -->
+<!-- ========================================== -->
+<!-- Modal: Añadir Empleado -->
+<div id="modal-add-employee" class="css-modal-overlay">
+    <div class="css-modal-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Añadir Empleado a Ingeniería</h5>
+            <a href="#" class="text-muted text-decoration-none close-btn">
+                <svg style="width: 24px; height: 24px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </a>
+        </div>
+
+        <form action="#" method="post">
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label small fw-medium text-muted">Nombre Completo</label>
+                    <input type="text" class="form-control shadow-none" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-medium text-muted">Email</label>
+                    <input type="email" class="form-control shadow-none" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-medium text-muted">Posición</label>
+                    <input type="text" class="form-control shadow-none" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-medium text-muted">Salario Anual (€)</label>
+                    <input type="number" class="form-control shadow-none" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-medium text-muted">Fecha de Alta</label>
+                    <input type="date" class="form-control shadow-none" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-medium text-muted">Estado</label>
+                    <select class="form-select shadow-none">
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <a href="#" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary-custom" style="background-color: var(--primary-color); border-color: var(--primary-color);">Guardar Empleado</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Importar CSV -->
+<div id="modal-import-csv" class="css-modal-overlay">
+    <div class="css-modal-content" style="max-width: 500px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Importar Empleados</h5>
+            <a href="#" class="text-muted text-decoration-none close-btn">
+                <svg style="width: 24px; height: 24px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </a>
+        </div>
+
+        <div class="alert bg-secondary-light border-0 text-dark small mb-4">
+            <strong>Departamento:</strong> Ingeniería <br />
+            El CSV debe contener: nombre, email, posición, salario, fecha_alta
+        </div>
+
+        <form action="#" method="post" enctype="multipart/form-data">
+            <div class="upload-zone mb-4 text-center">
+                <svg style="width: 48px; height: 48px; color: #9ca3af;" class="mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                <p class="text-muted small mb-3">Arrastra un CSV o haz clic para seleccionar</p>
+                <input type="file" class="custom-file-input" accept=".csv" required>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <a href="#" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary-custom">Importar Archivo</button>
+            </div>
+        </form>
+    </div>
+</div>

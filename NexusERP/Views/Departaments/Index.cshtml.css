@@ -1,0 +1,64 @@
+﻿/* ========================================
+   DEPARTAMENTS - Estilos específicos
+   ======================================== */
+
+/* Cards personalizadas para departamentos */
+.card-custom {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+    .card-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+/* Caja de iconos circular */
+.icon-box {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background-color: rgba(59, 155, 173, 0.1);
+    color: var(--secondary-color);
+}
+
+/* Estilos para tabla personalizada */
+.table-custom th {
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom-width: 2px;
+}
+
+.table-custom td {
+    vertical-align: middle;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+/* Badges suaves con colores específicos */
+.badge-soft-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.badge-soft-primary {
+    background-color: rgba(59, 155, 173, 0.15);
+    color: #2a7a8a;
+}
+
+/* Color de texto oscuro para encabezados */
+.text-dark-heading {
+    color: #1f2937;
+}
+
+.text-content {
+    color: #374151;
+}
