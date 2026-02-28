@@ -22,37 +22,37 @@ namespace NexusERP.Repositories
             return await this.context.Departamentos.ToListAsync();
         }
 
-        public async Task<IndexDepartamentosViewModel> GetDepartamentosModelAsync()
-        {
-            IndexDepartamentosViewModel model = new IndexDepartamentosViewModel
-            {
-                TotalDepartamentos = await this.context.Departamentos.CountAsync(),
-                TotalEmpleadosGlobal = await this.context.Empleados.CountAsync(),
-                PresupuestoTotalGlobalAnual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoAnual) ?? 0,
-                PresupuestoTotalGlobalMensual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoAnual / 12) ?? 0,
-                SalarioPromedioGlobalAnual = await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual) ?? 0,
-                SalarioPromedioGlobalMensual = await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual / 12) ?? 0,
-                Departamentos = await this.context.Departamentos
-                    .Select(d => new DepartamentoCardViewModel
-                    {
-                        Id = d.Id,
-                        Nombre = d.Nombre,
-                        PresupuestoAnual = d.PresupuestoAnual,
-                        PresupuestoMensual = d.PresupuestoAnual / 12,
-                        NumeroEmpleados = d.Empleados.Count(),
-                        SalarioPromedio = d.Empleados.Any() ? d.Empleados.Average(e => e.SalarioBrutoAnual) : 0
-                    })
-                    .ToListAsync()
-                    };
-            return model;
-        }
-
         public async Task<Departamento> GetDepartamentoAsync(int idDepartamento)
         {
             var consulta = from datos in this.context.Departamentos
                            where datos.Id == idDepartamento
                            select datos;
             return await consulta.FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GetTotalDepartamentosAsync()
+        {
+            return await this.context.Departamentos.CountAsync();
+        }
+
+        public async Task<decimal> GetPresupuestoTotalAnualAsync()
+        {
+            return await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoAnual) ?? 0;
+        }
+
+        public async Task<List<(int Id, string Nombre, decimal PresupuestoAnual, int NumeroEmpleados, decimal SalarioPromedio)>> GetEstadisticasDepartamentosAsync()
+        {
+            var consulta = await this.context.Departamentos
+                .Select(d => new
+                {
+                    d.Id,
+                    d.Nombre,
+                    d.PresupuestoAnual,
+                    NumeroEmpleados = d.Empleados.Count(),
+                    SalarioPromedio = d.Empleados.Any() ? d.Empleados.Average(e => e.SalarioBrutoAnual) : 0
+                })
+                .ToListAsync();
+            return consulta.Select(c => (c.Id, c.Nombre, c.PresupuestoAnual, c.NumeroEmpleados, c.SalarioPromedio)).ToList();
         }
 
         public async Task<bool> CreateDepartamentoAsync(Departamento departamento)

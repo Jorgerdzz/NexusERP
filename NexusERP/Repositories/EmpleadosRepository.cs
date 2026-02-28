@@ -30,5 +30,15 @@ namespace NexusERP.Repositories
             return await consulta.ToListAsync();
         }
 
+        public async Task<int> GetTotalEmpleadosAsync()
+        {
+            return await this.context.Empleados.CountAsync();
+        }
+
+        public async Task<decimal> GetSalarioPromedioAnualAsync()
+        {
+            return await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual) ?? 0;
+        }
+
     }
 }

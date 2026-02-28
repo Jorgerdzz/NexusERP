@@ -22,14 +22,50 @@ namespace NexusERP.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IndexDepartamentosViewModel model = await this.repoDepartamentos.GetDepartamentosModelAsync();
+            int totalDepartamentos = await this.repoDepartamentos.GetTotalDepartamentosAsync();
+            int totalEmpleados = await this.repoEmpleados.GetTotalEmpleadosAsync();
+            decimal presupuestoAnual = await this.repoDepartamentos.GetPresupuestoTotalAnualAsync();
+            decimal salarioMedioAnual = await this.repoEmpleados.GetSalarioPromedioAnualAsync();
+
+            var estadisticas = await this.repoDepartamentos.GetEstadisticasDepartamentosAsync();
+
+            IndexDepartamentosViewModel model = new IndexDepartamentosViewModel
+            {
+                TotalDepartamentos = totalDepartamentos,
+                TotalEmpleadosGlobal = totalEmpleados,
+                PresupuestoTotalGlobalAnual = presupuestoAnual,
+                PresupuestoTotalGlobalMensual = presupuestoAnual / 12,
+                SalarioPromedioGlobalAnual = salarioMedioAnual,
+                SalarioPromedioGlobalMensual = salarioMedioAnual / 12,
+
+                Departamentos = estadisticas.Select(e => new DepartamentoCardViewModel
+                {
+                    Id = e.Id,
+                    Nombre = e.Nombre,
+                    PresupuestoAnual = e.PresupuestoAnual,
+                    PresupuestoMensual = e.PresupuestoAnual / 12,
+                    NumeroEmpleados = e.NumeroEmpleados, 
+                    SalarioPromedio = e.SalarioPromedio
+                }).ToList()
+            };
             return View(model);
         }
 
         public async Task<IActionResult> Details(int id)
         {
             Departamento dep = await this.repoDepartamentos.GetDepartamentoAsync(id);
-            return View(dep);
+            if (dep == null) return NotFound();
+            List<Empleado> empleados = await this.repoEmpleados.GetEmpleadosDepartamentoAsync(id);
+            DepartamentoDetailsViewModel model = new DepartamentoDetailsViewModel
+            {
+                Id = dep.Id,
+                Nombre = dep.Nombre,
+                PresupuestoAnual = dep.PresupuestoAnual,
+                NumeroEmpleados = empleados.Count(),
+                Empleados = empleados,
+                SalarioPromedio = empleados.Any() ? empleados.Average(e => e.SalarioBrutoAnual) : 0
+            };
+            return View(model);
         }
 
         [HttpPost]
