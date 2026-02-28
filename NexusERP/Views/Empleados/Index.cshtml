@@ -1,0 +1,133 @@
+﻿@model EmpleadosViewModel
+
+@{
+    ViewData["Title"] = "Plantilla empresa";
+    int totalEmpleados = Model.Empleados?.Count ?? 0;
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+    <div>
+        <a asp-controller="Departaments" asp-action="Index" class="btn btn-link text-decoration-none text-muted d-flex align-items-center gap-2 p-0 px-2 py-1 btn-volver">
+            <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver a departamentos
+        </a>
+    </div>
+</div>
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h1 class="page-title fw-bold mb-1">Todos los Empleados</h1>
+            <p class="text-muted-custom mb-0">@totalEmpleados empleados en total</p>
+        </div>
+
+        <form action="/Empleados/Index" method="get">
+            <select name="idDepartamento" class="form-select text-muted-custom shadow-sm border-0"
+                    style="border-radius: 0.5rem; background-color: #f8fafc;" onchange="this.form.submit()">
+                <option>Todos los Departamentos</option>
+                @if (Model.Departamentos != null)
+                {
+                    @foreach (Departamento dept in Model.Departamentos)
+                    {
+                        if (ViewBag.DepartamentoSeleccionado != null && ViewBag.DepartamentoSeleccionado == dept.Id)
+                        {
+                            <option value="@dept.Id" selected>@dept.Nombre</option>
+                        }
+                        else
+                        {
+                            <option value="@dept.Id">@dept.Nombre</option>
+                        }
+                    }
+                }
+            </select>
+        </form>
+    </div>
+
+    @if (Model != null)
+    {
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-custom align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Grupo Cot.</th>
+                            <th>Departamento</th>
+                            <th>Salario</th>
+                            <th>F. Contratación</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Empleados != null)
+                        {
+                            foreach (Empleado empleado in Model.Empleados)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">@empleado.Nombre @empleado.Apellidos</div>
+                                        <div class="small text-muted-custom" style="font-size: 0.8rem;">@empleado.EmailCorporativo</div>
+                                    </td>
+
+                                    <td class="text-muted-custom small">
+                                        Grupo @empleado.GrupoCotizacion
+                                    </td>
+
+                                    <td>
+                                        <span class="badge rounded-pill badge-dept">
+                                            @(empleado.Departamento?.Nombre ?? "Sin asignar")
+                                        </span>
+                                    </td>
+
+                                    <td class="fw-bold text-dark">
+                                        @empleado.SalarioBrutoAnual.ToString("N0") €
+                                    </td>
+
+                                    <td class="text-muted-custom small">
+                                        @empleado.FechaAntiguedad.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @if (empleado.Activo)
+                                        {
+                                            <span class="badge rounded-pill badge-status-active">Activo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill badge-status-inactive">Inactivo</span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+                                        <button class="btn-action" title="Editar">
+                                            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="btn-action btn-action-delete" title="Eliminar">
+                                            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted-custom">
+                                    No hay empleados registrados en este departamento.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

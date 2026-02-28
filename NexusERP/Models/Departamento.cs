@@ -11,7 +11,7 @@ public partial class Departamento
 
     public string Nombre { get; set; } = null!;
 
-    public decimal? PresupuestoMensual { get; set; }
+    public decimal PresupuestoAnual { get; set; }
 
     public virtual ICollection<ControlGasto> ControlGastos { get; set; } = new List<ControlGasto>();
 

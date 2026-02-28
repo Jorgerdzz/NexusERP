@@ -39,7 +39,7 @@ public partial class Empleado
 
     public int EstadoCivil { get; set; }
 
-    public bool? Activo { get; set; }
+    public bool Activo { get; set; }
 
     public string? FotoUrl { get; set; }
 

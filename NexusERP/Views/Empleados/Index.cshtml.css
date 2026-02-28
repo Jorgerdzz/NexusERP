@@ -1,0 +1,84 @@
+﻿/* --- CABECERA Y TEXTOS --- */
+.page-title {
+    color: #1e293b;
+    font-size: 1.5rem;
+}
+
+.text-muted-custom {
+    color: #64748b;
+}
+
+/* --- ESTILOS DE LA TABLA --- */
+.table-container {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.table-custom {
+    margin-bottom: 0;
+}
+
+    .table-custom th {
+        background-color: #ffffff;
+        color: #64748b;
+        font-weight: 500;
+        font-size: 0.85rem;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .table-custom td {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+    }
+
+    /* Fila hover suave */
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+/* --- BADGES (Etiquetas estilo diseño) --- */
+.badge-dept {
+    background-color: #e0f2fe; /* Azul pastel muy claro */
+    color: #0284c7; /* Azul más oscuro para el texto */
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+}
+
+.badge-status-active {
+    background-color: #dcfce7; /* Verde pastel muy claro */
+    color: #16a34a;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+}
+
+.badge-status-inactive {
+    background-color: #f1f5f9;
+    color: #64748b;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+}
+
+/* --- BOTONES DE ACCIÓN --- */
+.btn-action {
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.2s ease;
+}
+
+    .btn-action:hover {
+        color: #475569;
+    }
+
+.btn-action-delete:hover {
+    color: #ef4444; /* Rojo al pasar el ratón por borrar */
+}

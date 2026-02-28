@@ -10,6 +10,6 @@ namespace NexusERP.ViewModels
 
         [Required(ErrorMessage = "El presupuesto es obligatorio.")]
         [Range(0, 9999999.99, ErrorMessage = "El presupuesto debe ser un valor positivo.")]
-        public decimal PresupuestoMensual { get; set; }
+        public decimal PresupuestoAnual { get; set; }
     }
 }

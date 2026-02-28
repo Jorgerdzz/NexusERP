@@ -10,6 +10,8 @@ namespace NexusERP.ViewModels
         public decimal PresupuestoTotalGlobalMensual { get; set; }
         public decimal SalarioPromedioGlobalAnual { get; set; }
         public decimal SalarioPromedioGlobalMensual { get; set; }
-        public List<Departamento> Departamentos { get; set; }
+        public List<DepartamentoCardViewModel> Departamentos { get; set; }
+        
+
     }
 }

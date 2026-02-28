@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using NexusERP.Helpers;
 using NexusERP.Models;
-using NexusERP.ViewModels;
 
 namespace NexusERP.Data;
 
 public partial class NexusContext : DbContext
 {
-    private readonly HelperSessionContextAccessor contextAccessor;
     public NexusContext()
     {
     }
 
-    public NexusContext(DbContextOptions<NexusContext> options, HelperSessionContextAccessor contextAccessor)
+    public NexusContext(DbContextOptions<NexusContext> options)
         : base(options)
     {
-        this.contextAccessor = contextAccessor;
     }
 
     public virtual DbSet<ApuntesContable> ApuntesContables { get; set; }
@@ -188,9 +184,7 @@ public partial class NexusContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Departam__3214EC0737BC0F05");
 
             entity.Property(e => e.Nombre).HasMaxLength(100);
-            entity.Property(e => e.PresupuestoMensual)
-                .HasDefaultValue(0m)
-                .HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PresupuestoAnual).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.Empresa).WithMany(p => p.Departamentos)
                 .HasForeignKey(d => d.EmpresaId)
@@ -371,13 +365,6 @@ public partial class NexusContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Usuarios__Empres__49C3F6B7");
         });
-
-        modelBuilder.Entity<Empleado>().HasQueryFilter(e => e.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
-        modelBuilder.Entity<Departamento>().HasQueryFilter(d => d.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
-        modelBuilder.Entity<Nomina>().HasQueryFilter(n => n.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
-        modelBuilder.Entity<AsientosContable>().HasQueryFilter(a => a.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
-        modelBuilder.Entity<ControlGasto>().HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
-        modelBuilder.Entity<CuentasContable>().HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -17,18 +17,33 @@ namespace NexusERP.Repositories
             this.contextAccessor = contextAccessor;
         }
 
-        public async Task<IndexDepartamentosViewModel> GetDepartamentosAsync()
+        public async Task<List<Departamento>> GetDepartamentosAsync()
+        {
+            return await this.context.Departamentos.ToListAsync();
+        }
+
+        public async Task<IndexDepartamentosViewModel> GetDepartamentosModelAsync()
         {
             IndexDepartamentosViewModel model = new IndexDepartamentosViewModel
             {
                 TotalDepartamentos = await this.context.Departamentos.CountAsync(),
                 TotalEmpleadosGlobal = await this.context.Empleados.CountAsync(),
-                PresupuestoTotalGlobalAnual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoMensual * 12) ?? 0,
-                PresupuestoTotalGlobalMensual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoMensual) ?? 0,
+                PresupuestoTotalGlobalAnual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoAnual) ?? 0,
+                PresupuestoTotalGlobalMensual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoAnual / 12) ?? 0,
                 SalarioPromedioGlobalAnual = await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual) ?? 0,
                 SalarioPromedioGlobalMensual = await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual / 12) ?? 0,
-                Departamentos = await this.context.Departamentos.ToListAsync(),
-            };
+                Departamentos = await this.context.Departamentos
+                    .Select(d => new DepartamentoCardViewModel
+                    {
+                        Id = d.Id,
+                        Nombre = d.Nombre,
+                        PresupuestoAnual = d.PresupuestoAnual,
+                        PresupuestoMensual = d.PresupuestoAnual / 12,
+                        NumeroEmpleados = d.Empleados.Count(),
+                        SalarioPromedio = d.Empleados.Any() ? d.Empleados.Average(e => e.SalarioBrutoAnual) : 0
+                    })
+                    .ToListAsync()
+                    };
             return model;
         }
 
@@ -64,7 +79,7 @@ namespace NexusERP.Repositories
                 if (original == null) return false;
 
                 original.Nombre = departamento.Nombre;
-                original.PresupuestoMensual = departamento.PresupuestoMensual;
+                original.PresupuestoAnual = departamento.PresupuestoAnual;
 
                 await this.context.SaveChangesAsync();
                 return true;

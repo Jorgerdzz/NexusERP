@@ -11,22 +11,24 @@ namespace NexusERP.Controllers
     [AuthorizeUser(Rol = RolesUsuario.Admin)]
     public class DepartamentsController : Controller
     {
-        private DepartamentsRepository repo;
+        private DepartamentsRepository repoDepartamentos;
+        private EmpleadosRepository repoEmpleados;
 
-        public DepartamentsController(DepartamentsRepository repo)
+        public DepartamentsController(DepartamentsRepository repoDepartamentos, EmpleadosRepository repoEmpleados)
         {
-            this.repo = repo;
+            this.repoDepartamentos = repoDepartamentos;
+            this.repoEmpleados = repoEmpleados;
         }
 
         public async Task<IActionResult> Index()
         {
-            IndexDepartamentosViewModel departamentos = await this.repo.GetDepartamentosAsync();
-            return View(departamentos);
+            IndexDepartamentosViewModel model = await this.repoDepartamentos.GetDepartamentosModelAsync();
+            return View(model);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            Departamento dep = await this.repo.GetDepartamentoAsync(id);
+            Departamento dep = await this.repoDepartamentos.GetDepartamentoAsync(id);
             return View(dep);
         }
 
@@ -41,9 +43,9 @@ namespace NexusERP.Controllers
             Departamento nuevoDepartamento = new Departamento
             {
                 Nombre = model.Nombre,
-                PresupuestoMensual = model.PresupuestoMensual
+                PresupuestoAnual = model.PresupuestoAnual
             };
-            bool creado = await this.repo.CreateDepartamentoAsync(nuevoDepartamento);
+            bool creado = await this.repoDepartamentos.CreateDepartamentoAsync(nuevoDepartamento);
             if (creado)
             {
                 return RedirectToAction("Index");
