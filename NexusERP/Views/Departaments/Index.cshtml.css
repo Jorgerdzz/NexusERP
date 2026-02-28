@@ -62,3 +62,103 @@
 .text-content {
     color: #374151;
 }
+
+/* --- TARJETAS GLOBALES (KPIs Superiores estilo Clean) --- */
+.card-kpi {
+    border-radius: 1rem;
+    /* La imagen muestra tarjetas planas sin sombra por defecto */
+    box-shadow: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .card-kpi:hover {
+        transform: translateY(-5px);
+        /* Sombra muy difuminada al hacer hover para dar sensación de levitar */
+        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.08);
+    }
+
+.icon-kpi {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-kpi:hover .icon-kpi {
+    /* Efecto "rebote" en el icono circular al pasar el ratón */
+    transform: scale(1.15) rotate(5deg);
+}
+
+/* --- Títulos principales (Asegurando el color de tu paleta) --- */
+.text-dark-heading {
+    color: var(--primary-color, #2d3e50);
+}
+
+/* --- TARJETAS DE DEPARTAMENTOS INDIVIDUALES --- */
+.card-custom {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+    .card-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+/* Cajita del icono de cada departamento */
+.icon-box {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background-color: var(--secondary-light, #e0f4f7);
+    color: var(--secondary-color);
+}
+
+/* --- TABLA DE EMPLEADOS INFERIOR --- */
+.table-custom th {
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom-width: 2px;
+    border-bottom-color: #f3f4f6;
+    padding-bottom: 1rem;
+}
+
+.table-custom td {
+    vertical-align: middle;
+    font-size: 0.875rem;
+    color: #374151;
+    border-bottom-color: #f9fafb;
+}
+
+/* Filas de la tabla interactiva */
+.table-custom tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+/* --- BADGES (Etiquetas redonditas) --- */
+.badge-soft-success {
+    background-color: #d1fae5;
+    color: var(--success-color);
+    font-weight: 500;
+}
+
+.badge-soft-primary {
+    /* Usamos una versión transparente de tu secondary-color */
+    background-color: rgba(59, 155, 173, 0.15);
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+/* Títulos principales */
+.text-dark-heading {
+    color: var(--primary-color);
+}

@@ -2,6 +2,7 @@
 using NexusERP.Data;
 using NexusERP.Helpers;
 using NexusERP.Models;
+using NexusERP.ViewModels;
 
 namespace NexusERP.Repositories
 {
@@ -16,9 +17,19 @@ namespace NexusERP.Repositories
             this.contextAccessor = contextAccessor;
         }
 
-        public async Task<List<Departamento>> GetDepartamentosAsync()
+        public async Task<IndexDepartamentosViewModel> GetDepartamentosAsync()
         {
-            return await this.context.Departamentos.ToListAsync();
+            IndexDepartamentosViewModel model = new IndexDepartamentosViewModel
+            {
+                TotalDepartamentos = await this.context.Departamentos.CountAsync(),
+                TotalEmpleadosGlobal = await this.context.Empleados.CountAsync(),
+                PresupuestoTotalGlobalAnual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoMensual * 12) ?? 0,
+                PresupuestoTotalGlobalMensual = await this.context.Departamentos.SumAsync(d => (decimal?)d.PresupuestoMensual) ?? 0,
+                SalarioPromedioGlobalAnual = await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual) ?? 0,
+                SalarioPromedioGlobalMensual = await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual / 12) ?? 0,
+                Departamentos = await this.context.Departamentos.ToListAsync(),
+            };
+            return model;
         }
 
         public async Task<Departamento> GetDepartamentoAsync(int idDepartamento)

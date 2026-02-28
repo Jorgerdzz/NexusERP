@@ -1,4 +1,4 @@
-﻿@model List<Departamento>
+﻿@model IndexDepartamentosViewModel
 
 @{
     ViewData["Title"] = "Departamentos y Equipo";
@@ -28,12 +28,94 @@
         </div>
     </div>
 
+    <!-- CARDS GLOBALES -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 mb-4">
+
+        <div class="col">
+            <div class="card card-kpi border-0 h-100" style="border-radius: 1rem; background-color: #f2f7f9;">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1" style="font-size: 0.9rem;">Departamentos</p>
+                        <h2 class="fw-bold mb-0 text-dark-heading" style="font-size: 2.2rem;">@Model.TotalDepartamentos</h2>
+                        <p class="text-muted mt-1 mb-0" style="font-size: 0.8rem;">Áreas operativas</p>
+                    </div>
+                    <div class="rounded-circle d-flex justify-content-center align-items-center icon-kpi"
+                         style="width: 65px; height: 65px; background-color: #5a9ba6; color: white;">
+                        <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card card-kpi border-0 h-100" style="border-radius: 1rem; background-color: #f3fbf4;">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1" style="font-size: 0.9rem;">Plantilla Total</p>
+                        <h2 class="fw-bold mb-0 text-dark-heading" style="font-size: 2.2rem;">@Model.TotalEmpleadosGlobal</h2>
+                        <p class="text-muted mt-1 mb-0" style="font-size: 0.8rem;">En @Model.TotalDepartamentos departamentos</p>
+                    </div>
+                    <div class="rounded-circle d-flex justify-content-center align-items-center icon-kpi"
+                         style="width: 65px; height: 65px; background-color: #86d194; color: white;">
+                        <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card card-kpi border-0 h-100" style="border-radius: 1rem; background-color: #fdfaf0;">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1" style="font-size: 0.9rem;">Presupuesto Total Anual</p>
+                        <h2 class="fw-bold mb-0 text-dark-heading" style="font-size: 2.2rem;">@Model.PresupuestoTotalGlobalAnual.ToString("N0") <span style="font-size: 1.2rem; color: #6c757d;">€</span></h2>
+                        <p class="text-muted mt-1 mb-0" style="font-size: 0.8rem;">
+                            ≈ @Model.PresupuestoTotalGlobalMensual.ToString("N0") € / mes
+                        </p>
+                    </div>
+                    <div class="rounded-circle d-flex justify-content-center align-items-center icon-kpi"
+                         style="width: 65px; height: 65px; background-color: #f2c96c; color: white;">
+                        <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col">
+            <div class="card card-kpi border-0 h-100" style="border-radius: 1rem; background-color: #fdf5f6;">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1" style="font-size: 0.9rem;">Salario Promedio Anual</p>
+                        <h2 class="fw-bold mb-0 text-dark-heading" style="font-size: 2.2rem;">@Model.SalarioPromedioGlobalAnual.ToString("N0") <span style="font-size: 1.2rem; color: #6c757d;">€</span></h2>
+                        <p class="text-muted mt-1 mb-0" style="font-size: 0.8rem;">
+                            ≈ @Model.SalarioPromedioGlobalMensual.ToString("N0") € / mes
+                        </p>
+                    </div>
+                    <div class="rounded-circle d-flex justify-content-center align-items-center icon-kpi"
+                         style="width: 65px; height: 65px; background-color: var(--danger-color, #ef476f); color: white;">
+                        <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <!-- CARDS DE DEPARTAMENTOS -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 mb-4">
 
-        @if (Model != null )
+        @if (Model.Departamentos.Count !=  0)
         {
-            @foreach (var dept in Model)
+            @foreach (var dept in Model.Departamentos)
             {
                 <div class="col">
                     <div class="card card-custom h-100 bg-white p-4">
@@ -92,9 +174,9 @@
             <h5 class="fw-bold mb-0 text-content">Miembros del Equipo</h5>
             <select class="form-select form-select-sm w-auto" style="border-radius: 0.5rem;">
                 <option>Todos los Departamentos</option>
-                @if (Model != null && Model.Any())
+                @if (Model.Departamentos.Count() != 0)
                 {
-                    @foreach (var dept in Model)
+                    @foreach (var dept in Model.Departamentos)
                     {
                         <option value="@dept.Id">@dept.Nombre</option>
                     }

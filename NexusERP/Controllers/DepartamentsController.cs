@@ -20,7 +20,7 @@ namespace NexusERP.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<Departamento> departamentos = await this.repo.GetDepartamentosAsync();
+            IndexDepartamentosViewModel departamentos = await this.repo.GetDepartamentosAsync();
             return View(departamentos);
         }
 
