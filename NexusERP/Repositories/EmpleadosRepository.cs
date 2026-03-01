@@ -40,5 +40,26 @@ namespace NexusERP.Repositories
             return await this.context.Empleados.AverageAsync(e => (decimal?)e.SalarioBrutoAnual) ?? 0;
         }
 
+        public async Task<bool> CreateEmpleadoAsync(Empleado Empleado)
+        {
+            try
+            {
+                Empleado.EmpresaId = this.contextAccessor.GetEmpresaIdSession();
+                await this.context.Empleados.AddAsync(Empleado);
+                await this.context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string errorPrincipal = ex.Message;
+
+                // ¡EL VERDADERO ERROR DE SQL SERVER ESTÁ AQUÍ!
+                string errorRealDeBaseDeDatos = ex.InnerException != null ? ex.InnerException.Message : "No hay detalle interno";
+
+                // Pon un punto de interrupción (BreakPoint) en la línea del return false;
+                return false;
+            }
+        }
+
     }
 }

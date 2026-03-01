@@ -61,9 +61,11 @@ namespace NexusERP.Controllers
                 Id = dep.Id,
                 Nombre = dep.Nombre,
                 PresupuestoAnual = dep.PresupuestoAnual,
+                PresupuestoMensual = dep.PresupuestoAnual / 12,
                 NumeroEmpleados = empleados.Count(),
                 Empleados = empleados,
-                SalarioPromedio = empleados.Any() ? empleados.Average(e => e.SalarioBrutoAnual) : 0
+                SalarioPromedioAnual = empleados.Any() ? empleados.Average(e => e.SalarioBrutoAnual) : 0,
+                SalarioPromedioMensual = empleados.Any() ? empleados.Average(e => e.SalarioBrutoAnual) / 12 : 0
             };
             return View(model);
         }
