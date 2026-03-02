@@ -59,10 +59,8 @@ namespace NexusERP.Repositories
                 {
                     IdUsuario = user.Id,
                     Salt = HelperTools.GenerateSalt(),
-                    PasswordHash = HelperCryptography.EncryptPassword(model.Password, HelperTools.GenerateSalt())
                 };
 
-                userSecurity.Salt = HelperTools.GenerateSalt();
                 userSecurity.PasswordHash = HelperCryptography.EncryptPassword(model.Password, userSecurity.Salt);
 
                 await this.context.SeguridadUsuarios.AddAsync(userSecurity);

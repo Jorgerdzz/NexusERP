@@ -115,7 +115,6 @@
             <div class="modal-body p-4">
                 <div class="alert bg-secondary-light border-0 text-dark small mb-4" style="background-color: #f8fafc; border-radius: 0.5rem; padding: 1rem;">
                     <strong>Departamento:</strong> @Model.Nombre <br />
-                    El CSV debe contener: nombre, email, posicion, salario, fecha_alta
                 </div>
 
                 <form asp-controller="Empleados" asp-action="ImportCsv" method="post" enctype="multipart/form-data">
