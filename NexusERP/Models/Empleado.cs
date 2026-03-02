@@ -33,9 +33,9 @@ public partial class Empleado
 
     public string? Iban { get; set; }
 
-    public int? NumeroHijos { get; set; }
+    public int NumeroHijos { get; set; }
 
-    public int? PorcentajeDiscapacidad { get; set; }
+    public int PorcentajeDiscapacidad { get; set; }
 
     public int EstadoCivil { get; set; }
 

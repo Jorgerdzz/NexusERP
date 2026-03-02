@@ -216,8 +216,6 @@ public partial class NexusContext : DbContext
             entity.Property(e => e.NumSeguridadSocial)
                 .HasMaxLength(20)
                 .IsUnicode(false);
-            entity.Property(e => e.NumeroHijos).HasDefaultValue(0);
-            entity.Property(e => e.PorcentajeDiscapacidad).HasDefaultValue(0);
             entity.Property(e => e.SalarioBrutoAnual).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Telefono)
                 .HasMaxLength(20)

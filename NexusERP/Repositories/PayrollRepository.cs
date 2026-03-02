@@ -24,5 +24,14 @@ namespace NexusERP.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Empleado> GetEmpleadoParaNominaAsync(int empleadoId)
+        {
+            return await this.context.Empleados
+                .Include(e => e.Departamento)
+                .Include(e => e.ConceptosFijosEmpleados) 
+                    .ThenInclude(cf => cf.Concepto)     
+                .FirstOrDefaultAsync(e => e.Id == empleadoId);
+        }
+
     }
 }

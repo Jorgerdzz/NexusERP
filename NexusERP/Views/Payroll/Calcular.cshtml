@@ -1,0 +1,397 @@
+﻿@model CalcularNominaViewModel
+@{
+    ViewData["Title"] = "Cálculo de Nómina";
+    string periodoLiquidacion = $"{Model.FechaInicio.ToString("dd/MM/yyyy")} al {Model.FechaFin.ToString("dd/MM/yyyy")}";
+}
+
+<main class="bg-light pb-5">
+    <!-- Usamos container-fluid para ocupar todo el ancho del dashboard -->
+    <div class="container-fluid px-4 pt-4">
+
+        <!-- BOTÓN VOLVER -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+            <a asp-controller="Payroll" asp-action="Index" class="btn btn-link text-decoration-none text-muted d-flex align-items-center gap-2 p-0 px-2 py-1 btn-volver">
+                <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver al gestor
+            </a>
+        </div>
+
+        <!-- 1. CABECERA: DATOS DEL EMPLEADO (FULL WIDTH) -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 1rem; border-left: 5px solid var(--secondary-color);">
+            <div class="card-body p-4 p-md-5">
+                <div class="row align-items-center">
+
+                    <div class="col-md-7 d-flex align-items-center gap-4 border-end-md">
+                        <div class="avatar-circle bg-secondary-light text-secondary-custom fw-bold shadow-sm">
+                            @Model.EmpleadoIniciales
+                        </div>
+                        <div>
+                            <h4 class="fw-bold text-dark mb-1">@Model.EmpleadoNombre</h4>
+                            <p class="text-muted mb-2 fs-6">
+                                @Model.DepartamentoNombre | IRPF: <strong class="text-dark">@Model.PorcentajeIRPF%</strong>
+                            </p>
+                            <span class="text-primary-custom fw-bold fs-6 bg-light p-2 rounded border">
+                                <i class="fas fa-calendar-alt me-2"></i> Período de liquidación: @periodoLiquidacion
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 text-md-end mt-4 mt-md-0 ps-md-4">
+                        <span class="text-muted d-block mb-1 text-uppercase fw-bold">Salario Bruto Anual</span>
+                        <h3 class="fw-bold text-dark mb-2">@Model.SalarioBrutoAnual.ToString("N2") €</h3>
+                        <span class="text-success fs-6 fw-medium">
+                            <i class="fas fa-info-circle me-1"></i> Sugerido mensual: <span id="salarioSugerido">@Model.SalarioMensualSugerido.ToString("N2")</span> €
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. RECUADRO DE LA NÓMINA (FULL WIDTH) -->
+        <div class="card border-0 shadow-sm bg-white" style="border-radius: 1rem;">
+            <div class="card-body p-4 p-lg-5">
+                <h2 class="mb-5 text-primary-custom fw-bold text-center border-bottom pb-4">Cálculo de Nómina Mensual</h2>
+
+                <form id="formNomina" asp-action="GuardarNomina" method="post">
+
+                    <!-- DATOS OCULTOS -->
+                    <input type="hidden" asp-for="EmpleadoId" />
+                    <input type="hidden" asp-for="Mes" />
+                    <input type="hidden" asp-for="Anio" />
+                    <input type="hidden" asp-for="PorcentajeIRPF" id="porcentajeIrpfAplicado" />
+                    <input type="hidden" asp-for="FechaInicio" />
+                    <input type="hidden" asp-for="FechaFin" />
+
+                    <!-- I. DEVENGOS -->
+                    <h4 class="mb-4 fw-bold text-secondary-custom border-bottom pb-2">I. Devengos</h4>
+                    <p class="text-muted mb-4 fs-6">Introduce los importes brutos. Al guardar, se establecerán como fijos para futuras nóminas.</p>
+
+                    <h5 class="fw-bold text-dark fs-5 mb-4 mt-5">I.I. Percepciones Salariales</h5>
+
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Salario base</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="SalarioBase" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Incentivos</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="Incentivos" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus especial dedicación</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusDedicacion" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus antigüedad</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusAntiguedad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus actividad</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusActividad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus nocturnidad</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusNocturnidad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus responsabilidad</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusResponsabilidad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus convenio</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusConvenio" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus idiomas</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusIdiomas" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Horas extraordinarias</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="HorasExtraordinarias" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Horas complementarias</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="HorasComplementarias" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Salario en especie</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="SalarioEspecie" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-dark fs-5 mb-4 mt-5">I.II. Percepciones No Salariales</h5>
+
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Indemnizaciones o Suplidos</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="IndemnizacionesSuplidos" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Prestaciones e indemnizaciones S.S.</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PrestacionesSS" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Indemnizaciones por despido</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="IndemnizacionesDespido" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Plus transporte</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="PlusTransporte" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4 align-items-center concepto-row">
+                        <div class="col-md-6 text-dark fs-6">Dietas</div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="Dietas" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DEVENGADO -->
+                    <div class="row mt-5 mb-5 align-items-center bg-secondary-light p-4 rounded border border-info border-opacity-25">
+                        <div class="col-md-6"><strong class="fs-5 text-secondary-custom">Total Devengado (Salario Bruto)</strong></div>
+                        <div class="col-md-6">
+                            <input type="text" id="total_devengado" name="TotalDevengado" class="form-control fw-bold fs-4 text-end bg-transparent border-0 shadow-none text-secondary-custom" readonly>
+                        </div>
+                    </div>
+
+                    <!-- II. DEDUCCIONES -->
+                    <h4 class="mb-4 fw-bold text-secondary-custom border-bottom pb-2">II. Deducciones (Trabajador)</h4>
+
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered align-middle text-center table-nomina-calc w-100">
+                            <thead class="table-light text-muted">
+                                <tr>
+                                    <th>Concepto</th>
+                                    <th>Base (€)</th>
+                                    <th>Tipo (%)</th>
+                                    <th>Importe (€)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">Contingencias comunes</td>
+                                    <td><input type="text" id="base_cc" name="BaseCotizacion_CC" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" id="tipo_cc" value="4.70" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_cc" name="SS_ContingenciasComunes" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">M.E.I</td>
+                                    <td><input type="text" id="base_mei" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" id="tipo_mei" value="0.12" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_mei" name="SS_MEI" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">Desempleo</td>
+                                    <td><input type="text" id="base_desempleo" name="BaseCotizacion_CP" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" id="tipo_desempleo" value="1.55" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_desempleo" name="SS_Desempleo" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">Formación profesional</td>
+                                    <td><input type="text" id="base_fp" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" id="tipo_fp" value="0.10" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_fp" name="SS_Formacion" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr class="bg-light">
+                                    <td class="text-start fw-bold text-primary-custom">I.R.P.F.</td>
+                                    <td><input type="text" id="base_irpf" name="BaseIRPF" class="form-control text-center bg-transparent border-0 fw-bold" readonly></td>
+                                    <td><input type="text" id="tipo_irpf_view" value="@Model.PorcentajeIRPF" class="form-control text-center bg-transparent border-0 fw-bold text-primary-custom" readonly></td>
+                                    <td><input type="text" id="importe_irpf" name="RetencionIRPF" class="form-control text-end fw-bold text-danger bg-transparent" readonly></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row mt-4 mb-2 align-items-center">
+                        <div class="col-md-8 text-end"><span class="text-muted fw-medium fs-6">Total Aportaciones a la Seguridad Social</span></div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" id="total_aportaciones" class="form-control text-end bg-light border-0 fw-medium shadow-none fs-6" readonly>
+                                <span class="input-group-text bg-light border-0 text-muted">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 align-items-center">
+                        <div class="col-md-8 text-end"><strong class="text-dark fs-5">Total Deducciones Trabajador</strong></div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" id="total_deducciones" name="TotalDeducciones" class="form-control text-end fw-bold text-danger bg-light border-0 shadow-none fs-5" readonly>
+                                <span class="input-group-text bg-light border-0 fw-bold text-danger fs-5">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LÍQUIDO A PERCIBIR -->
+                    <div class="row align-items-center bg-secondary-light p-4 rounded-4 mb-5 border border-info border-opacity-25">
+                        <div class="col-md-8 text-end">
+                            <strong class="fs-4 text-secondary-custom text-uppercase">Líquido a Percibir</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" id="liquido_percibir" name="LiquidoAPercibir" class="form-control text-end fw-bold fs-3 bg-transparent border-0 shadow-none text-secondary-custom p-0" readonly value="0,00">
+                                <span class="input-group-text bg-transparent border-0 fw-bold text-secondary-custom fs-3 ms-1 p-0">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- III. COSTES DE EMPRESA -->
+                    <h4 class="mb-4 fw-bold text-secondary-custom border-bottom pb-2">III. Costes de Empresa</h4>
+
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered align-middle text-center table-nomina-calc w-100">
+                            <thead class="table-light text-muted">
+                                <tr>
+                                    <th>Concepto</th>
+                                    <th>Base (€)</th>
+                                    <th>Tipo (%)</th>
+                                    <th>Importe (€)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">Contingencias Comunes (Empresa)</td>
+                                    <td><input type="text" id="base_empresa_cc" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" id="tipo_empresa_cc" value="23.60" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_empresa_cc" name="SS_Empresa_ContingenciasComunes" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">AT y EP</td>
+                                    <td><input type="text" id="base_empresa_at" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" id="tipo_empresa_at" value="1.50" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_empresa_at" name="SS_Empresa_AccidentesTrabajo" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">Desempleo (Empresa)</td>
+                                    <td><input type="text" id="base_empresa_desempleo" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" id="tipo_empresa_desempleo" value="5.50" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_empresa_desempleo" name="SS_Empresa_Desempleo" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">Otros (Formación, FOGASA, MEI)</td>
+                                    <td><input type="text" id="base_empresa_otros" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" value="1.38" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td>
+                                        <input type="text" id="importe_empresa_otros" class="form-control text-end fw-bold bg-white" readonly>
+                                        <input type="hidden" id="importe_empresa_formacion" name="SS_Empresa_Formacion">
+                                        <input type="hidden" id="importe_empresa_fogasa" name="SS_Empresa_Fogasa">
+                                        <input type="hidden" id="importe_empresa_mei" name="SS_Empresa_MEI">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- TOTAL COSTE EMPRESA -->
+                    <div class="row align-items-center bg-light p-4 rounded mb-5 border">
+                        <div class="col-md-8 text-end">
+                            <strong class="text-dark fs-5">Coste Real para la Empresa</strong>
+                            <div class="text-muted fw-normal fs-6">(Bruto + Seguridad Social Empresa)</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" id="coste_total_empresa" name="CosteTotalEmpresa" class="form-control text-end fw-bold text-dark bg-transparent border-0 shadow-none fs-4" readonly value="0,00">
+                                <span class="input-group-text bg-transparent border-0 fw-bold text-dark fs-4">€</span>
+                            </div>
+                            <!-- Oculto necesario para enviar el total SS de la empresa -->
+                            <input type="hidden" id="total_empresa_ss_hidden" name="SS_Empresa_Total">
+                        </div>
+                    </div>
+
+                    <!-- BOTONES DE ENVÍO -->
+                    <div class="d-flex justify-content-end pt-4 border-top">
+                        <button type="submit" class="btn btn-primary-custom btn-lg shadow-sm px-5 fs-5" style="border-radius: 0.5rem; padding-top: 1rem; padding-bottom: 1rem;">
+                            <i class="fas fa-save me-2"></i> Generar y Guardar Nómina
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/js/calculo-nomina.js" asp-append-version="true"></script>
+}
