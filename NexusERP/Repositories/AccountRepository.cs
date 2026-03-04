@@ -20,10 +20,10 @@ namespace NexusERP.Repositories
 
         public async Task<(bool exito, string mensaje, Usuario? usuarioCreado)> RegisterUserAsync(RegistroViewModel model)
         {
-            bool emailExiste = await this.context.Usuarios.AnyAsync(u => u.Email == model.Email);
+            bool emailExiste = await this.context.Usuarios.IgnoreQueryFilters().AnyAsync(u => u.Email == model.Email);
             if (emailExiste) return (false, "Email ya registrado en el sistema", null);
 
-            bool cifExiste = await this.context.Empresas.AnyAsync(e => e.Cif == model.CIF);
+            bool cifExiste = await this.context.Empresas.IgnoreQueryFilters().AnyAsync(e => e.Cif == model.CIF);
             if (cifExiste) return (false, "Ya existe una empresa registrada con ese CIF", null);
 
             using var transaction = await this.context.Database.BeginTransactionAsync();
@@ -79,9 +79,9 @@ namespace NexusERP.Repositories
 
         public async Task<(bool acceso, string mensaje, Usuario? user)> LogInUserAsync(LoginViewModel model)
         {
-            var datosLogin = await (from u in this.context.Usuarios
-                                    join s in this.context.SeguridadUsuarios on u.Id equals s.IdUsuario
-                                    join e in this.context.Empresas on u.EmpresaId equals e.Id
+            var datosLogin = await (from u in this.context.Usuarios.IgnoreQueryFilters()
+                                    join s in this.context.SeguridadUsuarios.IgnoreQueryFilters() on u.Id equals s.IdUsuario
+                                    join e in this.context.Empresas.IgnoreQueryFilters() on u.EmpresaId equals e.Id
                                     where u.Email == model.Email
                                     select new { Usuario = u, Seguridad = s, Empresa = e })
                                     .FirstOrDefaultAsync();
