@@ -51,6 +51,10 @@ public partial class Nomina
 
     public DateTime? FechaGeneracion { get; set; }
 
+    public decimal SsEmpresaMei { get; set; }
+
+    public decimal SsEmpresaHorasExtras { get; set; }
+
     public virtual AsientosContable? Asiento { get; set; }
 
     public virtual ICollection<ControlGasto> ControlGastos { get; set; } = new List<ControlGasto>();

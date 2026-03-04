@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using NexusERP.Helpers;
 using NexusERP.Models;
-using System;
-using System.Collections.Generic;
 
 namespace NexusERP.Data;
 
 public partial class NexusContext : DbContext
 {
-    private readonly HelperSessionContextAccessor contextAccessor;
+    private HelperSessionContextAccessor contextAccessor;
     public NexusContext()
     {
     }
@@ -293,6 +293,12 @@ public partial class NexusContext : DbContext
             entity.Property(e => e.SsEmpresaFormacion)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("SS_Empresa_Formacion");
+            entity.Property(e => e.SsEmpresaHorasExtras)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("SS_Empresa_HorasExtras");
+            entity.Property(e => e.SsEmpresaMei)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("SS_Empresa_MEI");
             entity.Property(e => e.SsEmpresaTotal)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("SS_Empresa_Total");
@@ -376,15 +382,6 @@ public partial class NexusContext : DbContext
         modelBuilder.Entity<Nomina>()
             .HasQueryFilter(n => n.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
 
-        modelBuilder.Entity<NominaDetalle>()
-            .HasQueryFilter(nd => nd.Nomina.EmpresaId == this.contextAccessor.GetEmpresaIdSession()); 
-
-        modelBuilder.Entity<ConceptosSalariale>()
-            .HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
-
-        modelBuilder.Entity<ConceptosFijosEmpleado>()
-            .HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
-
         modelBuilder.Entity<ControlGasto>()
             .HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
 
@@ -394,10 +391,8 @@ public partial class NexusContext : DbContext
         modelBuilder.Entity<AsientosContable>()
             .HasQueryFilter(a => a.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
 
-        modelBuilder.Entity<ApuntesContable>()
-            .HasQueryFilter(ac => ac.Asiento.EmpresaId == this.contextAccessor.GetEmpresaIdSession()); 
-
-        // Opcional: Si quieres que los usuarios solo vean a los usuarios de su propia empresa
+        // ¡Añade el HasQueryFilter a TODAS las tablas que tengan EmpresaId!
+        // No hace falta ponerlo en Empresa o Usuario (a menos que quieras que un Admin solo vea los usuarios de su empresa)
         modelBuilder.Entity<Usuario>()
             .HasQueryFilter(u => u.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
 

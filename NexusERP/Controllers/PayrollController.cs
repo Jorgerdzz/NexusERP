@@ -154,6 +154,9 @@ namespace NexusERP.Controllers
                 SsEmpresaDesempleo = model.SS_Empresa_Desempleo,
                 SsEmpresaFormacion = model.SS_Empresa_Formacion,
                 SsEmpresaFogasa = model.SS_Empresa_Fogasa,
+                SsEmpresaMei = model.SS_Empresa_MEI,
+                SsEmpresaHorasExtras = model.SS_Empresa_HorasExtras,
+
                 SsEmpresaTotal = model.SS_Empresa_Total,
 
                 FechaGeneracion = DateTime.Now
