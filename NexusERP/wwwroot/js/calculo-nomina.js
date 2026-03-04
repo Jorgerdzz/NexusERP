@@ -7,11 +7,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const porcentajeIrpf = parseFloat(document.getElementById('porcentajeIrpfAplicado').value) || 0;
     const salarioSugeridoText = document.getElementById('salarioSugerido');
 
-    // Auto-rellenar salario base si está vacío
     if (inputSalarioBase && salarioSugeridoText) {
-        let sugeridoStr = salarioSugeridoText.innerText.replace(',', '.').replace(/\s/g, '');
+        let textoSugerido = salarioSugeridoText.innerText;
+        let sugeridoStr = textoSugerido.replace(/\./g, '').replace(/\s/g, '').replace(',', '.');
         let sugeridoVal = parseFloat(sugeridoStr) || 0;
-        if (inputSalarioBase.value === "" || inputSalarioBase.value === "0") {
+
+        if (inputSalarioBase.value === "" || inputSalarioBase.value === "0" || inputSalarioBase.value === "0.00" || inputSalarioBase.value === "0,00") {
             inputSalarioBase.value = sugeridoVal.toFixed(2);
         }
     }
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let totalDevengado = 0;
         let baseIRPF = 0;
         let baseCC = 0;
+        let horasExtras = 0;
 
         // 1. Sumar devengos
         inputsDevengos.forEach(input => {
@@ -40,14 +42,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (input.dataset.tributaIrpf === "true") {
                 baseIRPF += importe;
-                baseCC += importe;
+                if (input.name === "HorasExtraordinarias") {
+                    horasExtras += importe;
+                } else {
+                    baseCC += importe;
+                }
             }
         });
 
         // 2. Prorrateo 2 pagas extra
         const valBase = inputSalarioBase ? (parseFloat(inputSalarioBase.value) || 0) : 0;
-        baseCC += (valBase * 2) / 12;
-        const baseCP = baseCC;
+        const prorrateo = (valBase * 2) / 12;
+        baseCC += prorrateo;
+
+        const baseCP = baseCC + horasExtras;
 
         // 3. Trabajador
         const cuotaCC = baseCC * 0.0470;
@@ -61,13 +69,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 4. Empresa
         const cEmpCC = baseCC * 0.2360;
+        const cEmpMEI = baseCC * 0.0058;
+
         const cEmpAT = baseCP * 0.0150;
         const cEmpDes = baseCP * 0.0550;
         const cEmpForm = baseCP * 0.0060;
         const cEmpFog = baseCP * 0.0020;
-        const cEmpMEI = baseCC * 0.0058;
 
-        const totalEmpSS = cEmpCC + cEmpAT + cEmpDes + cEmpForm + cEmpFog + cEmpMEI;
+        const cEmpHorasExtras = horasExtras * 0.2360;
+
+        const totalEmpSS = cEmpCC + cEmpMEI + cEmpAT + cEmpDes + cEmpForm + cEmpFog + cEmpHorasExtras;
 
         // 5. Pintar Trabajador
         document.getElementById('total_devengado').value = formatMoneda(totalDevengado);
@@ -90,14 +101,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 6. Pintar Empresa
         document.getElementById('base_empresa_cc').value = formatMoneda(baseCC);
+        document.getElementById('base_empresa_he').value = formatMoneda(horasExtras); 
         document.getElementById('base_empresa_at').value = formatMoneda(baseCP);
         document.getElementById('base_empresa_desempleo').value = formatMoneda(baseCP);
-        document.getElementById('base_empresa_otros').value = formatMoneda(baseCP);
+        document.getElementById('base_empresa_formacion').value = formatMoneda(baseCP);
+        document.getElementById('base_empresa_fogasa').value = formatMoneda(baseCP);
+        document.getElementById('base_empresa_mei').value = formatMoneda(baseCC); 
 
+        // Asignamos los importes calculados
         document.getElementById('importe_empresa_cc').value = formatMoneda(cEmpCC);
+        document.getElementById('importe_empresa_he').value = formatMoneda(cEmpHorasExtras);
         document.getElementById('importe_empresa_at').value = formatMoneda(cEmpAT);
         document.getElementById('importe_empresa_desempleo').value = formatMoneda(cEmpDes);
-        document.getElementById('importe_empresa_otros').value = formatMoneda(cEmpForm + cEmpFog + cEmpMEI);
+        document.getElementById('importe_empresa_formacion').value = formatMoneda(cEmpForm);
+        document.getElementById('importe_empresa_fogasa').value = formatMoneda(cEmpFog);
+        document.getElementById('importe_empresa_mei').value = formatMoneda(cEmpMEI);
 
         // Asignar al input oculto para que lo reciba el Controller
         document.getElementById('total_empresa_ss_hidden').value = formatMoneda(totalEmpSS);
@@ -105,10 +123,5 @@ document.addEventListener('DOMContentLoaded', function () {
         // Suma Matemática Correcta: Salario Bruto + Seguridad Social Empresa
         const costeTotalCalculado = totalDevengado + totalEmpSS;
         document.getElementById('coste_total_empresa').value = formatMoneda(costeTotalCalculado);
-
-        // 7. Hiddens numéricos puros (para C#)
-        document.getElementById('importe_empresa_formacion').value = cEmpForm.toFixed(2);
-        document.getElementById('importe_empresa_fogasa').value = cEmpFog.toFixed(2);
-        document.getElementById('importe_empresa_mei').value = cEmpMEI.toFixed(2);
     }
 });

@@ -42,7 +42,7 @@
                         <span class="text-muted d-block mb-1 text-uppercase fw-bold">Salario Bruto Anual</span>
                         <h3 class="fw-bold text-dark mb-2">@Model.SalarioBrutoAnual.ToString("N2") €</h3>
                         <span class="text-success fs-6 fw-medium">
-                            <i class="fas fa-info-circle me-1"></i> Sugerido mensual: <span id="salarioSugerido">@Model.SalarioMensualSugerido.ToString("N2")</span> €
+                            <i class="fas fa-info-circle me-1"></i> Sugerido mensual (14 pagas): <span id="salarioSugerido">@Model.SalarioMensualSugerido.ToString("N2")</span> €
                         </span>
                     </div>
 
@@ -67,15 +67,17 @@
 
                     <!-- I. DEVENGOS -->
                     <h4 class="mb-4 fw-bold text-secondary-custom border-bottom pb-2">I. Devengos</h4>
-                    <p class="text-muted mb-4 fs-6">Introduce los importes brutos. Al guardar, se establecerán como fijos para futuras nóminas.</p>
+                    <p class="text-muted mb-4 fs-6">Introduce los importes brutos. Los valores mostrados son los habituales de este empleado.</p>
 
                     <h5 class="fw-bold text-dark fs-5 mb-4 mt-5">I.I. Percepciones Salariales</h5>
 
+                    <!-- Aquí usamos asp-for en lugar de name para activar el Autocompletado -->
                     <div class="row mb-2 align-items-center concepto-row">
                         <div class="col-md-6 text-dark fs-6">Salario base</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="SalarioBase" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <!-- Nota: He dejado id="SalarioBase" por si tu JS actual lo necesita, aunque asp-for ya genera uno -->
+                                <input type="number" step="0.01" asp-for="SalarioBase" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true" id="SalarioBase">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -84,7 +86,7 @@
                         <div class="col-md-6 text-dark fs-6">Incentivos</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="Incentivos" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="Incentivos" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -93,7 +95,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus especial dedicación</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusDedicacion" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="PlusDedicacion" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -102,7 +104,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus antigüedad</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusAntiguedad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="PlusAntiguedad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -111,7 +113,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus actividad</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusActividad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="PlusActividad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -120,7 +122,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus nocturnidad</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusNocturnidad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="PlusNocturnidad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -129,7 +131,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus responsabilidad</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusResponsabilidad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="PlusResponsabilidad" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -138,7 +140,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus convenio</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusConvenio" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="PlusConvenio" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -147,7 +149,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus idiomas</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusIdiomas" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="PlusIdiomas" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -156,16 +158,7 @@
                         <div class="col-md-6 text-dark fs-6">Horas extraordinarias</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="HorasExtraordinarias" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
-                                <span class="input-group-text bg-light border-0 text-muted">€</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2 align-items-center concepto-row">
-                        <div class="col-md-6 text-dark fs-6">Horas complementarias</div>
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="number" step="0.01" name="HorasComplementarias" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="HorasExtraordinarias" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -174,7 +167,7 @@
                         <div class="col-md-6 text-dark fs-6">Salario en especie</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="SalarioEspecie" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
+                                <input type="number" step="0.01" asp-for="SalarioEspecie" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="true">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -186,7 +179,7 @@
                         <div class="col-md-6 text-dark fs-6">Indemnizaciones o Suplidos</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="IndemnizacionesSuplidos" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <input type="number" step="0.01" asp-for="IndemnizacionesSuplidos" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -195,7 +188,7 @@
                         <div class="col-md-6 text-dark fs-6">Prestaciones e indemnizaciones S.S.</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PrestacionesSS" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <input type="number" step="0.01" asp-for="PrestacionesSS" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -204,7 +197,7 @@
                         <div class="col-md-6 text-dark fs-6">Indemnizaciones por despido</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="IndemnizacionesDespido" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <input type="number" step="0.01" asp-for="IndemnizacionesDespido" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -213,7 +206,7 @@
                         <div class="col-md-6 text-dark fs-6">Plus transporte</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="PlusTransporte" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <input type="number" step="0.01" asp-for="PlusTransporte" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -222,7 +215,7 @@
                         <div class="col-md-6 text-dark fs-6">Dietas</div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="number" step="0.01" name="Dietas" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
+                                <input type="number" step="0.01" asp-for="Dietas" class="form-control input-devengo bg-light border-0 text-end" data-tributa-irpf="false">
                                 <span class="input-group-text bg-light border-0 text-muted">€</span>
                             </div>
                         </div>
@@ -331,33 +324,46 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="text-start text-dark fw-medium">Contingencias Comunes (Empresa)</td>
+                                    <td class="text-start text-dark fw-medium">Contingencias Comunes</td>
                                     <td><input type="text" id="base_empresa_cc" class="form-control text-center bg-light border-0" readonly></td>
-                                    <td><input type="text" id="tipo_empresa_cc" value="23.60" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" value="23.60" class="form-control text-center bg-light border-0 text-muted" readonly></td>
                                     <td><input type="text" id="importe_empresa_cc" name="SS_Empresa_ContingenciasComunes" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">Horas Extraordinarias</td>
+                                    <td><input type="text" id="base_empresa_he" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" value="23.60" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_empresa_he" name="SS_Empresa_HorasExtras" class="form-control text-end fw-bold bg-white" readonly></td>
                                 </tr>
                                 <tr>
                                     <td class="text-start text-dark fw-medium">AT y EP</td>
                                     <td><input type="text" id="base_empresa_at" class="form-control text-center bg-light border-0" readonly></td>
-                                    <td><input type="text" id="tipo_empresa_at" value="1.50" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" value="1.50" class="form-control text-center bg-light border-0 text-muted" readonly></td>
                                     <td><input type="text" id="importe_empresa_at" name="SS_Empresa_AccidentesTrabajo" class="form-control text-end fw-bold bg-white" readonly></td>
                                 </tr>
                                 <tr>
-                                    <td class="text-start text-dark fw-medium">Desempleo (Empresa)</td>
+                                    <td class="text-start text-dark fw-medium">Desempleo</td>
                                     <td><input type="text" id="base_empresa_desempleo" class="form-control text-center bg-light border-0" readonly></td>
-                                    <td><input type="text" id="tipo_empresa_desempleo" value="5.50" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" value="5.50" class="form-control text-center bg-light border-0 text-muted" readonly></td>
                                     <td><input type="text" id="importe_empresa_desempleo" name="SS_Empresa_Desempleo" class="form-control text-end fw-bold bg-white" readonly></td>
                                 </tr>
                                 <tr>
-                                    <td class="text-start text-dark fw-medium">Otros (Formación, FOGASA, MEI)</td>
-                                    <td><input type="text" id="base_empresa_otros" class="form-control text-center bg-light border-0" readonly></td>
-                                    <td><input type="text" value="1.38" class="form-control text-center bg-light border-0 text-muted" readonly></td>
-                                    <td>
-                                        <input type="text" id="importe_empresa_otros" class="form-control text-end fw-bold bg-white" readonly>
-                                        <input type="hidden" id="importe_empresa_formacion" name="SS_Empresa_Formacion">
-                                        <input type="hidden" id="importe_empresa_fogasa" name="SS_Empresa_Fogasa">
-                                        <input type="hidden" id="importe_empresa_mei" name="SS_Empresa_MEI">
-                                    </td>
+                                    <td class="text-start text-dark fw-medium">Formación Profesional</td>
+                                    <td><input type="text" id="base_empresa_formacion" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" value="0.60" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_empresa_formacion" name="SS_Empresa_Formacion" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">F.O.G.A.S.A.</td>
+                                    <td><input type="text" id="base_empresa_fogasa" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" value="0.20" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_empresa_fogasa" name="SS_Empresa_Fogasa" class="form-control text-end fw-bold bg-white" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start text-dark fw-medium">M.E.I.</td>
+                                    <td><input type="text" id="base_empresa_mei" class="form-control text-center bg-light border-0" readonly></td>
+                                    <td><input type="text" value="0.58" class="form-control text-center bg-light border-0 text-muted" readonly></td>
+                                    <td><input type="text" id="importe_empresa_mei" name="SS_Empresa_MEI" class="form-control text-end fw-bold bg-white" readonly></td>
                                 </tr>
                             </tbody>
                         </table>

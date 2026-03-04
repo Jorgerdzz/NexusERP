@@ -33,5 +33,77 @@ namespace NexusERP.Repositories
                 .FirstOrDefaultAsync(e => e.Id == empleadoId);
         }
 
+        public async Task<(bool exito, string mensaje)> GuardarNominaCompletaAsync(Nomina nomina)
+        {
+            using var transaction = await this.context.Database.BeginTransactionAsync();
+
+            try
+            {
+
+                await this.context.Nominas.AddAsync(nomina);
+                await this.context.SaveChangesAsync(); 
+
+                foreach (var detalle in nomina.NominaDetalles)
+                {
+                    var conceptoCatalogo = await this.context.ConceptosSalariales
+                        .FirstOrDefaultAsync(c => c.Codigo == detalle.Codigo && c.EmpresaId == nomina.EmpresaId);
+
+                    if (conceptoCatalogo == null)
+                    {
+                        conceptoCatalogo = new ConceptosSalariale
+                        {
+                            EmpresaId = nomina.EmpresaId,
+                            Codigo = detalle.Codigo,
+                            Nombre = detalle.ConceptoNombre,
+                            Activo = true,
+                            TributaIrpf = detalle.Tipo == 1 && detalle.Codigo != "DIETAS" && detalle.Codigo != "PLUS_TRANS"
+                        };
+
+                        await this.context.ConceptosSalariales.AddAsync(conceptoCatalogo);
+                        await this.context.SaveChangesAsync();
+                    }
+
+                    detalle.ConceptoId = conceptoCatalogo.Id;
+                    this.context.NominaDetalles.Update(detalle);
+
+                    if (detalle.Tipo == 1)
+                    {
+                        var conceptoFijo = await this.context.ConceptosFijosEmpleados
+                            .FirstOrDefaultAsync(cf => cf.EmpleadoId == nomina.EmpleadoId && cf.ConceptoId == conceptoCatalogo.Id);
+
+                        if (conceptoFijo != null)
+                        {
+                            conceptoFijo.ImporteFijo = detalle.Importe;
+                            conceptoFijo.Activo = true;
+                            this.context.ConceptosFijosEmpleados.Update(conceptoFijo);
+                        }
+                        else
+                        {
+                            ConceptosFijosEmpleado nuevoFijo = new ConceptosFijosEmpleado
+                            {
+                                EmpresaId = nomina.EmpresaId,
+                                EmpleadoId = nomina.EmpleadoId,
+                                ConceptoId = conceptoCatalogo.Id,
+                                ImporteFijo = detalle.Importe,
+                                Activo = true
+                            };
+                            await this.context.ConceptosFijosEmpleados.AddAsync(nuevoFijo);
+                        }
+                    }
+                }
+
+                await this.context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return (true, "Nómina guardada y conceptos actualizados con éxito.");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return (false, "Error al generar la nómina: " + ex.Message);
+            }
+        }
+
     }
 }
