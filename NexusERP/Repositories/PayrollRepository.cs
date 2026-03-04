@@ -19,8 +19,9 @@ namespace NexusERP.Repositories
         public async Task<List<Empleado>> GetEmpleadosConNominasAsync(int mes, int anio)
         {
             return await this.context.Empleados
-                .Include(e => e.Departamento) 
-                .Include(e => e.Nominas.Where(n => n.Mes == mes && n.Anio == anio)) 
+                .Include(e => e.Departamento)
+                .Include(e => e.Nominas.Where(n => n.Mes == mes && n.Anio == anio))
+                .Where(e => e.Activo == true)
                 .ToListAsync();
         }
 
@@ -28,9 +29,9 @@ namespace NexusERP.Repositories
         {
             return await this.context.Empleados
                 .Include(e => e.Departamento)
-                .Include(e => e.ConceptosFijosEmpleados) 
-                    .ThenInclude(cf => cf.Concepto)     
-                .FirstOrDefaultAsync(e => e.Id == empleadoId);
+                .Include(e => e.ConceptosFijosEmpleados.Where(c => c.Activo == true))
+                    .ThenInclude(cf => cf.Concepto) 
+                .FirstOrDefaultAsync(e => e.Id == empleadoId && e.Activo == true);
         }
 
         public async Task<(bool exito, string mensaje)> GuardarNominaCompletaAsync(Nomina nomina)
@@ -50,23 +51,13 @@ namespace NexusERP.Repositories
 
                     if (conceptoCatalogo == null)
                     {
-                        conceptoCatalogo = new ConceptosSalariale
-                        {
-                            EmpresaId = nomina.EmpresaId,
-                            Codigo = detalle.Codigo,
-                            Nombre = detalle.ConceptoNombre,
-                            Activo = true,
-                            TributaIrpf = detalle.Tipo == 1 && detalle.Codigo != "DIETAS" && detalle.Codigo != "PLUS_TRANS"
-                        };
-
-                        await this.context.ConceptosSalariales.AddAsync(conceptoCatalogo);
-                        await this.context.SaveChangesAsync();
+                        throw new Exception($"El concepto salarial '{detalle.Codigo}' no existe en el catálogo de esta empresa. Revise la configuración.");
                     }
 
                     detalle.ConceptoId = conceptoCatalogo.Id;
                     this.context.NominaDetalles.Update(detalle);
 
-                    if (detalle.Tipo == 1)
+                    if (detalle.Tipo == 1 && detalle.Codigo != "H_EXTRA")
                     {
                         var conceptoFijo = await this.context.ConceptosFijosEmpleados
                             .FirstOrDefaultAsync(cf => cf.EmpleadoId == nomina.EmpleadoId && cf.ConceptoId == conceptoCatalogo.Id);
