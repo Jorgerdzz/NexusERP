@@ -43,13 +43,12 @@ namespace NexusERP.Repositories
                 await this.context.SaveChangesAsync();
 
                 CuentasContable cuenta640 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "6400000", Nombre = "Sueldos y Salarios", Tipo = "Gasto" };
+                CuentasContable cuenta642 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "6420000", Nombre = "Seguridad Social a cargo de la empresa", Tipo = "Gasto" };
                 CuentasContable cuenta476 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4760000", Nombre = "Organismos de la Seguridad Social, acreedores", Tipo = "Pasivo" };
                 CuentasContable cuenta4751 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4751000", Nombre = "H.P. acreedora por retenciones practicadas", Tipo = "Pasivo" };
+                CuentasContable cuenta465 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4650000", Nombre = "Remuneraciones pendientes de pago", Tipo = "Pasivo" };
 
-                // (Opcional, la usaremos más adelante para el coste de empresa)
-                var cuenta642 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "6420000", Nombre = "Seguridad Social a cargo de la empresa", Tipo = "Gasto" };
-
-                await this.context.CuentasContables.AddRangeAsync(cuenta640, cuenta476, cuenta4751, cuenta642);
+                await this.context.CuentasContables.AddRangeAsync(cuenta640, cuenta476, cuenta4751, cuenta642, cuenta465);
                 await this.context.SaveChangesAsync(); 
 
                 List<ConceptosSalariale> conceptosBase = new List<ConceptosSalariale>()

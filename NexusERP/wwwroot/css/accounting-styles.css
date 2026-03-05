@@ -1,0 +1,105 @@
+﻿/* =========================================================
+   ESTILOS MÓDULO DE CONTABILIDAD
+========================================================= */
+
+/* --- Menú de Navegación Superior --- */
+.acct-nav-container {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+    display: inline-flex;
+    gap: 0.25rem;
+}
+
+.acct-nav-link {
+    color: #6b7280;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .acct-nav-link:hover:not(.active) {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    .acct-nav-link.active {
+        background-color: var(--primary-color);
+        color: #ffffff;
+    }
+
+/* --- Tabla del Plan Contable --- */
+.table-accounting {
+    margin-bottom: 0;
+}
+
+    .table-accounting th {
+        font-size: 0.8rem;
+        color: #6b7280;
+        font-weight: 500;
+        text-transform: none;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem;
+    }
+
+    .table-accounting td {
+        vertical-align: middle;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .table-accounting tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+        .table-accounting tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+/* --- Acciones (Editar) --- */
+.btn-action-link {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    transition: color 0.2s ease;
+}
+
+    .btn-action-link:hover {
+        color: var(--secondary-color);
+    }
+
+/* --- Etiquetas (Badges) clavadas a Figma --- */
+.badge-acct {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+.badge-gasto {
+    background-color: var(--warning-color);
+    color: #4a3800; /* Texto oscuro para el amarillo */
+}
+
+.badge-pasivo {
+    background-color: var(--danger-color);
+    color: #ffffff;
+}
+
+.badge-activo {
+    background-color: var(--success-color);
+    color: #ffffff;
+}
+
+.badge-ingreso {
+    background-color: var(--secondary-color);
+    color: #ffffff;
+}

@@ -17,6 +17,7 @@ builder.Services.AddTransient<AccountRepository>();
 builder.Services.AddTransient<DepartamentsRepository>();
 builder.Services.AddTransient<EmpleadosRepository>();
 builder.Services.AddTransient<PayrollRepository>();
+builder.Services.AddTransient<AccountingRepository>();
 
 
 string connectionString = builder.Configuration.GetConnectionString("NexusConnection");

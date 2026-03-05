@@ -1,0 +1,186 @@
+﻿@model List<CuentasContable>
+@{
+    ViewData["Title"] = "Plan Contable";
+    ViewData["ActiveMenu"] = "accounting";
+
+    // 1. HARDCODEAMOS LA ESTRUCTURA DE GRUPOS Y SUBGRUPOS
+    var estructuraFija = new List<dynamic> {
+        new { Codigo = "4", Nombre = "ACREEDORES Y DEUDORES", Tipo = "Pasivo", IsHardcoded = true },
+        new { Codigo = "47", Nombre = "ADMINISTRACIONES PÚBLICAS", Tipo = "Pasivo", IsHardcoded = true },
+        new { Codigo = "5", Nombre = "CUENTAS FINANCIERAS", Tipo = "Activo", IsHardcoded = true },
+        new { Codigo = "57", Nombre = "TESORERÍA", Tipo = "Activo", IsHardcoded = true },
+        new { Codigo = "6", Nombre = "COMPRAS Y GASTOS", Tipo = "Gasto", IsHardcoded = true },
+        new { Codigo = "64", Nombre = "GASTOS DE PERSONAL", Tipo = "Gasto", IsHardcoded = true }
+    };
+
+    // 2. FUSIONAMOS LA ESTRUCTURA FIJA CON TUS CUENTAS REALES DE LA BBDD
+    var listaCombinada = new List<dynamic>();
+    listaCombinada.AddRange(estructuraFija);
+
+    foreach (var cuentaBd in Model)
+    {
+        listaCombinada.Add(new { Codigo = cuentaBd.Codigo, Nombre = cuentaBd.Nombre, Tipo = cuentaBd.Tipo, IsHardcoded = false });
+    }
+
+    // 3. ORDENAMOS TODO POR CÓDIGO (Así se anidan perfectamente de forma automática)
+    var planContableCompleto = listaCombinada.OrderBy(c => c.Codigo).ToList();
+}
+
+<link rel="stylesheet" href="~/css/accounting-styles.css" asp-append-version="true" />
+
+<main class="bg-light pb-5 min-vh-100">
+    <div class="container-fluid px-4 pt-4">
+
+        <div class="mb-4">
+            <h1 class="h4 fw-bold text-dark mb-1">Accounting & Finance</h1>
+            <p class="text-muted small">Financial management and accounting records</p>
+        </div>
+
+        <div class="mb-4">
+            <div class="acct-nav-container">
+                <a asp-action="Index" class="acct-nav-link">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a asp-action="PlanContable" class="acct-nav-link active">
+                    <i class="fas fa-file-alt"></i> Plan Contable
+                </a>
+                <a asp-action="Diario" class="acct-nav-link">
+                    <i class="far fa-calendar-alt"></i> Libro Diario
+                </a>
+                <a asp-action="Mayor" class="acct-nav-link">
+                    <i class="fas fa-search"></i> Libro Mayor
+                </a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm" style="border-radius: 0.75rem;">
+            <div class="card-body p-4 p-md-5">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-semibold text-dark mb-1 fs-5">Plan General Contable</h4>
+                        <p class="text-muted small mb-0">Estructura jerárquica de cuentas</p>
+                    </div>
+                    <button type="button" class="btn btn-dark-custom fw-medium px-3 shadow-sm rounded-3" data-bs-toggle="modal" data-bs-target="#modalNuevaCuenta">
+                        <i class="fas fa-plus me-1"></i> Nueva Cuenta
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-accounting w-100 mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Código</th>
+                                <th>Nombre</th>
+                                <th style="width: 15%;">Tipo</th>
+                                <th style="width: 15%; text-align: center;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in planContableCompleto)
+                            {
+                                int length = item.Codigo.Length;
+
+                                string fontClass = "";
+                                string paddingStyle = "";
+
+                                // LÓGICA VISUAL EXACTA AL FIGMA
+                                if (length == 1)
+                                {
+                                    // Grupos (Ej: 6) -> Negrita y Mayúsculas
+                                    fontClass = "fw-bold text-dark";
+                                    paddingStyle = "padding-left: 1rem;";
+                                }
+                                else if (length == 2)
+                                {
+                                    // Subgrupos (Ej: 64) -> Normal y Mayúsculas, primer nivel de indentación
+                                    fontClass = "text-dark";
+                                    paddingStyle = "padding-left: 4rem;";
+                                }
+                                else
+                                {
+                                    // Cuentas (Ej: 640) -> Gris normal, segundo nivel de indentación
+                                    fontClass = "text-secondary";
+                                    paddingStyle = "padding-left: 7rem;";
+                                }
+
+                                // Selector del color del Badge
+                                string badgeClass = item.Tipo switch
+                                {
+                                    "Activo" => "badge-activo",
+                                    "Pasivo" => "badge-pasivo",
+                                    "Gasto" => "badge-gasto",
+                                    "Ingreso" => "badge-ingreso",
+                                    _ => "bg-secondary text-white"
+                                };
+
+                                <tr>
+                                    <td class="text-dark fw-bold" style="font-size: 0.9rem;">@item.Codigo</td>
+
+                                    <td class="@fontClass" style="font-size: 0.9rem; @paddingStyle">
+                                        @item.Nombre
+                                    </td>
+
+                                    <td>
+                                        <span class="badge-acct @badgeClass">@item.Tipo</span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (!item.IsHardcoded)
+                                        {
+                                            // Solo permitimos editar las cuentas reales de la BBDD, no los títulos de grupo
+                                            <a href="#" class="btn-action-link">Editar</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="modalNuevaCuenta" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark">Nueva Cuenta Contable</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form asp-action="CreateCuenta" asp-controller="Accounting" method="post">
+                <div class="modal-body py-4">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-medium text-secondary small mb-1">Código de la cuenta</label>
+                        <input type="text" name="codigo" required class="form-control bg-light" placeholder="Ej: 5720001" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-medium text-secondary small mb-1">Nombre descriptivo</label>
+                        <input type="text" name="nombre" required class="form-control bg-light" placeholder="Ej: Banco Santander" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-medium text-secondary small mb-1">Naturaleza / Tipo</label>
+                        <select name="tipo" class="form-select bg-light">
+                            <option value="Activo">Activo (Bancos, Clientes...)</option>
+                            <option value="Pasivo">Pasivo (Proveedores, Impuestos...)</option>
+                            <option value="Gasto">Gasto (Compras, Nóminas...)</option>
+                            <option value="Ingreso">Ingreso (Ventas, Servicios...)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn text-muted fw-medium px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-dark-custom px-4 rounded-3 shadow-sm">Guardar Cuenta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

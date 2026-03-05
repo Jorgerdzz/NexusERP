@@ -1,0 +1,514 @@
+﻿/* plan-contable.css */
+:root {
+    --primary-dark: #1e293b;
+    --primary-teal: #0ea5e9;
+    --success-soft: #10b981;
+    --danger-soft: #ef4444;
+    --warning-soft: #f59e0b;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+/* Layout principal */
+.page-wrapper {
+    background: linear-gradient(135deg, #f1f5f9 0%, #ffffff 100%);
+    min-height: 100vh;
+}
+
+/* Header moderno */
+.page-header {
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+}
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--gray-800), var(--gray-600));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.25rem;
+        letter-spacing: -0.02em;
+    }
+
+    .page-header .text-muted {
+        color: var(--gray-500) !important;
+        font-size: 0.95rem;
+    }
+
+/* Navegación tipo píldora moderna */
+.nav-pills-modern {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 100px;
+    padding: 0.5rem;
+    display: inline-flex;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+}
+
+    .nav-pills-modern .nav-link {
+        padding: 0.75rem 1.75rem;
+        border-radius: 100px;
+        color: var(--gray-600);
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .nav-pills-modern .nav-link i {
+            font-size: 1rem;
+            color: var(--gray-400);
+            transition: color 0.2s ease;
+        }
+
+        .nav-pills-modern .nav-link:hover {
+            color: var(--primary-teal);
+            background: var(--gray-50);
+        }
+
+            .nav-pills-modern .nav-link:hover i {
+                color: var(--primary-teal);
+            }
+
+        .nav-pills-modern .nav-link.active {
+            background: var(--gray-800);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+            .nav-pills-modern .nav-link.active i {
+                color: white;
+            }
+
+/* Tarjeta principal */
+.card-modern {
+    background: white;
+    border: none;
+    border-radius: 24px;
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card-modern:hover {
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    }
+
+    .card-modern .card-body {
+        padding: 2rem;
+    }
+
+/* Header de la tarjeta */
+.card-header-modern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+    .card-header-modern h5 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .card-header-modern h5 i {
+            color: var(--primary-teal);
+        }
+
+    .card-header-modern p {
+        color: var(--gray-500);
+        font-size: 0.875rem;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+/* Botón nueva cuenta */
+.btn-nueva-cuenta {
+    background: var(--gray-800);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+}
+
+    .btn-nueva-cuenta:hover {
+        background: var(--gray-900);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+
+    .btn-nueva-cuenta i {
+        font-size: 1rem;
+    }
+
+/* Tabla moderna */
+.table-modern {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    .table-modern th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        background: var(--gray-50);
+        color: var(--gray-600);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid var(--gray-200);
+    }
+
+    .table-modern td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        color: var(--gray-700);
+        font-size: 0.95rem;
+    }
+
+    .table-modern tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+        .table-modern tbody tr:hover {
+            background-color: var(--gray-50);
+        }
+
+/* Estilos para códigos de cuenta */
+.codigo-cuenta {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+/* Jerarquía de cuentas */
+.cuenta-principal {
+    font-weight: 700;
+    color: var(--gray-800);
+    font-size: 1rem;
+}
+
+.cuenta-secundaria {
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.cuenta-terciaria {
+    font-weight: 500;
+    color: var(--gray-600);
+}
+
+.cuenta-detalle {
+    font-weight: 400;
+    color: var(--gray-500);
+}
+
+/* Indentación */
+.indent-1 {
+    padding-left: 2.5rem !important;
+}
+
+.indent-2 {
+    padding-left: 4rem !important;
+}
+
+.indent-3 {
+    padding-left: 5.5rem !important;
+}
+
+/* Icono de jerarquía */
+.icon-jerarquia {
+    color: var(--gray-300);
+    margin-right: 0.75rem;
+    font-size: 0.75rem;
+}
+
+/* Badges modernos */
+.badge-modern {
+    padding: 0.5rem 1rem;
+    border-radius: 40px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+}
+
+.badge-activo {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+}
+
+.badge-pasivo {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+}
+
+.badge-gasto {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+}
+
+.badge-ingreso {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+}
+
+/* Botones de acción */
+.btn-accion {
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-500);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+    .btn-accion:hover {
+        background: var(--primary-teal);
+        border-color: var(--primary-teal);
+        color: white;
+        transform: scale(1.1);
+    }
+
+/* Modal moderno */
+.modal-modern .modal-content {
+    border: none;
+    border-radius: 24px;
+    box-shadow: var(--shadow-xl);
+}
+
+.modal-modern .modal-header {
+    background: white;
+    border-bottom: 1px solid var(--gray-100);
+    padding: 1.5rem 1.5rem 1rem;
+}
+
+.modal-modern .modal-title {
+    font-weight: 600;
+    color: var(--gray-800);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .modal-modern .modal-title i {
+        color: var(--primary-teal);
+    }
+
+.modal-modern .modal-body {
+    padding: 1.5rem;
+}
+
+.modal-modern .modal-footer {
+    border-top: 1px solid var(--gray-100);
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+/* Formulario moderno */
+.form-label-modern {
+    font-weight: 500;
+    color: var(--gray-700);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .form-label-modern i {
+        color: var(--primary-teal);
+        font-size: 0.875rem;
+    }
+
+.form-control-modern {
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    background: var(--gray-50);
+    transition: all 0.2s ease;
+    width: 100%;
+    font-size: 0.95rem;
+}
+
+    .form-control-modern:focus {
+        border-color: var(--primary-teal);
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control-modern::placeholder {
+        color: var(--gray-400);
+        font-size: 0.875rem;
+    }
+
+.form-select-modern {
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    background: var(--gray-50);
+    width: 100%;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+    .form-select-modern:focus {
+        border-color: var(--primary-teal);
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        outline: none;
+    }
+
+.form-hint {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Botones del modal */
+.btn-cancelar {
+    background: white;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-600);
+    padding: 0.75rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .btn-cancelar:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-300);
+    }
+
+.btn-guardar {
+    background: var(--gray-800);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+    .btn-guardar:hover {
+        background: var(--gray-900);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--gray-300);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h4 {
+        color: var(--gray-700);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--gray-500);
+        margin-bottom: 1.5rem;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-modern .card-body {
+        padding: 1.5rem;
+    }
+
+    .nav-pills-modern {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        border-radius: 40px;
+    }
+
+        .nav-pills-modern .nav-link {
+            white-space: nowrap;
+            padding: 0.5rem 1.25rem;
+        }
+
+    .table-modern td,
+    .table-modern th {
+        padding: 0.75rem 1rem;
+    }
+
+    .indent-1 {
+        padding-left: 1.5rem !important;
+    }
+
+    .indent-2 {
+        padding-left: 2.5rem !important;
+    }
+
+    .indent-3 {
+        padding-left: 3.5rem !important;
+    }
+
+    .card-header-modern {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .btn-nueva-cuenta {
+        width: 100%;
+        justify-content: center;
+    }
+}
