@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NexusERP.Data;
 using NexusERP.Models;
 
@@ -40,6 +41,36 @@ namespace NexusERP.Repositories
             }
         }
 
+        public async Task<List<AsientosContable>> GetLibroDiarioAsync()
+        {
+            return await this.context.AsientosContables
+                .Include(a => a.ApuntesContables)
+                    .ThenInclude(ap => ap.Cuenta) 
+                .OrderByDescending(a => a.Fecha)
+                .ThenByDescending(a => a.Id)
+                .ToListAsync();
+        }
+
+        public async Task<List<ApuntesContable>> GetApuntesPorCuentaAsync(int cuentaId, DateTime desde, DateTime hasta)
+        {
+            return await this.context.ApuntesContables
+                .Include(ap => ap.Asiento)
+                .Where(ap => ap.CuentaId == cuentaId && ap.Asiento.Fecha >= desde && ap.Asiento.Fecha <= hasta)
+                .OrderBy(ap => ap.Asiento.Fecha)
+                .ThenBy(ap => ap.AsientoId)
+                .ToListAsync();
+        }
+
+        public async Task<decimal> GetSaldoAnteriorAsync(int cuentaId, DateTime desde)
+        {
+            var apuntesAnteriores = await this.context.ApuntesContables
+                .Include(ap => ap.Asiento)
+                .Where(ap => ap.CuentaId == cuentaId && ap.Asiento.Fecha < desde)
+                .ToListAsync();
+
+            // Sumamos el Debe total menos el Haber total histórico
+            return apuntesAnteriores.Sum(ap => ap.Debe.Value - ap.Haber.Value);
+        }
 
     }
 }

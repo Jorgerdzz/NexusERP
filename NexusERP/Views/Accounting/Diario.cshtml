@@ -1,0 +1,199 @@
+﻿@model List<NexusERP.ViewModels.AsientoViewModel>
+@{
+    ViewData["Title"] = "Libro Diario";
+    ViewData["ActiveMenu"] = "accounting";
+}
+
+<link rel="stylesheet" href="~/css/accounting-styles.css" asp-append-version="true" />
+
+<style>
+    /* Ocultar la flecha fea por defecto del navegador */
+    details > summary {
+        list-style: none;
+        outline: none;
+    }
+
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+    /* Configurar nuestra flecha personalizada de FontAwesome */
+    .details-arrow {
+        transition: transform 0.3s ease;
+        color: #6c757d; /* Gris para que se vea claro */
+        font-size: 1.1rem;
+    }
+
+    /* Cuando el <details> está abierto, la flecha gira 180 grados */
+    details[open] summary .details-arrow {
+        transform: rotate(180deg);
+    }
+
+    /* Bordes dinámicos: Si está abierto, conectamos la cabecera con el cuerpo */
+    .asiento-summary {
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s ease;
+    }
+
+    details[open] .asiento-summary {
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-bottom-color: transparent !important;
+    }
+
+    .asiento-body {
+        border: 1px solid #e5e7eb;
+        border-top: 1px solid #f3f4f6;
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+    }
+</style>
+
+<main class="bg-light pb-5 min-vh-100">
+    <div class="container-fluid px-4 pt-4">
+
+        <div class="mb-4">
+            <h1 class="h4 fw-bold text-dark mb-1">Accounting & Finance</h1>
+            <p class="text-muted small">Financial management and accounting records</p>
+        </div>
+
+        <div class="mb-4">
+            <div class="acct-nav-container">
+                <a asp-action="Index" class="acct-nav-link">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a asp-action="PlanContable" class="acct-nav-link">
+                    <i class="fas fa-file-alt"></i> Plan Contable
+                </a>
+                <a asp-action="Diario" class="acct-nav-link active">
+                    <i class="far fa-calendar-alt"></i> Libro Diario
+                </a>
+                <a asp-action="Mayor" class="acct-nav-link">
+                    <i class="fas fa-search"></i> Libro Mayor
+                </a>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex gap-2">
+                <input type="date" class="form-control bg-white" placeholder="dd/mm/aaaa" style="width: 140px; font-size: 0.9rem;">
+                <input type="date" class="form-control bg-white" placeholder="dd/mm/aaaa" style="width: 140px; font-size: 0.9rem;">
+                <button class="btn bg-white border text-dark fw-medium shadow-sm" style="font-size: 0.9rem;">Filtrar</button>
+            </div>
+
+            <button class="btn text-white fw-medium shadow-sm" style="background-color: var(--primary-color);" data-bs-toggle="modal" data-bs-target="#modalNuevoAsiento">
+                <i class="fas fa-plus me-1"></i> Nuevo Asiento
+            </button>
+        </div>
+
+        <div class="d-flex flex-column gap-3">
+            @foreach (var asiento in Model)
+            {
+                <details class="bg-white rounded-3 shadow-sm">
+
+                    <summary class="asiento-summary d-flex align-items-center justify-content-between p-3 rounded-3 cursor-pointer" style="cursor: pointer;">
+
+                        <div class="d-flex align-items-center gap-4">
+                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">@asiento.NumeroAsiento</span>
+
+                            <span class="text-secondary d-flex align-items-center gap-2" style="font-size: 0.9rem;">
+                                <i class="far fa-calendar"></i> @asiento.Fecha.ToString("d/M/yyyy")
+                            </span>
+
+                            <span class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+                                <i class="far fa-file-alt text-secondary"></i> @asiento.Glosa
+                            </span>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-4">
+                            <span class="text-secondary-custom fw-medium" style="font-size: 0.85rem;">@asiento.Origen</span>
+
+                            @if (asiento.Cuadrado)
+                            {
+                                <span class="fw-bold text-success d-flex align-items-center gap-1" style="font-size: 0.85rem;">
+                                    <i class="far fa-check-circle fs-6"></i> CUADRADO
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="fw-bold text-danger d-flex align-items-center gap-1" style="font-size: 0.85rem;">
+                                    <i class="far fa-times-circle fs-6"></i> DESCUADRADO
+                                </span>
+                            }
+
+                            <div class="ms-2 d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 32px; height: 32px; transition: background-color 0.2s;">
+                                <i class="fas fa-chevron-down details-arrow" style="color: #6b7280; font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                    </summary>
+
+                    <div class="asiento-body p-4 bg-white">
+                        <table class="table table-borderless table-accounting w-100 m-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-0" style="width: 15%;">Cuenta</th>
+                                    <th>Nombre</th>
+                                    <th class="text-end" style="width: 20%;">Debe</th>
+                                    <th class="text-end pe-0" style="width: 20%;">Haber</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var apunte in asiento.Apuntes)
+                                {
+                                    <tr>
+                                        <td class="ps-0 fw-bold text-dark">@apunte.CuentaCodigo</td>
+                                        <td class="text-secondary">@apunte.CuentaNombre</td>
+
+                                        <td class="text-end text-dark">
+                                            @(apunte.Debe > 0 ? "€" + apunte.Debe.ToString("N2") : "-")
+                                        </td>
+
+                                        <td class="text-end text-dark pe-0">
+                                            @(apunte.Haber > 0 ? "€" + apunte.Haber.ToString("N2") : "-")
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr class="border-top">
+                                    <td colspan="2" class="ps-0 fw-bold text-dark pt-3 pb-0">TOTAL</td>
+                                    <td class="text-end fw-bold text-dark pt-3 pb-0">€@asiento.TotalDebe.ToString("N2")</td>
+                                    <td class="text-end fw-bold text-dark pe-0 pt-3 pb-0">€@asiento.TotalHaber.ToString("N2")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+            }
+
+            @if (!Model.Any())
+            {
+                <div class="card border-0 shadow-sm text-center py-5" style="border-radius: 0.75rem;">
+                    <div class="card-body">
+                        <i class="fas fa-book-open fs-1 text-light mb-3"></i>
+                        <h5 class="fw-bold text-dark">Libro Diario Vacío</h5>
+                        <p class="text-muted">Aún no hay asientos contables registrados. Guarda una nómina para generar el primero.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="modalNuevoAsiento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark">Nuevo Asiento Manual</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body py-4">
+                <p class="text-muted mb-0">Esta funcionalidad estará disponible en la próxima versión del módulo financiero.</p>
+            </div>
+
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
