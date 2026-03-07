@@ -13,7 +13,7 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/sweetalert2/dist/sweetalert2.min.css" />
+        <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </environment>
     <environment exclude="Development">
@@ -21,7 +21,7 @@
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-              asp-fallback-href="~/lib/sweetalert2/dist/sweetalert2.min.css"
+              asp-fallback-href="~/lib/sweetalert2/sweetalert2.min.css"
               asp-fallback-test-class="swal2-popup" asp-fallback-test-property="display" asp-fallback-test-value="none" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </environment>
@@ -54,7 +54,7 @@
                     Departments
                 </a>
 
-                <a asp-controller="Facturacion" asp-action="Clientes" class="sidebar-link @(controladorActual == "Facturacion" ? "active" : "")">
+                <a asp-controller="Facturacion" asp-action="Index" class="sidebar-link @(controladorActual == "Facturacion" ? "active" : "")">
                     <svg style="width: 20px; height: 20px; margin-right: 5px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 2a1 1 0 011-1h8a1 1 0 011 1v2h-2V2H8v2H7V2zm0 3h10v1H7V5zm-2 0a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V10h-2v10H5V10h10V8H5z"></path>
                     </svg>
@@ -133,7 +133,7 @@
 
     <environment include="Development">
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-        <script src="~/lib/sweetalert2/dist/sweetalert2.all.min.js"></script>
+        <script src="~/lib/sweetalert2/sweetalert2.all.min.js"></script>
         <script src="~/lib/Chart.js/chart.umd.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>        
@@ -144,7 +144,7 @@
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
                 asp-fallback-test="window.bootstrap" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
-                asp-fallback-src="~/lib/sweetalert2/dist/sweetalert2.all.min.js" asp-fallback-test="window.Swal"></script>
+                asp-fallback-src="~/lib/sweetalert2/sweetalert2.all.min.js" asp-fallback-test="window.Swal"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"
                 asp-fallback-src="~/lib/Chart.js/chart.umd.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>

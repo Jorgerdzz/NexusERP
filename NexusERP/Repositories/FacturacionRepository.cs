@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NexusERP.Data;
 using NexusERP.Models;
+using System.Threading.Tasks;
 
 namespace NexusERP.Repositories
 {
@@ -11,6 +12,11 @@ namespace NexusERP.Repositories
         public FacturacionRepository(NexusContext context)
         {
             this.context = context;
+        }
+
+        public async Task<List<Factura>> GetFacturasAsync()
+        {
+            return await this.context.Facturas.Include(f => f.Cliente).OrderByDescending(f => f.FechaEmision).ToListAsync();
         }
 
         public async Task<(bool exito, string mensaje)> GuardarFacturaYContabilizarAsync(Factura factura, int empresaId)

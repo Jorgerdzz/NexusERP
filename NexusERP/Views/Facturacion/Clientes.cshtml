@@ -3,7 +3,16 @@
     ViewData["Title"] = "Directorio de Clientes";
 }
 
-<link rel="stylesheet" href="~/css/clientes-styles.css" asp-append-version="true" />
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+    <div>
+        <a asp-controller="Facturacion" asp-action="Index" class="btn btn-link text-decoration-none text-muted d-flex align-items-center gap-2 p-0 px-2 py-1 btn-volver">
+            <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al panel
+        </a>
+    </div>
+</div>
 
 <main class="bg-light pb-5 min-vh-100">
     <div class="container-fluid px-4 pt-4">

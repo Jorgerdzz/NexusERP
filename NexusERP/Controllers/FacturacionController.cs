@@ -5,6 +5,7 @@ using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
+using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
 {
@@ -22,9 +23,27 @@ namespace NexusERP.Controllers
             this.contextAccessor = contextAccessor;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            int idEmpresa = this.contextAccessor.GetEmpresaIdSession();
+
+            DashboardFacturacionViewModel model = new DashboardFacturacionViewModel();
+
+            List<Cliente> clientes = await this.repoClientes.GetClientesAsync();
+            List<Factura> facturas = await this.repoFacturas.GetFacturasAsync();
+
+            model.TotalClientes = clientes.Count(c => c.Activo);
+            model.TotalFacturas = facturas.Count;
+
+            model.FacturadoEsteMes = facturas.Where(f => f.FechaEmision.Month == DateTime.Now.Month && f.FechaEmision.Year == DateTime.Now.Year)
+                .Sum(f => f.TotalFactura);
+
+            model.PendienteDeCobro = facturas.Where(f => f.Estado == "Pendiente")
+                .Sum(f => f.TotalFactura);
+
+            model.UltimasFacturas = facturas.Take(5).ToList();
+
+            return View(model);
         }
 
         public async Task<IActionResult> Clientes()

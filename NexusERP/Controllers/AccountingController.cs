@@ -118,7 +118,7 @@ namespace NexusERP.Controllers
                     NumeroAsiento = $"AS-{a.Id:D4}", 
                     Fecha = a.Fecha.Value,
                     Glosa = a.Glosa,
-                    Origen = a.Glosa.Contains("Nómina") ? "Nómina" : "Manual" // Pequeño truco visual
+                    Origen = a.Glosa.Contains("Nómina") ? "Nómina" : "Factura" 
                 };
 
                 foreach (var apunte in a.ApuntesContables)

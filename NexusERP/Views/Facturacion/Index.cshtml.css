@@ -1,0 +1,303 @@
+﻿/* ========================================
+   FACTURACIÓN DASHBOARD - Estilos modernos
+   ======================================== */
+
+/* ============================================
+   CARDS DE ACCIÓN (Nueva Factura / Clientes)
+   ============================================ */
+
+.action-card {
+    display: block;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none !important;
+    border: 1px solid #f1f5f9;
+    position: relative;
+    overflow: hidden;
+}
+
+    .action-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(59, 155, 173, 0.15);
+        border-color: var(--secondary-color);
+    }
+
+        .action-card:hover::before {
+            opacity: 1;
+        }
+
+        .action-card:hover .icon-container {
+            transform: scale(1.1);
+        }
+
+        .action-card:hover .ms-auto svg {
+            transform: translateX(5px);
+            color: var(--secondary-color);
+        }
+
+    .action-card h5 {
+        color: #1e293b;
+        transition: color 0.3s ease;
+    }
+
+    .action-card p {
+        color: #64748b;
+        line-height: 1.6;
+    }
+
+    .action-card .ms-auto svg {
+        transition: all 0.3s ease;
+    }
+
+/* Iconos de las action cards */
+.icon-container {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.icon-invoice {
+    background: linear-gradient(135deg, rgba(59, 155, 173, 0.1), rgba(59, 155, 173, 0.05));
+    color: var(--secondary-color);
+}
+
+.icon-clients {
+    background: linear-gradient(135deg, rgba(96, 211, 148, 0.1), rgba(96, 211, 148, 0.05));
+    color: var(--success-color);
+}
+
+/* ============================================
+   CARDS DE MÉTRICAS (KPIs)
+   ============================================ */
+
+/* Card - Facturado Este Mes (Azul) */
+.col-md-3:nth-child(1) .card {
+    background: linear-gradient(135deg, #e0f4f7 0%, #ffffff 100%);
+    border-left: 4px solid var(--secondary-color) !important;
+    transition: all 0.3s ease;
+}
+
+    .col-md-3:nth-child(1) .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(59, 155, 173, 0.2);
+    }
+
+    .col-md-3:nth-child(1) .card h3 {
+        color: var(--secondary-color) !important;
+    }
+
+/* Card - Pendiente de Cobro (Naranja) - Ya tiene estilo inline pero mejoramos hover */
+.col-md-3:nth-child(2) .card {
+    background: linear-gradient(135deg, #fff8e6 0%, #ffffff 100%);
+    transition: all 0.3s ease;
+}
+
+    .col-md-3:nth-child(2) .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2);
+    }
+
+/* Card - Facturas Emitidas (Verde) */
+.col-md-3:nth-child(3) .card {
+    background: linear-gradient(135deg, #e8f8f0 0%, #ffffff 100%);
+    border-left: 4px solid var(--success-color) !important;
+    transition: all 0.3s ease;
+}
+
+    .col-md-3:nth-child(3) .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(96, 211, 148, 0.2);
+    }
+
+    .col-md-3:nth-child(3) .card h3 {
+        color: var(--success-color) !important;
+    }
+
+/* Card - Clientes Activos (Morado) */
+.col-md-3:nth-child(4) .card {
+    background: linear-gradient(135deg, #f3e8ff 0%, #ffffff 100%);
+    border-left: 4px solid #9333ea !important;
+    transition: all 0.3s ease;
+}
+
+    .col-md-3:nth-child(4) .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(147, 51, 234, 0.2);
+    }
+
+    .col-md-3:nth-child(4) .card h3 {
+        color: #9333ea !important;
+    }
+
+/* Iconos KPI mejorados */
+.icon-kpi {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.card:hover .icon-kpi {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* ============================================
+   TABLA DE FACTURAS
+   ============================================ */
+
+.table-minimalist {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    .table-minimalist thead {
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    }
+
+        .table-minimalist thead th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 1rem 1.25rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+    .table-minimalist tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .table-minimalist tbody tr:hover {
+            background-color: #f8fafc;
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+    .table-minimalist tbody td {
+        padding: 1.25rem;
+        vertical-align: middle;
+        color: #334155;
+    }
+
+/* Badges de estado */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-pendiente {
+    background: linear-gradient(135deg, #fff8e6, #fef3c7);
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.status-pagada {
+    background: linear-gradient(135deg, #e8f8f0, #d1fae5);
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+/* Estado vacío */
+.table-minimalist tbody td svg {
+    opacity: 0.4;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.action-card,
+.card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+    .action-card:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+.col-md-3:nth-child(1) .card {
+    animation-delay: 0.1s;
+}
+
+.col-md-3:nth-child(2) .card {
+    animation-delay: 0.2s;
+}
+
+.col-md-3:nth-child(3) .card {
+    animation-delay: 0.3s;
+}
+
+.col-md-3:nth-child(4) .card {
+    animation-delay: 0.4s;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .action-card {
+        margin-bottom: 1rem;
+    }
+
+        .action-card .ms-auto {
+            display: none;
+        }
+
+    .icon-container {
+        width: 48px;
+        height: 48px;
+    }
+
+        .icon-container svg {
+            width: 24px;
+            height: 24px;
+        }
+
+    .table-minimalist thead th,
+    .table-minimalist tbody td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+}
