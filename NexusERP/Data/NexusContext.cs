@@ -23,6 +23,8 @@ public partial class NexusContext : DbContext
 
     public virtual DbSet<AsientosContable> AsientosContables { get; set; }
 
+    public virtual DbSet<Cliente> Clientes { get; set; }
+
     public virtual DbSet<ConceptosFijosEmpleado> ConceptosFijosEmpleados { get; set; }
 
     public virtual DbSet<ConceptosSalariale> ConceptosSalariales { get; set; }
@@ -36,6 +38,10 @@ public partial class NexusContext : DbContext
     public virtual DbSet<Empleado> Empleados { get; set; }
 
     public virtual DbSet<Empresa> Empresas { get; set; }
+
+    public virtual DbSet<Factura> Facturas { get; set; }
+
+    public virtual DbSet<FacturaDetalle> FacturaDetalles { get; set; }
 
     public virtual DbSet<Nomina> Nominas { get; set; }
 
@@ -85,6 +91,21 @@ public partial class NexusContext : DbContext
                 .HasForeignKey(d => d.EmpresaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__AsientosC__Empre__52593CB8");
+        });
+
+        modelBuilder.Entity<Cliente>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Clientes__3214EC070162B47A");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CifNif).HasMaxLength(20);
+            entity.Property(e => e.Email).HasMaxLength(150);
+            entity.Property(e => e.RazonSocial).HasMaxLength(150);
+
+            entity.HasOne(d => d.Empresa).WithMany(p => p.Clientes)
+                .HasForeignKey(d => d.EmpresaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Clientes_Empresas");
         });
 
         modelBuilder.Entity<ConceptosFijosEmpleado>(entity =>
@@ -253,6 +274,51 @@ public partial class NexusContext : DbContext
             entity.Property(e => e.RazonSocial).HasMaxLength(150);
         });
 
+        modelBuilder.Entity<Factura>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Facturas__3214EC07FA59C7A0");
+
+            entity.Property(e => e.BaseImponible).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.EsEmitida).HasDefaultValue(true);
+            entity.Property(e => e.Estado)
+                .HasMaxLength(20)
+                .HasDefaultValue("Pendiente");
+            entity.Property(e => e.FechaEmision).HasColumnType("datetime");
+            entity.Property(e => e.IvaTotal).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.NumeroFactura).HasMaxLength(50);
+            entity.Property(e => e.TotalFactura).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.Asiento).WithMany(p => p.Facturas)
+                .HasForeignKey(d => d.AsientoId)
+                .HasConstraintName("FK_Facturas_Asientos");
+
+            entity.HasOne(d => d.Cliente).WithMany(p => p.Facturas)
+                .HasForeignKey(d => d.ClienteId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Facturas_Clientes");
+
+            entity.HasOne(d => d.Empresa).WithMany(p => p.Facturas)
+                .HasForeignKey(d => d.EmpresaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Facturas_Empresas");
+        });
+
+        modelBuilder.Entity<FacturaDetalle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FacturaD__3214EC0713832F87");
+
+            entity.Property(e => e.Cantidad)
+                .HasDefaultValue(1m)
+                .HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Concepto).HasMaxLength(255);
+            entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.TotalLinea).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.Factura).WithMany(p => p.FacturaDetalles)
+                .HasForeignKey(d => d.FacturaId)
+                .HasConstraintName("FK_FacturaDetalles_Facturas");
+        });
+
         modelBuilder.Entity<Nomina>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Nominas__3214EC07D03EC1D8");
@@ -390,6 +456,12 @@ public partial class NexusContext : DbContext
 
         modelBuilder.Entity<AsientosContable>()
             .HasQueryFilter(a => a.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
+
+        modelBuilder.Entity<Cliente>()
+            .HasQueryFilter(c => c.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
+
+        modelBuilder.Entity<Factura>()
+            .HasQueryFilter(f => f.EmpresaId == this.contextAccessor.GetEmpresaIdSession());
 
         // ¡Añade el HasQueryFilter a TODAS las tablas que tengan EmpresaId!
         // No hace falta ponerlo en Empresa o Usuario (a menos que quieras que un Admin solo vea los usuarios de su empresa)

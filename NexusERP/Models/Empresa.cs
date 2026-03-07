@@ -19,6 +19,8 @@ public partial class Empresa
 
     public virtual ICollection<AsientosContable> AsientosContables { get; set; } = new List<AsientosContable>();
 
+    public virtual ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
+
     public virtual ICollection<ConceptosFijosEmpleado> ConceptosFijosEmpleados { get; set; } = new List<ConceptosFijosEmpleado>();
 
     public virtual ICollection<ConceptosSalariale> ConceptosSalariales { get; set; } = new List<ConceptosSalariale>();
@@ -30,6 +32,8 @@ public partial class Empresa
     public virtual ICollection<Departamento> Departamentos { get; set; } = new List<Departamento>();
 
     public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
+
+    public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
 
     public virtual ICollection<Nomina> Nominas { get; set; } = new List<Nomina>();
 

@@ -47,6 +47,11 @@ namespace NexusERP.Repositories
                 CuentasContable cuenta476 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4760000", Nombre = "Organismos de la Seguridad Social, acreedores", Tipo = "Pasivo" };
                 CuentasContable cuenta4751 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4751000", Nombre = "H.P. acreedora por retenciones practicadas", Tipo = "Pasivo" };
                 CuentasContable cuenta465 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4650000", Nombre = "Remuneraciones pendientes de pago", Tipo = "Pasivo" };
+                CuentasContable cuenta430 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4300000", Nombre = "Clientes", Tipo = "Activo" };
+                CuentasContable cuenta477 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "4770000", Nombre = "H.P. IVA Repercutido", Tipo = "Pasivo" };
+                CuentasContable cuenta572 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "5720000", Nombre = "Bancos e instituciones de crédito", Tipo = "Activo" };
+                CuentasContable cuenta700 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "7000000", Nombre = "Venta de mercaderías y servicios", Tipo = "Ingreso" };
+
 
                 await this.context.CuentasContables.AddRangeAsync(cuenta640, cuenta476, cuenta4751, cuenta642, cuenta465);
                 await this.context.SaveChangesAsync(); 

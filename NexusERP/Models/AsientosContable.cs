@@ -19,5 +19,7 @@ public partial class AsientosContable
 
     public virtual Empresa Empresa { get; set; } = null!;
 
+    public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
+
     public virtual ICollection<Nomina> Nominas { get; set; } = new List<Nomina>();
 }
