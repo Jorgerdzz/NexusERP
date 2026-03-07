@@ -21,9 +21,55 @@ namespace NexusERP.Controllers
             this.contextAccessor = contextAccessor;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return RedirectToAction("PlanContable");
+            DashboardFinancieroViewModel modelo = new DashboardFinancieroViewModel();
+            List<ApuntesContable> apuntesAnio = await this.repo.GetApuntesAnioActualAsync();
+
+            Dictionary<string,decimal> agrupacionGastos = new Dictionary<string, decimal>();
+
+            foreach (var apunte in apuntesAnio)
+            {
+                int mesIndex = apunte.Asiento.Fecha.Value.Month - 1; // 0 = Ene, 1 = Feb...
+
+                // REGLAS CONTABLES:
+                // Grupo 6 (Gastos): Nacen y crecen por el DEBE.
+                if (apunte.Cuenta.Codigo.StartsWith("6"))
+                {
+                    decimal importeGasto = apunte.Debe.Value - apunte.Haber.Value;
+                    if (importeGasto > 0)
+                    {
+                        modelo.TotalGastos += importeGasto;
+                        modelo.GastosMensuales[mesIndex] += importeGasto;
+
+                        
+                        if (!agrupacionGastos.ContainsKey(apunte.Cuenta.Nombre))
+                            agrupacionGastos[apunte.Cuenta.Nombre] = 0;
+
+                        agrupacionGastos[apunte.Cuenta.Nombre] += importeGasto;
+                    }
+                }
+                // Grupo 7 (Ingresos): Nacen y crecen por el HABER.
+                else if (apunte.Cuenta.Codigo.StartsWith("7"))
+                {
+                    decimal importeIngreso = apunte.Haber.Value - apunte.Debe.Value;
+                    if (importeIngreso > 0)
+                    {
+                        modelo.TotalIngresos += importeIngreso;
+                        modelo.IngresosMensuales[mesIndex] += importeIngreso;
+                    }
+                }
+            }
+
+            // Volcamos el diccionario agrupado a las listas del ViewModel
+            foreach (var item in agrupacionGastos)
+            {
+                modelo.NombresCuentasGasto.Add(item.Key);
+                modelo.ImportesGasto.Add(item.Value);
+            }
+
+            return View(modelo);
+
         }
 
         public async Task<IActionResult> PlanContable()
@@ -158,7 +204,7 @@ namespace NexusERP.Controllers
                         else
                             saldoAcumulado += (ap.Haber.Value - ap.Debe.Value);
 
-                        modelo.Movimientos.Add(new NexusERP.ViewModels.MovimientoMayorViewModel
+                        modelo.Movimientos.Add(new MovimientoMayorViewModel
                         {
                             Fecha = ap.Asiento.Fecha.Value,
                             AsientoNumero = $"AS-{ap.Asiento.Id:D4}",

@@ -127,8 +127,9 @@
     <environment include="Development">
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
         <script src="~/lib/sweetalert2/dist/sweetalert2.all.min.js"></script>
+        <script src="~/lib/Chart.js/chart.umd.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>        
     </environment>
 
     <environment exclude="Development">
@@ -137,6 +138,8 @@
                 asp-fallback-test="window.bootstrap" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
                 asp-fallback-src="~/lib/sweetalert2/dist/sweetalert2.all.min.js" asp-fallback-test="window.Swal"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"
+                asp-fallback-src="~/lib/Chart.js/chart.umd.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>

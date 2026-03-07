@@ -72,5 +72,14 @@ namespace NexusERP.Repositories
             return apuntesAnteriores.Sum(ap => ap.Debe.Value - ap.Haber.Value);
         }
 
+        public async Task<List<ApuntesContable>> GetApuntesAnioActualAsync()
+        {
+            int anioActual = DateTime.Now.Year;
+            return await this.context.ApuntesContables
+                .Include(ap => ap.Asiento)
+                .Include(ap => ap.Cuenta)
+                .Where(ap => ap.Asiento.Fecha.Value.Year == anioActual).ToListAsync();
+        }
+
     }
 }

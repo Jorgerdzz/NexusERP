@@ -10,6 +10,14 @@
         "sweetalert2.min.css",
         "sweetalert2.all.min.js"
       ]
+    },
+    {
+      "library": "Chart.js@4.5.0",
+      "destination": "wwwroot/lib/Chart.js/",
+      "files": [
+        "chart.min.js",
+        "chart.umd.js"
+      ]
     }
   ]
 }
