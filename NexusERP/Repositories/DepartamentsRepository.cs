@@ -90,5 +90,21 @@ namespace NexusERP.Repositories
             }
         }
 
+        public async Task<bool> DeleteDepartamentoAsync(int idDepartamento)
+        {
+            try
+            {
+                Departamento d = await this.GetDepartamentoAsync(idDepartamento);
+                if (d == null) return false;
+                this.context.Departamentos.Remove(d);
+                await this.context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }

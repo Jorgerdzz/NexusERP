@@ -53,7 +53,7 @@ namespace NexusERP.Repositories
                 CuentasContable cuenta700 = new CuentasContable { EmpresaId = empresa.Id, Codigo = "7000000", Nombre = "Venta de mercaderías y servicios", Tipo = "Ingreso" };
 
 
-                await this.context.CuentasContables.AddRangeAsync(cuenta640, cuenta476, cuenta4751, cuenta642, cuenta465);
+                await this.context.CuentasContables.AddRangeAsync(cuenta640, cuenta476, cuenta4751, cuenta642, cuenta465, cuenta430, cuenta477, cuenta572, cuenta700);
                 await this.context.SaveChangesAsync(); 
 
                 List<ConceptosSalariale> conceptosBase = new List<ConceptosSalariale>()
