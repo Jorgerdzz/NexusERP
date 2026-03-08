@@ -22,6 +22,17 @@ namespace NexusERP.Repositories
             return await this.context.Facturas.Include(f => f.Cliente).OrderByDescending(f => f.FechaEmision).ToListAsync();
         }
 
+        public async Task<Factura> GetFacturaAsync(int idFactura)
+        {
+            int idEmpresa = this.contextAccessor.GetEmpresaIdSession();
+
+            return await this.context.Facturas
+                .Include(f => f.Cliente)
+                .Include(f => f.Empresa)
+                .Include(f => f.FacturaDetalles)
+                .FirstOrDefaultAsync(f => f.Id == idFactura && f.EmpresaId == idEmpresa);
+        }
+
         public async Task<(bool exito, string mensaje)> GuardarFacturaYContabilizarAsync(Factura factura, int empresaId)
         {
             using var transaction = await this.context.Database.BeginTransactionAsync();

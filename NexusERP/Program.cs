@@ -3,6 +3,8 @@ using NexusERP.Data;
 using NexusERP.Helpers;
 using NexusERP.Repositories;
 
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

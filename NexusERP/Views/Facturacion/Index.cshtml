@@ -161,6 +161,7 @@
                             <th>Fecha Emisión</th>
                             <th class="text-end">Importe Total</th>
                             <th class="text-center">Estado</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -182,21 +183,29 @@
                                 <td class="text-center">
                                     @if (factura.Estado == "Pendiente")
                                     {
-                                        <div class="d-flex align-items-center justify-content-center gap-2">
-                                            <span class="badge-status status-pendiente">Pendiente</span>
+                                        <span class="badge-status status-pendiente">Pendiente</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status status-pagada">Pagada</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                        <a asp-action="Details" asp-route-idFactura="@factura.Id" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-medium" title="Ver Factura">
+                                            <i class="far fa-eye me-1"></i> Ver
+                                        </a>
 
+                                        @if (factura.Estado == "Pendiente")
+                                        {
                                             <form asp-action="RegistrarCobro" asp-controller="Facturacion" method="post" class="m-0">
                                                 <input type="hidden" name="idFactura" value="@factura.Id" />
                                                 <button type="submit" class="btn btn-sm text-success bg-success-light border border-success border-opacity-25 rounded-pill px-3 fw-bold shadow-sm" title="Marcar como cobrada" onclick="return confirm('¿Confirmar el ingreso de esta factura en el banco?');">
                                                     <i class="fas fa-hand-holding-usd me-1"></i> Cobrar
                                                 </button>
                                             </form>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge-status status-pagada">Pagada</span>
-                                    }
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         }

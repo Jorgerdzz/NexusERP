@@ -5,6 +5,7 @@ using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
+using QuestPDF.Fluent;
 using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
@@ -44,6 +45,12 @@ namespace NexusERP.Controllers
             model.UltimasFacturas = facturas.Take(5).ToList();
 
             return View(model);
+        }
+
+        public async Task<IActionResult> Details(int idFactura)
+        {
+            Factura factura = await this.repoFacturas.GetFacturaAsync(idFactura);
+            return View(factura);
         }
 
         public async Task<IActionResult> Clientes()
@@ -135,6 +142,19 @@ namespace NexusERP.Controllers
                 TempData["MENSAJE"] = "No se ha podido cobrar la factura";
             }
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> DescargarPdf(int idFactura)
+        {
+            var factura = await this.repoFacturas.GetFacturaAsync(idFactura);
+            if (factura == null) return NotFound();
+
+            var document = new FacturaDocument(factura);
+            byte[] pdfBytes = document.GeneratePdf();
+
+            string nombreArchivo = $"Factura_{factura.NumeroFactura}.pdf";
+
+            return File(pdfBytes, "application/pdf", nombreArchivo);
         }
 
     }

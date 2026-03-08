@@ -5,6 +5,7 @@ using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
+using QuestPDF.Fluent;
 using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
@@ -213,7 +214,7 @@ namespace NexusERP.Controllers
             if (exito)
             {
                 TempData["EXITO"] = mensaje;
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { idNomina = nomina.Id});
             }
             else
             {
@@ -239,7 +240,28 @@ namespace NexusERP.Controllers
             return RedirectToAction("Index");
         }
 
-        // --- TUS MÉTODOS PRIVADOS DE LÓGICA DE NEGOCIO ---
+        public async Task<IActionResult> Details(int idNomina)
+        {
+            Nomina nomina = await this.repoNominas.GetNominaEmpleado(idNomina);
+            return View(nomina);
+        }
+
+        public async Task<IActionResult> DescargarPdf(int idNomina)
+        {
+            Nomina nomina = await this.repoNominas.GetNominaEmpleado(idNomina);
+
+            if (nomina == null) return NotFound();
+
+            // Usamos la magia de QuestPDF
+            var document = new NominaDocument(nomina);
+            byte[] pdfBytes = document.GeneratePdf();
+
+            string nombreArchivo = $"Nomina_{nomina.Empleado.Nombre}_{nomina.Empleado.Apellidos}_{nomina.Anio}_{nomina.Mes:D2}.pdf";
+
+            return File(pdfBytes, "application/pdf", nombreArchivo);
+        }
+
+
 
         private decimal CalcularPorcentajeIRPF(decimal salarioBrutoAnual, int numeroHijos, int porcentajeDiscapacidad, EstadoCivil estadoCivil)
         {
@@ -340,7 +362,6 @@ namespace NexusERP.Controllers
             // 5. Ajuste mínimo del 2% y máximo del 40%
             return Math.Min(40m, Math.Max(2m, porcentajeIRPF));
         }
-
 
     }
 }
