@@ -182,15 +182,58 @@
                                         <span class="badge rounded-pill bg-light text-dark px-3 py-2 border">@emp.DepartamentoNombre</span>
                                     </td>
 
-                                    @if (emp.EstaCalculada)
+                                    @if (!emp.EstaCalculada)
                                     {
-                                        <!-- CASO 1: NÓMINA CALCULADA -->
+                                        <td class="text-end fw-medium text-muted">
+                                            @emp.SalarioBrutoAnual.ToString("C")
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge rounded-pill bg-warning-light px-3 py-2 fw-medium" style="color: #b78a00;">
+                                                <i class="fas fa-calculator me-1"></i> Sin Calcular
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <a asp-action="Calcular" asp-route-empleadoId="@emp.EmpleadoId" asp-route-mes="@Model.MesSeleccionado" asp-route-anio="@Model.AnoSeleccionado" class="btn btn-primary-custom d-inline-flex align-items-center gap-2 px-3 py-2" style="border-radius: 0.5rem; font-size: 0.85rem;">
+                                                <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                                Calcular
+                                            </a>
+                                        </td>
+                                    }
+                                    else if (emp.Estado != "Pagada")
+                                    {
                                         <td class="text-end fw-bold text-dark">
                                             @emp.LiquidoAPercibir?.ToString("C") <span class="text-muted small fw-normal">(Neto)</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge rounded-pill bg-success-light text-success px-3 py-2 fw-medium">
-                                                <i class="fas fa-check-circle me-1"></i> Calculada
+                                            <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 py-2 fw-medium border border-info border-opacity-25">
+                                                <i class="fas fa-file-invoice-dollar me-1"></i> Pendiente Pago
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <div class="d-flex justify-content-end align-items-center gap-2">
+                                                <a asp-action="Details" asp-route-id="@emp.NominaId" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-3 py-2" style="border-radius: 0.5rem; font-size: 0.85rem;">
+                                                    Ver Recibo
+                                                </a>
+
+                                                <form asp-action="RegistrarPago" asp-controller="Nominas" method="post" class="m-0">
+                                                    <input type="hidden" name="idNomina" value="@emp.NominaId" />
+                                                    <button type="submit" class="btn btn-sm text-primary bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 px-3 py-2 fw-bold shadow-sm" title="Realizar transferencia" onclick="return confirm('¿Confirmar la transferencia bancaria para esta nómina?');">
+                                                        <i class="fas fa-money-check-alt me-1"></i> Pagar
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-end fw-bold text-dark">
+                                            @emp.LiquidoAPercibir?.ToString("C") <span class="text-muted small fw-normal">(Neto)</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge rounded-pill bg-success-light text-success px-3 py-2 fw-medium border border-success border-opacity-25">
+                                                <i class="fas fa-check-circle me-1"></i> Pagada
                                             </span>
                                         </td>
                                         <td class="text-end pe-4">
@@ -200,26 +243,6 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                                 Ver Recibo
-                                            </a>
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <!-- CASO 2: NÓMINA PENDIENTE -->
-                                        <td class="text-end fw-medium text-muted">
-                                            @emp.SalarioBrutoAnual.ToString("C")
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge rounded-pill bg-warning-light px-3 py-2 fw-medium" style="color: #b78a00;">
-                                                <i class="fas fa-clock me-1"></i> Pendiente
-                                            </span>
-                                        </td>
-                                        <td class="text-end pe-4">
-                                            <a asp-action="Calcular" asp-route-empleadoId="@emp.EmpleadoId" asp-route-mes="@Model.MesSeleccionado" asp-route-anio="@Model.AnoSeleccionado" class="btn btn-primary-custom d-inline-flex align-items-center gap-2 px-3 py-2" style="border-radius: 0.5rem; font-size: 0.85rem;">
-                                                <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                </svg>
-                                                Calcular
                                             </a>
                                         </td>
                                     }

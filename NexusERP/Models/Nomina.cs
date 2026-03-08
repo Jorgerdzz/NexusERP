@@ -55,6 +55,8 @@ public partial class Nomina
 
     public decimal SsEmpresaHorasExtras { get; set; }
 
+    public string Estado { get; set; } = null!;
+
     public virtual AsientosContable? Asiento { get; set; }
 
     public virtual ICollection<ControlGasto> ControlGastos { get; set; } = new List<ControlGasto>();

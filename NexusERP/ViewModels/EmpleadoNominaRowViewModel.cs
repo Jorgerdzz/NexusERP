@@ -13,6 +13,7 @@ namespace NexusERP.ViewModels
         public int? NominaId { get; set; } 
         public decimal? LiquidoAPercibir { get; set; }
         public string Iniciales => NombreCompleto.ObtenerIniciales();
+        public string Estado { get; set; }
 
     }
 }

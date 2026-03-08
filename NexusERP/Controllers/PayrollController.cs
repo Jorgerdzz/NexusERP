@@ -219,6 +219,23 @@ namespace NexusERP.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RegistrarPago(int idNomina)
+        {
+            bool resultado = await this.repoNominas.PagarNominaAsync(idNomina);
+
+            if (resultado)
+            {
+                TempData["EXITO"] = "Nómina pagada y contabilizada correctamente.";
+            }
+            else
+            {
+                TempData["ERROR"] = "No se ha podido procesar el pago de la nómina.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
         // --- TUS MÉTODOS PRIVADOS DE LÓGICA DE NEGOCIO ---
 
         private decimal CalcularPorcentajeIRPF(decimal salarioBrutoAnual, int hijos, int discapacidad, string estadoCivil)

@@ -2,6 +2,7 @@
 using NexusERP.Data;
 using NexusERP.Helpers;
 using NexusERP.Models;
+using System.Threading.Tasks;
 
 namespace NexusERP.Repositories
 {
@@ -182,6 +183,69 @@ namespace NexusERP.Repositories
                 await transaction.RollbackAsync();
                 return (false, "Error al generar la nómina: " + ex.Message);
             }
+        }
+
+        public async Task<bool> PagarNominaAsync(int idNomina)
+        {
+            int idEmpresa = this.contextAccessor.GetEmpresaIdSession();
+
+            using var transaction = await this.context.Database.BeginTransactionAsync();
+
+            try
+            {
+                Nomina nominaApagar = await this.context.Nominas
+                    .Include(n => n.Empleado)
+                    .FirstOrDefaultAsync(n => n.Id == idNomina && n.EmpresaId == idEmpresa);
+                if (nominaApagar == null) return false;
+                if (nominaApagar.Estado == "Pagada") return false;
+
+                CuentasContable c572 = await this.context.CuentasContables.FirstOrDefaultAsync(c => c.Codigo == "5720000" && c.EmpresaId == idEmpresa);
+                CuentasContable c465 = await this.context.CuentasContables.FirstOrDefaultAsync(c => c.Codigo == "4650000" && c.EmpresaId == idEmpresa);
+
+                AsientosContable asientoPago = new AsientosContable
+                {
+                    EmpresaId = idEmpresa,
+                    Fecha = DateTime.Now,
+                    Glosa = $"Pago Nómina {nominaApagar.Mes} {nominaApagar.Anio} - {nominaApagar.Empleado.Nombre} {nominaApagar.Empleado.Nombre}"
+                };
+
+                await this.context.AsientosContables.AddAsync(asientoPago);
+                await this.context.SaveChangesAsync();
+
+                ApuntesContable cuenta465 = new ApuntesContable
+                {
+                    AsientoId = asientoPago.Id,
+                    CuentaId = c465.Id,
+                    Debe = nominaApagar.LiquidoApercibir,
+                    Haber = 0
+                };
+
+                await this.context.ApuntesContables.AddAsync(cuenta465);
+
+                ApuntesContable cuenta572 = new ApuntesContable
+                {
+                    AsientoId = asientoPago.Id,
+                    CuentaId = c572.Id,
+                    Debe = 0,
+                    Haber = nominaApagar.LiquidoApercibir
+                };
+
+                await this.context.ApuntesContables.AddAsync(cuenta572);
+
+                this.context.Nominas.Update(nominaApagar);
+
+                await this.context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+
         }
 
     }

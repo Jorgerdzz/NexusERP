@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NexusERP.Data;
+using NexusERP.Helpers;
 using NexusERP.Models;
 using System.Threading.Tasks;
 
@@ -8,10 +9,12 @@ namespace NexusERP.Repositories
     public class FacturacionRepository
     {
         private NexusContext context;
+        private HelperSessionContextAccessor contextAccessor;
 
-        public FacturacionRepository(NexusContext context)
+        public FacturacionRepository(NexusContext context, HelperSessionContextAccessor contextAccessor)
         {
             this.context = context;
+            this.contextAccessor = contextAccessor;
         }
 
         public async Task<List<Factura>> GetFacturasAsync()
@@ -70,6 +73,73 @@ namespace NexusERP.Repositories
                 return (false, "Error contable/facturación: " + ex.Message);
             }
         }
+
+        public async Task<bool> CobrarFacturaAsync(int idFactura)
+        {
+            int idEmpresa = this.contextAccessor.GetEmpresaIdSession();
+
+            using var transaction = await this.context.Database.BeginTransactionAsync();
+
+            try
+            {
+                Factura factura = await this.context.Facturas
+                    .Include(f => f.Cliente)
+                    .FirstOrDefaultAsync(f => f.Id == idFactura && f.EmpresaId == idEmpresa);
+                if (factura == null) return false;
+                if (factura.Estado == "Pagada") return false;
+
+                CuentasContable c572 = await this.context.CuentasContables.FirstOrDefaultAsync(c => c.EmpresaId == idEmpresa && c.Codigo == "5720000");
+                CuentasContable c430 = await this.context.CuentasContables.FirstOrDefaultAsync(c => c.EmpresaId == idEmpresa && c.Codigo == "4300000");
+
+                AsientosContable asientoCobro = new AsientosContable
+                {
+                    EmpresaId = idEmpresa,
+                    Fecha = DateTime.Now,
+                    Glosa = $"Cobro Factura {factura.NumeroFactura} - {factura.Cliente.RazonSocial}"
+                };
+
+                await this.context.AsientosContables.AddAsync(asientoCobro);
+                await this.context.SaveChangesAsync();
+
+                ApuntesContable cuenta572 = new ApuntesContable
+                {
+                    AsientoId = asientoCobro.Id,
+                    CuentaId = c572.Id,
+                    Debe = factura.TotalFactura,
+                    Haber = 0
+                };
+
+                await this.context.ApuntesContables.AddAsync(cuenta572);
+
+                ApuntesContable cuenta430 = new ApuntesContable
+                {
+                    AsientoId = asientoCobro.Id,
+                    CuentaId = c430.Id,
+                    Debe = 0,
+                    Haber = factura.TotalFactura
+                };
+
+                await this.context.ApuntesContables.AddAsync(cuenta430);
+
+                factura.Estado = "Pagada";
+
+                this.context.Facturas.Update(factura);
+
+                await this.context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+
+
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+
+        }
+
     }
 
 }

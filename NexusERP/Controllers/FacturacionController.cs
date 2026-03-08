@@ -121,6 +121,22 @@ namespace NexusERP.Controllers
             else
                 return StatusCode(500);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RegistrarCobro(int idFactura)
+        {
+            bool resultado = await this.repoFacturas.CobrarFacturaAsync(idFactura);
+            if (resultado)
+            {
+                TempData["MENSAJE"] = "Factura cobrada correctamente";
+            }
+            else
+            {
+                TempData["MENSAJE"] = "No se ha podido cobrar la factura";
+            }
+            return RedirectToAction("Index");
+        }
+
     }
 
 }
