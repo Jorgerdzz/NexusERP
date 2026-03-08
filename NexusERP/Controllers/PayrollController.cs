@@ -50,7 +50,8 @@ namespace NexusERP.Controllers
                         SalarioBrutoAnual = emp.SalarioBrutoAnual,
                         EstaCalculada = nominaDelMes != null,
                         NominaId = nominaDelMes?.Id,
-                        LiquidoAPercibir = nominaDelMes?.LiquidoApercibir
+                        LiquidoAPercibir = nominaDelMes?.LiquidoApercibir,
+                        Estado = nominaDelMes?.Estado ?? "Pendiente"
                     };
                     model.Empleados.Add(empNomina);
                 }
@@ -74,7 +75,7 @@ namespace NexusERP.Controllers
                 empleado.SalarioBrutoAnual,
                 empleado.NumeroHijos,
                 empleado.PorcentajeDiscapacidad,
-                empleado.EstadoCivil.ToString()
+                (EstadoCivil)empleado.EstadoCivil
             );
 
             // 3. Crear el paquete (ViewModel) para la vista
@@ -159,6 +160,8 @@ namespace NexusERP.Controllers
 
                 SsEmpresaTotal = model.SS_Empresa_Total,
 
+                Estado = "Pendiente",
+
                 FechaGeneracion = DateTime.Now
             };
 
@@ -238,39 +241,105 @@ namespace NexusERP.Controllers
 
         // --- TUS MÉTODOS PRIVADOS DE LÓGICA DE NEGOCIO ---
 
-        private decimal CalcularPorcentajeIRPF(decimal salarioBrutoAnual, int hijos, int discapacidad, string estadoCivil)
+        private decimal CalcularPorcentajeIRPF(decimal salarioBrutoAnual, int numeroHijos, int porcentajeDiscapacidad, EstadoCivil estadoCivil)
         {
-            // 1. Base según salario (Tabla simplificada 2024)
-            decimal porcentajeBase = 0;
+            // 1. Determinar situación familiar
+            string situacionFamiliar = "S1"; // Soltero sin hijos por defecto
+            bool esCasado = (estadoCivil == EstadoCivil.Casado);
 
-            if (salarioBrutoAnual < 12450) porcentajeBase = 19;
-            else if (salarioBrutoAnual < 20200) porcentajeBase = 24;
-            else if (salarioBrutoAnual < 35200) porcentajeBase = 30;
-            else if (salarioBrutoAnual < 60000) porcentajeBase = 37;
-            else porcentajeBase = 45;
+            if (esCasado)
+            {
+                if (numeroHijos >= 2) situacionFamiliar = "M3";
+                else if (numeroHijos == 1) situacionFamiliar = "M2";
+                else situacionFamiliar = "M1";
+            }
+            else
+            {
+                // Esto aplica a Solteros, Divorciados y Viudos
+                if (numeroHijos > 0) situacionFamiliar = "S2";
+            }
 
-            // 2. Reducciones (La "gracia" del algoritmo)
-            porcentajeBase -= (hijos * 2);
+            // 2. Aplicar reducciones por discapacidad
+            decimal reduccionDiscapacidad = 0;
+            if (porcentajeDiscapacidad >= 65)
+            {
+                reduccionDiscapacidad = 4000;
+            }
+            else if (porcentajeDiscapacidad >= 33)
+            {
+                reduccionDiscapacidad = 2000;
+            }
 
-            if (discapacidad >= 33 && discapacidad < 65) porcentajeBase -= 5;
-            if (discapacidad >= 65) porcentajeBase -= 10;
+            // 3. Base de cálculo (salario anual - reducciones)
+            decimal baseCalculo = Math.Max(0, salarioBrutoAnual - reduccionDiscapacidad);
 
-            // Por Estado Civil: Casados pagan un pelín menos (simplificación)
-            if (estadoCivil == "Casado") porcentajeBase -= 1;
+            // 4. Determinar porcentaje según tramos y situación familiar
+            decimal porcentajeIRPF = 0;
 
-            // 3. Límite mínimo
-            if (porcentajeBase < 2) return 2;
+            if (baseCalculo < 12450)
+            {
+                porcentajeIRPF = situacionFamiliar switch
+                {
+                    "S1" => 9.5m,
+                    "S2" => 7.5m,
+                    "M1" => 8.5m,
+                    "M2" => 6.5m,
+                    "M3" => 5.5m,
+                    _ => 9.5m
+                };
+            }
+            else if (baseCalculo < 20200)
+            {
+                porcentajeIRPF = situacionFamiliar switch
+                {
+                    "S1" => 12.0m,
+                    "S2" => 10.0m,
+                    "M1" => 11.0m,
+                    "M2" => 9.0m,
+                    "M3" => 8.0m,
+                    _ => 12.0m
+                };
+            }
+            else if (baseCalculo < 35200)
+            {
+                porcentajeIRPF = situacionFamiliar switch
+                {
+                    "S1" => 15.0m,
+                    "S2" => 13.0m,
+                    "M1" => 14.0m,
+                    "M2" => 12.0m,
+                    "M3" => 11.0m,
+                    _ => 15.0m
+                };
+            }
+            else if (baseCalculo < 60000)
+            {
+                porcentajeIRPF = situacionFamiliar switch
+                {
+                    "S1" => 18.5m,
+                    "S2" => 16.5m,
+                    "M1" => 17.5m,
+                    "M2" => 15.5m,
+                    "M3" => 14.5m,
+                    _ => 18.5m
+                };
+            }
+            else
+            {
+                porcentajeIRPF = situacionFamiliar switch
+                {
+                    "S1" => 22.5m,
+                    "S2" => 20.5m,
+                    "M1" => 21.5m,
+                    "M2" => 19.5m,
+                    "M3" => 18.5m,
+                    _ => 22.5m
+                };
+            }
 
-            return porcentajeBase;
+            // 5. Ajuste mínimo del 2% y máximo del 40%
+            return Math.Min(40m, Math.Max(2m, porcentajeIRPF));
         }
-
-        private bool EsConceptoProrrateable(string codigoConcepto)
-        {
-            string[] codigosProrrateables = { "SAL_BASE", "PLUS_TRANS", "PLUS_ANTIG", "PLUS_ACT" };
-
-            return codigosProrrateables.Contains(codigoConcepto?.ToUpper());
-        }
-
 
 
     }

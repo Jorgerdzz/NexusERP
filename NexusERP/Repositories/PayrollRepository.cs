@@ -232,6 +232,8 @@ namespace NexusERP.Repositories
 
                 await this.context.ApuntesContables.AddAsync(cuenta572);
 
+                nominaApagar.Estado = "Pagada";
+
                 this.context.Nominas.Update(nominaApagar);
 
                 await this.context.SaveChangesAsync();

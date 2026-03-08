@@ -217,7 +217,7 @@
                                                     Ver Recibo
                                                 </a>
 
-                                                <form asp-action="RegistrarPago" asp-controller="Nominas" method="post" class="m-0">
+                                                <form asp-action="RegistrarPago" asp-controller="Payroll" method="post" class="m-0">
                                                     <input type="hidden" name="idNomina" value="@emp.NominaId" />
                                                     <button type="submit" class="btn btn-sm text-primary bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 px-3 py-2 fw-bold shadow-sm" title="Realizar transferencia" onclick="return confirm('¿Confirmar la transferencia bancaria para esta nómina?');">
                                                         <i class="fas fa-money-check-alt me-1"></i> Pagar

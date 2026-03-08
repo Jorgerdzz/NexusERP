@@ -1,127 +1,265 @@
 ﻿/* --- wwwroot/js/calculo-nomina.js --- */
 
-document.addEventListener('DOMContentLoaded', function () {
+const CONCEPTOS_MAP = {
+    'Incentivos': 'Incentivos',
+    'Plus especial dedicación': 'PlusDedicacion',
+    'Plus antigüedad': 'PlusAntiguedad',
+    'Plus actividad': 'PlusActividad',
+    'Plus nocturnidad': 'PlusNocturnidad',
+    'Plus responsabilidad': 'PlusResponsabilidad',
+    'Plus convenio': 'PlusConvenio',
+    'Plus idiomas': 'PlusIdiomas',
+    'Horas extraordinarias': 'HorasExtraordinarias',
+    'Salario en especie': 'SalarioEspecie'
+};
 
-    const inputsDevengos = document.querySelectorAll('.input-devengo');
-    const inputSalarioBase = document.querySelector('input[name="SalarioBase"]');
-    const porcentajeIrpf = parseFloat(document.getElementById('porcentajeIrpfAplicado').value) || 0;
+const CONCEPTOS_NO_SALARIALES_MAP = {
+    'Indemnizaciones o Suplidos': 'IndemnizacionesSuplidos',
+    'Prestaciones e indemnizaciones S.S.': 'PrestacionesSS',
+    'Indemnizaciones por despido': 'IndemnizacionesDespido',
+    'Plus transporte': 'PlusTransporte',
+    'Dietas': 'Dietas'
+};
+
+// ============================================
+// FUNCIONES GLOBALES (Añadir/Eliminar)
+// ============================================
+
+function addConceptoSalarial() {
+    const container = document.getElementById('conceptosSalarialesContainer');
+    const newRow = document.createElement('div');
+    newRow.className = 'concepto-row';
+    newRow.innerHTML = `
+        <div class="row align-items-center">
+            <div class="col-md-5 mb-2 mb-md-0">
+                <select class="form-control concepto-nombre-input concepto-selector" onchange="actualizarNombreInput(this)">
+                    <option value="">-- Seleccionar concepto --</option>
+                    <option value="Incentivos">Incentivos</option>
+                    <option value="Plus especial dedicación">Plus especial dedicación</option>
+                    <option value="Plus antigüedad">Plus antigüedad</option>
+                    <option value="Plus actividad">Plus actividad</option>
+                    <option value="Plus nocturnidad">Plus nocturnidad</option>
+                    <option value="Plus responsabilidad">Plus responsabilidad</option>
+                    <option value="Plus convenio">Plus convenio</option>
+                    <option value="Plus idiomas">Plus idiomas</option>
+                    <option value="Horas extraordinarias">Horas extraordinarias</option>
+                    <option value="Horas complementarias">Horas complementarias</option>
+                    <option value="Salario en especie">Salario en especie</option>
+                </select>
+            </div>
+            <div class="col-md-5 mb-2 mb-md-0">
+                <div class="input-group">
+                    <input type="number" step="0.01" class="form-control concepto-input input-devengo" 
+                           value="0.00" data-tributa-irpf="true" 
+                           data-field-name="" disabled oninput="calcularNomina()">
+                    <span class="input-group-text bg-light border-0">€</span>
+                </div>
+            </div>
+            <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-delete-concepto" onclick="eliminarConcepto(this)" title="Eliminar concepto">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            </div>
+        </div>
+    `;
+    container.appendChild(newRow);
+}
+
+function addConceptoNoSalarial() {
+    const container = document.getElementById('conceptosNoSalarialesContainer');
+    const newRow = document.createElement('div');
+    newRow.className = 'concepto-row';
+    newRow.innerHTML = `
+        <div class="row align-items-center">
+            <div class="col-md-5 mb-2 mb-md-0">
+                <select class="form-control concepto-nombre-input concepto-selector" onchange="actualizarNombreInput(this)">
+                    <option value="">-- Seleccionar concepto --</option>
+                    <option value="Indemnizaciones o Suplidos">Indemnizaciones o Suplidos</option>
+                    <option value="Prestaciones e indemnizaciones S.S.">Prestaciones e indemnizaciones S.S.</option>
+                    <option value="Indemnizaciones por despido">Indemnizaciones por despido</option>
+                    <option value="Plus transporte">Plus transporte</option>
+                    <option value="Dietas">Dietas</option>
+                </select>
+            </div>
+            <div class="col-md-5 mb-2 mb-md-0">
+                <div class="input-group">
+                    <input type="number" step="0.01" class="form-control concepto-input input-devengo" 
+                           value="0.00" data-tributa-irpf="false" 
+                           data-field-name="" disabled oninput="calcularNomina()">
+                    <span class="input-group-text bg-light border-0">€</span>
+                </div>
+            </div>
+            <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-delete-concepto" onclick="eliminarConcepto(this)" title="Eliminar concepto">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            </div>
+        </div>
+    `;
+    container.appendChild(newRow);
+}
+
+function actualizarNombreInput(selectElement) {
+    const row = selectElement.closest('.concepto-row');
+    const input = row.querySelector('.concepto-input');
+    const conceptoNombre = selectElement.value;
+
+    if (conceptoNombre) {
+        const isSalarial = selectElement.closest('#conceptosSalarialesContainer') !== null;
+        const mapa = isSalarial ? CONCEPTOS_MAP : CONCEPTOS_NO_SALARIALES_MAP;
+
+        const fieldName = mapa[conceptoNombre];
+        input.setAttribute('name', fieldName);
+        input.setAttribute('data-field-name', fieldName);
+        input.disabled = false;
+    } else {
+        input.disabled = true;
+        input.removeAttribute('name');
+        input.setAttribute('data-field-name', '');
+        input.value = "0.00"; // Reiniciamos si deselecciona
+    }
+
+    calcularNomina();
+}
+
+function eliminarConcepto(btn) {
+    btn.closest('.concepto-row').remove();
+    calcularNomina();
+}
+
+// ============================================
+// MOTOR DE CÁLCULO (Global y a prueba de fallos)
+// ============================================
+
+function formatMoneda(val) {
+    return val.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function calcularNomina() {
+    let totalDevengado = 0;
+    let baseIRPF = 0;
+    let baseCC = 0;
+    let horasExtras = 0;
+
+    const inputSalarioBase = document.getElementById('SalarioBase');
+    const valBase = parseFloat(inputSalarioBase?.value) || 0;
+    const porcentajeIrpf = parseFloat(document.getElementById('porcentajeIrpfAplicado')?.value) || 0;
+
+    // 1. Sumar todos los devengos
+    const todosInputsDevengos = document.querySelectorAll('.input-devengo');
+
+    todosInputsDevengos.forEach(input => {
+        if (input.disabled) return;
+
+        const importe = parseFloat(input.value) || 0;
+        totalDevengado += importe;
+
+        const fieldName = (input.getAttribute('name') || input.getAttribute('data-field-name') || '').toLowerCase();
+        const tributaIrpf = (fieldName !== 'salarioespecie' && fieldName !== 'dietas');
+        const isNoSalarial = input.getAttribute('data-tributa-irpf') === "false";
+        const esHoraExtra = fieldName.includes('horas') && fieldName.includes('extra');
+
+        if (tributaIrpf) {
+            baseIRPF += importe;
+        }
+
+        if (esHoraExtra) {
+            horasExtras += importe;
+        } else if (!isNoSalarial) {
+            baseCC += importe;
+        }
+    });
+
+    // 2. Prorrateo 2 pagas extra
+    const prorrateo = (valBase * 2) / 12;
+    baseCC += prorrateo;
+
+    const baseCP = baseCC + horasExtras;
+
+    // 3. Trabajador
+    const cuotaCC = baseCC * 0.0470;
+    const cuotaMEI = baseCC * 0.0012;
+    const cuotaDes = baseCP * 0.0155;
+    const cuotaFP = baseCP * 0.0010;
+    const cuotaIRPF = baseIRPF * (porcentajeIrpf / 100);
+
+    const totalDeducciones = cuotaCC + cuotaMEI + cuotaDes + cuotaFP + cuotaIRPF;
+    const liquido = totalDevengado - totalDeducciones;
+
+    // 4. Empresa
+    const cEmpCC = baseCC * 0.2360;
+    const cEmpMEI = baseCC * 0.0058;
+    const cEmpAT = baseCP * 0.0150;
+    const cEmpDes = baseCP * 0.0550;
+    const cEmpForm = baseCP * 0.0060;
+    const cEmpFog = baseCP * 0.0020;
+    const cEmpHorasExtras = horasExtras * 0.2360;
+
+    const totalEmpSS = cEmpCC + cEmpMEI + cEmpAT + cEmpDes + cEmpForm + cEmpFog + cEmpHorasExtras;
+
+    // 5. Pintar en pantalla (Si los elementos existen)
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+
+    setVal('total_devengado', formatMoneda(totalDevengado));
+    setVal('base_cc', formatMoneda(baseCC));
+    setVal('base_mei', formatMoneda(baseCC));
+    setVal('base_desempleo', formatMoneda(baseCP));
+    setVal('base_fp', formatMoneda(baseCP));
+    setVal('base_irpf', formatMoneda(baseIRPF));
+
+    setVal('importe_cc', formatMoneda(cuotaCC));
+    setVal('importe_mei', formatMoneda(cuotaMEI));
+    setVal('importe_desempleo', formatMoneda(cuotaDes));
+    setVal('importe_fp', formatMoneda(cuotaFP));
+    setVal('importe_irpf', formatMoneda(cuotaIRPF));
+
+    setVal('total_aportaciones', formatMoneda(cuotaCC + cuotaMEI + cuotaDes + cuotaFP));
+    setVal('total_deducciones', formatMoneda(totalDeducciones));
+    setVal('liquido_percibir', formatMoneda(liquido));
+
+    setVal('base_empresa_cc', formatMoneda(baseCC));
+    setVal('base_empresa_he', formatMoneda(horasExtras));
+    setVal('base_empresa_at', formatMoneda(baseCP));
+    setVal('base_empresa_desempleo', formatMoneda(baseCP));
+    setVal('base_empresa_formacion', formatMoneda(baseCP));
+    setVal('base_empresa_fogasa', formatMoneda(baseCP));
+    setVal('base_empresa_mei', formatMoneda(baseCC));
+
+    setVal('importe_empresa_cc', formatMoneda(cEmpCC));
+    setVal('importe_empresa_he', formatMoneda(cEmpHorasExtras));
+    setVal('importe_empresa_at', formatMoneda(cEmpAT));
+    setVal('importe_empresa_desempleo', formatMoneda(cEmpDes));
+    setVal('importe_empresa_formacion', formatMoneda(cEmpForm));
+    setVal('importe_empresa_fogasa', formatMoneda(cEmpFog));
+    setVal('importe_empresa_mei', formatMoneda(cEmpMEI));
+
+    setVal('total_empresa_ss_hidden', totalEmpSS.toFixed(2));
+    setVal('coste_total_empresa', formatMoneda(totalDevengado + totalEmpSS));
+}
+
+// ============================================
+// INICIALIZACIÓN AL CARGAR LA PÁGINA
+// ============================================
+document.addEventListener('DOMContentLoaded', function () {
+    const inputSalarioBase = document.getElementById('SalarioBase');
     const salarioSugeridoText = document.getElementById('salarioSugerido');
 
+    // Prellenar salario base con el sugerido si está vacío
     if (inputSalarioBase && salarioSugeridoText) {
         let textoSugerido = salarioSugeridoText.innerText;
         let sugeridoStr = textoSugerido.replace(/\./g, '').replace(/\s/g, '').replace(',', '.');
         let sugeridoVal = parseFloat(sugeridoStr) || 0;
 
-        if (inputSalarioBase.value === "" || inputSalarioBase.value === "0" || inputSalarioBase.value === "0.00" || inputSalarioBase.value === "0,00") {
+        if (!inputSalarioBase.value || parseFloat(inputSalarioBase.value) === 0) {
             inputSalarioBase.value = sugeridoVal.toFixed(2);
         }
     }
 
-    // Escuchar tecleos
-    inputsDevengos.forEach(input => {
-        input.addEventListener('input', calcularNomina);
-    });
+    // Escuchar cambios estáticos (Salario Base)
+    if (inputSalarioBase) {
+        inputSalarioBase.addEventListener('input', calcularNomina);
+    }
 
-    // Calcular al entrar
+    // Calcular por primera vez al entrar
     calcularNomina();
-
-    function formatMoneda(val) {
-        return val.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    function calcularNomina() {
-        let totalDevengado = 0;
-        let baseIRPF = 0;
-        let baseCC = 0;
-        let horasExtras = 0;
-
-        // 1. Sumar devengos
-        inputsDevengos.forEach(input => {
-            const importe = parseFloat(input.value) || 0;
-            totalDevengado += importe;
-
-            if (input.dataset.tributaIrpf === "true") {
-                baseIRPF += importe;
-                if (input.name === "HorasExtraordinarias") {
-                    horasExtras += importe;
-                } else {
-                    baseCC += importe;
-                }
-            }
-        });
-
-        // 2. Prorrateo 2 pagas extra
-        const valBase = inputSalarioBase ? (parseFloat(inputSalarioBase.value) || 0) : 0;
-        const prorrateo = (valBase * 2) / 12;
-        baseCC += prorrateo;
-
-        const baseCP = baseCC + horasExtras;
-
-        // 3. Trabajador
-        const cuotaCC = baseCC * 0.0470;
-        const cuotaMEI = baseCC * 0.0012;
-        const cuotaDes = baseCP * 0.0155;
-        const cuotaFP = baseCP * 0.0010;
-        const cuotaIRPF = baseIRPF * (porcentajeIrpf / 100);
-
-        const totalDeducciones = cuotaCC + cuotaMEI + cuotaDes + cuotaFP + cuotaIRPF;
-        const liquido = totalDevengado - totalDeducciones;
-
-        // 4. Empresa
-        const cEmpCC = baseCC * 0.2360;
-        const cEmpMEI = baseCC * 0.0058;
-
-        const cEmpAT = baseCP * 0.0150;
-        const cEmpDes = baseCP * 0.0550;
-        const cEmpForm = baseCP * 0.0060;
-        const cEmpFog = baseCP * 0.0020;
-
-        const cEmpHorasExtras = horasExtras * 0.2360;
-
-        const totalEmpSS = cEmpCC + cEmpMEI + cEmpAT + cEmpDes + cEmpForm + cEmpFog + cEmpHorasExtras;
-
-        // 5. Pintar Trabajador
-        document.getElementById('total_devengado').value = formatMoneda(totalDevengado);
-
-        document.getElementById('base_cc').value = formatMoneda(baseCC);
-        document.getElementById('base_mei').value = formatMoneda(baseCC);
-        document.getElementById('base_desempleo').value = formatMoneda(baseCP);
-        document.getElementById('base_fp').value = formatMoneda(baseCP);
-        document.getElementById('base_irpf').value = formatMoneda(baseIRPF);
-
-        document.getElementById('importe_cc').value = formatMoneda(cuotaCC);
-        document.getElementById('importe_mei').value = formatMoneda(cuotaMEI);
-        document.getElementById('importe_desempleo').value = formatMoneda(cuotaDes);
-        document.getElementById('importe_fp').value = formatMoneda(cuotaFP);
-        document.getElementById('importe_irpf').value = formatMoneda(cuotaIRPF);
-
-        document.getElementById('total_aportaciones').value = formatMoneda(cuotaCC + cuotaMEI + cuotaDes + cuotaFP);
-        document.getElementById('total_deducciones').value = formatMoneda(totalDeducciones);
-        document.getElementById('liquido_percibir').value = formatMoneda(liquido);
-
-        // 6. Pintar Empresa
-        document.getElementById('base_empresa_cc').value = formatMoneda(baseCC);
-        document.getElementById('base_empresa_he').value = formatMoneda(horasExtras); 
-        document.getElementById('base_empresa_at').value = formatMoneda(baseCP);
-        document.getElementById('base_empresa_desempleo').value = formatMoneda(baseCP);
-        document.getElementById('base_empresa_formacion').value = formatMoneda(baseCP);
-        document.getElementById('base_empresa_fogasa').value = formatMoneda(baseCP);
-        document.getElementById('base_empresa_mei').value = formatMoneda(baseCC); 
-
-        // Asignamos los importes calculados
-        document.getElementById('importe_empresa_cc').value = formatMoneda(cEmpCC);
-        document.getElementById('importe_empresa_he').value = formatMoneda(cEmpHorasExtras);
-        document.getElementById('importe_empresa_at').value = formatMoneda(cEmpAT);
-        document.getElementById('importe_empresa_desempleo').value = formatMoneda(cEmpDes);
-        document.getElementById('importe_empresa_formacion').value = formatMoneda(cEmpForm);
-        document.getElementById('importe_empresa_fogasa').value = formatMoneda(cEmpFog);
-        document.getElementById('importe_empresa_mei').value = formatMoneda(cEmpMEI);
-
-        // Asignar al input oculto para que lo reciba el Controller
-        document.getElementById('total_empresa_ss_hidden').value = formatMoneda(totalEmpSS);
-
-        // Suma Matemática Correcta: Salario Bruto + Seguridad Social Empresa
-        const costeTotalCalculado = totalDevengado + totalEmpSS;
-        document.getElementById('coste_total_empresa').value = formatMoneda(costeTotalCalculado);
-    }
 });
