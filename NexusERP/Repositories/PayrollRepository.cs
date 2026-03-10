@@ -185,6 +185,21 @@ namespace NexusERP.Repositories
 
                 await this.context.SaveChangesAsync();
 
+                ControlGasto nuevoGasto = new ControlGasto
+                {
+                    EmpresaId = nomina.EmpresaId,
+                    DepartamentoId = empleado.DepartamentoId,
+                    EmpleadoId = nomina.EmpleadoId,
+                    NominaId = nomina.Id,
+                    Mes = nomina.Mes,
+                    Anio = nomina.Anio,
+                    ImporteGasto = nomina.TotalDevengado + nomina.SsEmpresaTotal,
+                    FechaRegistro = DateTime.Now
+                };
+
+                await this.context.ControlGastos.AddAsync(nuevoGasto);
+                await this.context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
 
                 return (true, "Nómina calculada, guardada y contabilizada con éxito.");
