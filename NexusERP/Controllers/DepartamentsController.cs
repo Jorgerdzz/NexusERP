@@ -86,11 +86,11 @@ namespace NexusERP.Controllers
             bool creado = await this.repoDepartamentos.CreateDepartamentoAsync(nuevoDepartamento);
             if (creado)
             {
-                return RedirectToAction("Index");
+                return Ok();
             }
             else
             {
-                return RedirectToAction("Index");
+                return BadRequest();
             }
         }
 

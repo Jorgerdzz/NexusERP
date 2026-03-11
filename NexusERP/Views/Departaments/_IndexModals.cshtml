@@ -11,6 +11,7 @@
             </div>
 
             <form asp-controller="Departaments" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
                 <div class="modal-body px-4 py-3">
 
                     <!-- Input: Nombre -->
@@ -36,8 +37,10 @@
                             style="border-radius: 0.5rem; border: 1px solid #dee2e6; font-weight: 500; color: #4b5563; padding: 0.5rem 1rem;">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary-custom m-0"
-                            style="border-radius: 0.5rem; font-weight: 500; padding: 0.5rem 1rem;">
+                    <button id="btnCrearDepartamento" type="submit" class="btn btn-primary-custom m-0"
+                            style="border-radius: 0.5rem; font-weight: 500; padding: 0.5rem 1rem;"
+                            data-url-post="@Url.Action("Create", "Departaments")"
+                            data-url-redirect="@Url.Action("Index", "Departaments")">
                         Crear Departamento
                     </button>
                 </div>
