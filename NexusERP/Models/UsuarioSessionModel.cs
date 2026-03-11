@@ -1,4 +1,5 @@
 ﻿using NexusERP.Enums;
+using NexusERP.Helpers;
 
 namespace NexusERP.Models
 {
@@ -10,5 +11,6 @@ namespace NexusERP.Models
         public RolesUsuario Rol { get; set; }
         public int EmpresaId { get; set; }
         public string NombreEmpresa { get; set; }
+        public string inicialesUsuario => Nombre.ObtenerIniciales();
     }
 }

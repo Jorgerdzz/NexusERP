@@ -1,7 +1,7 @@
 ﻿@{
     string controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
     UsuarioSessionModel usuarioActual = Context.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
-    
+    string inicialesUsuario = usuarioActual.inicialesUsuario;
 }
 
 <!DOCTYPE html>
@@ -107,7 +107,7 @@
 
                     <div class="dropdown">
                         <button class="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown">
-                            <div class="user-avatar">JO</div>
+                            <div class="user-avatar">@inicialesUsuario</div>
                             <div class="text-start d-none d-sm-block">
                                 <div class="fw-bold" style="font-size: 0.9rem; line-height: 1.2">@usuarioActual.Nombre</div>
                                 <div class="text-muted" style="font-size: 0.75rem;">@usuarioActual.NombreEmpresa</div>
