@@ -228,6 +228,13 @@
 
 .chart-body {
     padding: 2rem;
+    min-height: 450px;
+    position: relative;
+}
+
+/* Contenedor específico para el gráfico de evolución con mayor altura */
+#evolucionChart {
+    min-height: 400px !important;
 }
 
 /* ============================================
@@ -276,5 +283,10 @@
 
     .chart-body {
         padding: 1rem;
+        min-height: 350px;
+    }
+
+    #evolucionChart {
+        min-height: 300px !important;
     }
 }

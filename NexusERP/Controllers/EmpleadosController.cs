@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NexusERP.Enums;
+using NexusERP.Filters;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
 {
+    [AuthorizeUser(Rol = RolesUsuario.Admin)]
     public class EmpleadosController : Controller
     {
         private EmpleadosRepository repoEmpleados;
