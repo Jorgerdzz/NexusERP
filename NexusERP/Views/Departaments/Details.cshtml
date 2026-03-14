@@ -169,7 +169,25 @@
 
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <button class="btn btn-sm btn-action btn-edit" title="Editar">
+                                                    <button class="btn btn-sm btn-action btn-edit" title="Editar"
+                                                            data-bs-toggle="modal" data-bs-target="#modal-upd-empleado"
+                                                            data-id="@empleado.Id"
+                                                            data-nombre="@empleado.Nombre"
+                                                            data-apellidos="@empleado.Apellidos"
+                                                            data-dni="@empleado.Dni"
+                                                            data-email="@empleado.EmailCorporativo"
+                                                            data-telefono="@empleado.Telefono"
+                                                            data-fechanacimiento="@empleado.FechaNacimiento.ToString("yyyy-MM-dd")"
+                                                            data-departamentoid="@Model.Id"
+                                                            data-numss="@empleado.NumSeguridadSocial"
+                                                            data-fechaantiguedad="@empleado.FechaAntiguedad.ToString("yyyy-MM-dd")"
+                                                            data-grupo="@empleado.GrupoCotizacion"
+                                                            data-salario="@empleado.SalarioBrutoAnual.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                                            data-iban="@empleado.Iban"
+                                                            data-activo="@(empleado.Activo ? "true" : "false")"
+                                                            data-estadocivil="@empleado.EstadoCivil"
+                                                            data-hijos="@empleado.NumeroHijos"
+                                                            data-discapacidad="@empleado.PorcentajeDiscapacidad">
                                                         <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                                                         </svg>
@@ -204,3 +222,7 @@
 </div>
 
 <partial name="_DetailsModals"/>
+
+@section Scripts{
+    <script src="~/js/empleados.js"></script>
+}

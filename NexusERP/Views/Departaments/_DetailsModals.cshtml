@@ -102,73 +102,86 @@
     </div>
 </div>
 
-<!-- Modal: Editar Empleado -->
-<div class="modal fade" id="modal-add-employee" tabindex="-1" aria-labelledby="modalAddEmpLabel" aria-hidden="true">
+
+@* Modal Editar Empleado *@
+<div class="modal fade" id="modal-upd-empleado" tabindex="-1" aria-labelledby="modalUpdEmpLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
 
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold text-dark" id="modalAddEmpLabel">Añadir Empleado a @Model.Nombre</h5>
+                <h5 class="modal-title fw-bold text-dark" id="modalUpdEmpLabel">Modificar Empleado de @Model.Nombre</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body p-4">
-                <form asp-controller="Empleados" asp-action="Create" method="post" class="form-crud" data-confirm="true">
-                    <input type="hidden" name="DepartamentoId" value="@Model.Id" /> <h6 class="fw-bold text-secondary-custom mb-3 border-bottom pb-2">Datos Personales</h6>
+                <form asp-controller="Empleados" asp-action="Edit" method="post" class="form-crud" data-confirm="true" data-confirm-text="¿Deseas guardar los cambios de este empleado?">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editId" name="Id">
+
+                    <h6 class="fw-bold text-secondary-custom mb-3 border-bottom pb-2">Datos Personales</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Nombre *</label>
-                            <input type="text" name="Nombre" class="form-control shadow-none" required>
+                            <input type="text" id="editNombre" name="Nombre" class="form-control shadow-none" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Apellidos *</label>
-                            <input type="text" name="Apellidos" class="form-control shadow-none" required>
+                            <input type="text" id="editApellidos" name="Apellidos" class="form-control shadow-none" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">DNI *</label>
-                            <input type="text" name="DNI" class="form-control shadow-none" required>
+                            <input type="text" id="editDni" name="DNI" class="form-control shadow-none" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Email Corporativo</label>
-                            <input type="email" name="EmailCorporativo" class="form-control shadow-none">
+                            <input type="email" id="editEmail" name="EmailCorporativo" class="form-control shadow-none">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Teléfono</label>
-                            <input type="tel" name="Telefono" class="form-control shadow-none">
+                            <input type="tel" id="editTelefono" name="Telefono" class="form-control shadow-none">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">F. Nacimiento *</label>
-                            <input type="date" name="FechaNacimiento" class="form-control shadow-none" required>
+                            <input type="date" id="editFechaNacimiento" name="FechaNacimiento" class="form-control shadow-none" required>
                         </div>
                     </div>
 
                     <h6 class="fw-bold text-secondary-custom mb-3 border-bottom pb-2">Datos Laborales y Económicos</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
+                            <label class="form-label small fw-medium text-muted">Departamento *</label>
+
+                            <input type="hidden" id="editDepartamentoId" name="DepartamentoId" value="@Model.Id" />
+
+                            <input type="text" class="form-control shadow-none text-muted" value="@Model.Nombre" readonly style="background-color: #f8fafc; cursor: not-allowed;" title="No puedes cambiar de departamento desde esta vista.">
+                        </div>
+
+                        <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Nº Seguridad Social *</label>
-                            <input type="text" name="NumSeguridadSocial" class="form-control shadow-none" required>
+                            <input type="text" id="editNumSeguridadSocial" name="NumSeguridadSocial" class="form-control shadow-none" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Fecha de Alta *</label>
-                            <input type="date" name="FechaAntiguedad" class="form-control shadow-none" required>
+                            <input type="date" id="editFechaAntiguedad" name="FechaAntiguedad" class="form-control shadow-none" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small fw-medium text-muted">Grupo Cotización (1-11) *</label>
-                            <input type="number" name="GrupoCotizacion" min="1" max="11" class="form-control shadow-none" required>
+                            <label class="form-label small fw-medium text-muted">Grupo Cot. (1-11) *</label>
+                            <input type="number" id="editGrupoCotizacion" name="GrupoCotizacion" min="1" max="11" class="form-control shadow-none" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Salario Anual (€) *</label>
-                            <input type="number" name="SalarioBrutoAnual" step="0.01" class="form-control shadow-none" required>
+                            <input type="number" id="editSalarioBrutoAnual" name="SalarioBrutoAnual" step="0.01" class="form-control shadow-none" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">IBAN</label>
-                            <input type="text" name="IBAN" class="form-control shadow-none">
+                            <input type="text" id="editIban" name="IBAN" class="form-control shadow-none">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Estado</label>
-                            <select name="Activo" class="form-select shadow-none">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
+                            <select id="editActivo" name="Activo" class="form-select shadow-none">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
                             </select>
                         </div>
                     </div>
@@ -177,7 +190,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Estado Civil *</label>
-                            <select name="EstadoCivil" class="form-select shadow-none" required>
+                            <select id="editEstadoCivil" name="EstadoCivil" class="form-select shadow-none" required>
                                 <option value="1">Soltero/a</option>
                                 <option value="2">Casado/a</option>
                                 <option value="3">Divorciado/a</option>
@@ -186,20 +199,21 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">Nº Hijos</label>
-                            <input type="number" name="NumeroHijos" value="0" min="0" class="form-control shadow-none">
+                            <input type="number" id="editNumeroHijos" name="NumeroHijos" min="0" class="form-control shadow-none">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-medium text-muted">% Discapacidad</label>
-                            <input type="number" name="PorcentajeDiscapacidad" value="0" min="0" max="100" class="form-control shadow-none">
+                            <input type="number" id="editPorcentajeDiscapacidad" name="PorcentajeDiscapacidad" min="0" max="100" class="form-control shadow-none">
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-4">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary-custom">Guardar Empleado</button>
+                        <button type="submit" class="btn btn-warning text-dark fw-medium">Actualizar Empleado</button>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>

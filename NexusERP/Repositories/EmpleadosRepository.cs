@@ -153,5 +153,43 @@ namespace NexusERP.Repositories
             }
         }
 
+        public async Task<bool> UpdateEmpleadoAsync(Empleado emp)
+        {
+            try
+            {
+                Empleado original = await this.FindEmpleadoAsync(emp.Id);
+
+                if (original == null) return false;
+
+                original.Nombre = emp.Nombre;
+                original.Apellidos = emp.Apellidos;
+                original.Dni = emp.Dni;
+                original.EmailCorporativo = emp.EmailCorporativo;
+                original.Telefono = emp.Telefono;
+                original.FechaNacimiento = emp.FechaNacimiento;
+
+                original.DepartamentoId = emp.DepartamentoId;
+                original.NumSeguridadSocial = emp.NumSeguridadSocial;
+                original.FechaAntiguedad = emp.FechaAntiguedad;
+                original.GrupoCotizacion = emp.GrupoCotizacion;
+                original.SalarioBrutoAnual = emp.SalarioBrutoAnual;
+                original.Iban = emp.Iban;
+                original.Activo = emp.Activo;
+
+                original.EstadoCivil = emp.EstadoCivil;
+                original.NumeroHijos = emp.NumeroHijos;
+                original.PorcentajeDiscapacidad = emp.PorcentajeDiscapacidad;
+
+                this.context.Empleados.Update(original);
+                await this.context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
     }
 }

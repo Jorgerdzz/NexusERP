@@ -226,6 +226,64 @@ namespace NexusERP.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditEmpleadoViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Extraemos el nombre exacto de los campos que están fallando
+                var camposConError = ModelState.Where(ms => ms.Value.Errors.Any())
+                                               .Select(ms => ms.Key)
+                                               .ToList();
+
+                string mensajeErrores = string.Join(", ", camposConError);
+
+                // Hacemos que el SweetAlert nos chive exactamente qué falla
+                AlertService.Warning(TempData, $"Fallo de validación en: {mensajeErrores}");
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                Empleado emp = await this.repoEmpleados.FindEmpleadoAsync(model.Id);
+
+                if (emp == null)
+                {
+                    AlertService.Error(TempData, "El empleado que intentas modificar no existe.");
+                    return RedirectToAction("Index");
+                }
+
+                emp.Nombre = model.Nombre;
+                emp.Apellidos = model.Apellidos;
+                emp.Dni = model.DNI;
+                emp.EmailCorporativo = model.EmailCorporativo;
+                emp.Telefono = model.Telefono;
+                emp.FechaNacimiento = model.FechaNacimiento;
+
+                emp.DepartamentoId = model.DepartamentoId;
+                emp.NumSeguridadSocial = model.NumSeguridadSocial;
+                emp.FechaAntiguedad = model.FechaAntiguedad;
+                emp.GrupoCotizacion = model.GrupoCotizacion;
+                emp.SalarioBrutoAnual = Convert.ToDecimal(model.SalarioBrutoAnual);
+                emp.Iban = model.IBAN;
+                emp.Activo = model.Activo;
+
+                emp.EstadoCivil = model.EstadoCivil;
+                emp.NumeroHijos = model.NumeroHijos;
+                emp.PorcentajeDiscapacidad = model.PorcentajeDiscapacidad;
+
+                await this.repoEmpleados.UpdateEmpleadoAsync(emp);
+                AlertService.Toast(TempData, "Datos del empleado actualizados correctamente", "success");
+
+            }
+            catch
+            {
+                AlertService.Error(TempData, "Hubo un error al guardar los cambios en la base de datos.");
+            }
+            return RedirectToAction("Index");
+        }
+
         private EstadoCivil GetEstadoCivil(string estadoCivilStr)
         {
             return estadoCivilStr.ToLower() switch
