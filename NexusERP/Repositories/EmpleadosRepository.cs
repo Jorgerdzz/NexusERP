@@ -31,6 +31,11 @@ namespace NexusERP.Repositories
             return await consulta.ToListAsync();
         }
 
+        public async Task<Empleado> FindEmpleadoAsync(int idEmpleado)
+        {
+            return await this.context.Empleados.FirstOrDefaultAsync(e => e.Id == idEmpleado);
+        }
+
         public async Task<int> GetTotalEmpleadosAsync()
         {
             return await this.context.Empleados.CountAsync();
@@ -89,6 +94,61 @@ namespace NexusERP.Repositories
                 string errorRealDeBaseDeDatos = ex.InnerException != null ? ex.InnerException.Message : "No hay detalle interno";
 
                 // Pon un punto de interrupción (BreakPoint) en la línea del return false;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteEmpleadoAsync(int id)
+        {
+            using var transaction = await this.context.Database.BeginTransactionAsync();
+
+            try
+            {
+                Empleado emp = await this.context.Empleados.FirstOrDefaultAsync(e => e.Id == id);
+
+                if (emp != null)
+                {
+                    Usuario user = await this.context.Usuarios.FirstOrDefaultAsync(u => u.EmpleadoId == emp.Id);
+
+                    if (user != null)
+                    {
+                        SeguridadUsuario userSecurity = await this.context.SeguridadUsuarios
+                                                            .FirstOrDefaultAsync(s => s.IdUsuario == user.Id);
+
+                        if (userSecurity != null)
+                        {
+                            this.context.SeguridadUsuarios.Remove(userSecurity);
+                        }
+
+                        this.context.Usuarios.Remove(user);
+                    }
+
+                    var conceptosFijos = await this.context.ConceptosFijosEmpleados
+                                                     .Where(c => c.EmpleadoId == emp.Id)
+                                                     .ToListAsync();
+
+                    if (conceptosFijos.Any())
+                    {
+                        this.context.ConceptosFijosEmpleados.RemoveRange(conceptosFijos);
+                    }
+
+                    this.context.Empleados.Remove(emp);
+
+                    await this.context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+
+                string errorReal = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                Console.WriteLine("ERROR AL BORRAR EMPLEADO: " + errorReal);
+
                 return false;
             }
         }

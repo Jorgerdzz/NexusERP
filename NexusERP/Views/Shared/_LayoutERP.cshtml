@@ -2,6 +2,7 @@
     string controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
     UsuarioSessionModel usuarioActual = Context.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
     string inicialesUsuario = usuarioActual.inicialesUsuario;
+    var alert = TempData.GetAlert();
 }
 
 <!DOCTYPE html>
@@ -135,7 +136,9 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
         <script src="~/lib/sweetalert2/sweetalert2.all.min.js"></script>
         <script src="~/js/sweetalerts/sweetalert.service.js"></script>
-        <script src="~/js/modules/departamentos.js"></script>
+        <script src="~/js/modules/global-delete.js"></script>
+        <script src="~/js/modules/global-forms.js" asp-append-version="true"></script>
+        <script src="~/js/modules/login.js"></script>
         <script src="~/lib/Chart.js/chart.umd.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>        
@@ -150,9 +153,26 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"
                 asp-fallback-src="~/lib/Chart.js/chart.umd.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/sweetalerts/sweetalert.service.js" asp-append-version="true"></script>
+        <script src="~/js/modules/global-delete.js" asp-append-version="true"></script>
+        <script src="~/js/modules/global-forms.js" asp-append-version="true"></script>
+        <script src="~/js/modules/login.js" asp-append-version="true"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    @if (alert != null)
+    {
+        var jsonOptions = new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
+        var alertJson = System.Text.Json.JsonSerializer.Serialize(alert, jsonOptions);
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                SweetAlertService.show(@Html.Raw(alertJson));
+            });
+        </script>
+    }
+
 </body>
 </html>

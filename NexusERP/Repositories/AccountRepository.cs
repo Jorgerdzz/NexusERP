@@ -116,7 +116,7 @@ namespace NexusERP.Repositories
                 await this.context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                return (true, "Cuenta creada con éxito", user);
+                return (true, "Registro completado correctamente", user);
 
             }
             catch

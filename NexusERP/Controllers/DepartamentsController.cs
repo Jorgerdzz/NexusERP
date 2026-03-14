@@ -2,7 +2,9 @@
 using NexusERP.Enums;
 using NexusERP.Filters;
 using NexusERP.Models;
+using NexusERP.Models.UI;
 using NexusERP.Repositories;
+using NexusERP.Services;
 using NexusERP.ViewModels;
 using System.Threading.Tasks;
 
@@ -71,10 +73,12 @@ namespace NexusERP.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateDepartamentoViewModel model)
         {
             if (!ModelState.IsValid)
             {
+                AlertService.Warning(TempData, "Por favor, revisa los campos del formulario.");
                 return RedirectToAction("Index");
             }
 
@@ -86,11 +90,60 @@ namespace NexusERP.Controllers
             bool creado = await this.repoDepartamentos.CreateDepartamentoAsync(nuevoDepartamento);
             if (creado)
             {
+                AlertService.Success(TempData, $"El departamento '{model.Nombre}' se ha creado correctamente.");
+            }
+            else
+            {
+                AlertService.Error(TempData, "Error al crear el departamento");
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditDepartamentoViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                AlertService.Warning(TempData, "Datos inválidos. No se pudo actualizar el departamento.");
+                return RedirectToAction("Index");
+            }
+
+            Departamento departamentoActualizado = new Departamento
+            {
+                Id = model.Id,
+                Nombre = model.Nombre,
+                PresupuestoAnual = model.PresupuestoAnual
+            };
+
+            bool actualizado = await this.repoDepartamentos.UpdateDepartamentoAsync(departamentoActualizado);
+
+            if (actualizado)
+            {
+                AlertService.Toast(TempData, "Departamento actualizado correctamente", "success");
+            }
+            else
+            {
+                AlertService.Error(TempData, "No se pudo actualizar. El departamento no existe.");
+            }
+
+            return RedirectToAction("Index");
+        
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            bool eliminado = await this.repoDepartamentos.DeleteDepartamentoAsync(id);
+            if (eliminado)
+            {
+                AlertService.Success(TempData, "Departamento eliminado correctamente");
                 return Ok();
             }
             else
             {
-                return BadRequest();
+                return BadRequest("No se puede eliminar el departamento. Asegúrate de que no tenga empleados asignados antes de borrarlo.");
             }
         }
 

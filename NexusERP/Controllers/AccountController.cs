@@ -6,6 +6,8 @@ using NexusERP.Repositories;
 using NexusERP.ViewModels;
 using NexusERP.Extensions;
 using System.Threading.Tasks;
+using NexusERP.Models.UI;
+using NexusERP.Services;
 
 namespace NexusERP.Controllers
 {
@@ -36,7 +38,7 @@ namespace NexusERP.Controllers
 
             if (resultado.exito && resultado.usuarioCreado != null)
             {
-                TempData["EXITO"] = resultado.mensaje;
+                AlertService.Success(TempData, resultado.mensaje, "¡Éxito!");
                 return RedirectToAction("LogIn");
             }
             else
@@ -74,6 +76,7 @@ namespace NexusERP.Controllers
                     NombreEmpresa = resultado.user.Empresa.NombreComercial
                 };
                 HttpContext.Session.SetObject("USUARIO_LOGUEADO", user);
+                AlertService.Toast(TempData, $"Bienvenido {user.Nombre}");
                 return RedirectToAction("Index", "Dashboard");
 
             }

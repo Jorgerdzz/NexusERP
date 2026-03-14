@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using NexusERP.Enums;
 using NexusERP.Filters;
 using NexusERP.Models;
 using NexusERP.Repositories;
+using NexusERP.Services;
 using NexusERP.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NexusERP.Controllers
 {
@@ -68,18 +71,18 @@ namespace NexusERP.Controllers
 
                 if (exito)
                 {
-                    TempData["SuccessMessage"] = "Empleado añadido correctamente a la plantilla.";
+                    AlertService.Success(TempData, $"El empleado {model.Nombre} se ha añadido correctamente a la plantilla.");
                     return RedirectToAction("Details", "Departaments", new { id = model.DepartamentoId });
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Ocurrió un error inesperado al guardar en la base de datos.";
+                    AlertService.Error(TempData, "Ocurrió un error inesperado al guardar en la base de datos.");
                 }
 
             }
             else
             {
-                TempData["ErrorMessage"] = "Revisa los datos del formulario. Algunos campos no tienen el formato correcto.";
+                AlertService.Warning(TempData, "Revisa los datos del formulario.Algunos campos no tienen el formato correcto.");
                 return RedirectToAction("Details", "Departaments", new { id = model.DepartamentoId });
             }
             return RedirectToAction("Details", "Departaments", new { id = model.DepartamentoId });
@@ -205,6 +208,22 @@ namespace NexusERP.Controllers
                 Encoding.UTF8.GetBytes(csv.ToString()),
                 "text/csv",
                 "PlantillaEmpleados.csv");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            bool eliminado = await this.repoEmpleados.DeleteEmpleadoAsync(id);
+            if (eliminado)
+            {
+                AlertService.Success(TempData, "El empleado ha sido eliminado correctamente.");
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("No se pudo eliminar. Es posible que el empleado tenga nóminas o datos contables asociados.");
+            }
         }
 
         private EstadoCivil GetEstadoCivil(string estadoCivilStr)

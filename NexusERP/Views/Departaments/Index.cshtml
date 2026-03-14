@@ -146,6 +146,9 @@
                             </div>
 
                             <div class="d-flex gap-2 mt-auto pt-3 border-top">
+
+                                @Html.AntiForgeryToken()
+
                                 <a asp-controller="Departaments" asp-action="Details" asp-route-id="@dept.Id"
                                    class="btn btn-sm btn-light flex-fill d-flex align-items-center justify-content-center gap-1 text-muted"
                                    title="Ver Detalles">
@@ -155,6 +158,7 @@
                                     </svg>
                                     Ver
                                 </a>
+
                                 <button onclick="openAddEmployeeModal('@dept.Id', '@dept.Nombre')"
                                         class="btn btn-sm btn-outline-custom flex-fill d-flex align-items-center justify-content-center gap-1"
                                         title="Añadir Empleado">
@@ -163,6 +167,25 @@
                                     </svg>
                                     Añadir
                                 </button>
+
+                                <button class="btn btn-sm btn-action btn-edit" title="Editar"
+                                        data-bs-toggle="modal" data-bs-target="#modal-update-department"
+                                        data-id="@dept.Id"
+                                        data-nombre="@dept.Nombre"
+                                        data-presupuesto="@dept.PresupuestoAnual.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                                    <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
+                                </button>
+
+                                <button class="btn btn-sm btn-action btn-delete" title="Eliminar"
+                                        data-url="/Departaments/Delete/@dept.Id"
+                                        data-name="@dept.Nombre">
+                                    <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+
                             </div>
                         </div>
                     </div>

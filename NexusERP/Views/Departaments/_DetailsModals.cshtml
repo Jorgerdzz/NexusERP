@@ -11,7 +11,7 @@
             </div>
 
             <div class="modal-body p-4">
-                <form asp-controller="Empleados" asp-action="Create" method="post">
+                <form asp-controller="Empleados" asp-action="Create" method="post" class="form-crud">
                     <input type="hidden" name="DepartamentoId" value="@Model.Id" /> <h6 class="fw-bold text-secondary-custom mb-3 border-bottom pb-2">Datos Personales</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
@@ -113,7 +113,7 @@
             </div>
 
             <div class="modal-body p-4">
-                <form asp-controller="Empleados" asp-action="Create" method="post">
+                <form asp-controller="Empleados" asp-action="Create" method="post" class="form-crud" data-confirm="true">
                     <input type="hidden" name="DepartamentoId" value="@Model.Id" /> <h6 class="fw-bold text-secondary-custom mb-3 border-bottom pb-2">Datos Personales</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
