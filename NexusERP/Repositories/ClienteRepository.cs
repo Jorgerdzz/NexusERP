@@ -72,7 +72,7 @@ namespace NexusERP.Repositories
                 await this.context.SaveChangesAsync();
                 return true;
             }
-            catch(Exception ex)
+            catch
             {
                 return false;
             }
