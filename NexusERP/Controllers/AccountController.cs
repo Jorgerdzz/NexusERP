@@ -76,8 +76,16 @@ namespace NexusERP.Controllers
                     NombreEmpresa = resultado.user.Empresa.NombreComercial
                 };
                 HttpContext.Session.SetObject("USUARIO_LOGUEADO", user);
-                AlertService.Toast(TempData, $"Bienvenido {user.Nombre}");
-                return RedirectToAction("Index", "Dashboard");
+                if (user.Rol == RolesUsuario.Admin)
+                {
+                    AlertService.Toast(TempData, $"Bienvenido {user.Nombre}");
+                    return RedirectToAction("Index", "Dashboard");
+                }
+                else
+                {
+                    AlertService.Toast(TempData, $"Bienvenido {user.Nombre}");
+                    return RedirectToAction("Index", "PortalEmpleado");
+                }
 
             }
             else
