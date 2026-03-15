@@ -25,6 +25,7 @@ builder.Services.AddTransient<FacturacionRepository>();
 builder.Services.AddTransient<ReportsRepository>();
 builder.Services.AddTransient<DashboardRepository>();
 builder.Services.AddTransient<ProfileRepository>();
+builder.Services.AddTransient<SettingsRepository>();
 
 
 string connectionString = builder.Configuration.GetConnectionString("NexusConnection");
