@@ -46,6 +46,14 @@ namespace NexusERP.Repositories
                 .FirstOrDefaultAsync(n => n.Id == idNomina && n.EmpresaId == idEmpresa);
         }
 
+        public async Task<Nomina> GetNominaEmpleadoPorMesAsync(int idEmpleado, int mes, int anio)
+        {
+            return await this.context.Nominas
+                .Include(e => e.Empleado)
+                .Include(e => e.NominaDetalles)
+                .FirstOrDefaultAsync(e => e.EmpleadoId == idEmpleado && e.Mes == mes && e.Anio == anio);
+        }
+
         public async Task<(bool exito, string mensaje)> GuardarNominaCompletaAsync(Nomina nomina)
         {
             using var transaction = await this.context.Database.BeginTransactionAsync();

@@ -11,6 +11,7 @@ namespace NexusERP.Models
         public RolesUsuario Rol { get; set; }
         public int EmpresaId { get; set; }
         public string NombreEmpresa { get; set; }
+        public int EmpleadoId { get; set; }
         public string inicialesUsuario => Nombre.ObtenerIniciales();
     }
 }

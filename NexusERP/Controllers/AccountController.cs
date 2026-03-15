@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NexusERP.Enums;
 using NexusERP.Models;
 using NexusERP.Repositories;
@@ -73,6 +72,7 @@ namespace NexusERP.Controllers
                     Email = resultado.user.Email,
                     Rol = (RolesUsuario)resultado.user.Rol,
                     EmpresaId = resultado.user.EmpresaId,
+                    EmpleadoId = resultado.user.EmpleadoId ?? 0,
                     NombreEmpresa = resultado.user.Empresa.NombreComercial
                 };
                 HttpContext.Session.SetObject("USUARIO_LOGUEADO", user);
