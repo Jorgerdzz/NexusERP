@@ -1,5 +1,5 @@
 ﻿/* ========================================
-   VISTA: PLAN CONTABLE
+   VISTA: LIBRO MAYOR
    Estilos independientes y completos
    ======================================== */
 
@@ -19,7 +19,7 @@
 }
 
 .kpi-wrapper {
-    opacity: 0; /* Oculto inicialmente para la animación */
+    opacity: 0;
     animation: fadeInUp 0.5s ease forwards;
 }
 
@@ -35,6 +35,10 @@
     color: #1e293b;
 }
 
+.text-brand {
+    color: #3b9bad; /* Color principal de marca */
+}
+
 /* ----------------------------------------
    3. NAVEGACIÓN (Estilo Pills)
    ---------------------------------------- */
@@ -44,7 +48,7 @@
 }
 
     .custom-nav-pills .acct-nav-link.active {
-        background-color: #3b9bad; /* Color principal de marca */
+        background-color: #3b9bad;
         color: white !important;
         box-shadow: 0 4px 6px -1px rgba(59, 155, 173, 0.2);
     }
@@ -55,7 +59,7 @@
 }
 
 /* ----------------------------------------
-   4. TARJETAS Y CONTENEDORES
+   4. TARJETAS, CAJAS Y ESTADOS VACÍOS
    ---------------------------------------- */
 .custom-card {
     background: white;
@@ -79,8 +83,31 @@
     color: #3b9bad;
 }
 
+.empty-state-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px dashed #e2e8f0;
+    border-radius: 1.5rem;
+}
+
+/* Caja de Saldo Final (Extracto) */
+.bank-statement-card {
+    background: linear-gradient(135deg, rgba(59, 155, 173, 0.08), rgba(59, 155, 173, 0.02));
+    border: 1px solid rgba(59, 155, 173, 0.2);
+}
+
+.icon-brand {
+    color: #3b9bad;
+}
+
+/* Separador lateral en escritorio para el saldo */
+@media (min-width: 768px) {
+    .border-start-md {
+        border-left: 1px solid rgba(59, 155, 173, 0.2) !important;
+    }
+}
+
 /* ----------------------------------------
-   5. BOTONES
+   5. BOTONES E INPUTS
    ---------------------------------------- */
 .btn-brand {
     background-color: #3b9bad;
@@ -95,36 +122,40 @@
         color: white;
     }
 
-.btn-light-custom {
-    background-color: #f8fafc;
-    color: #64748b;
+.custom-input {
     border: 1px solid #e2e8f0;
-    transition: all 0.2s ease;
-}
-
-    .btn-light-custom:hover {
-        background-color: #f1f5f9;
-        color: #334155;
-        border-color: #cbd5e1;
-    }
-
-.btn-icon-only {
-    padding: 0;
     border-radius: 0.5rem;
-    color: #64748b;
-    background-color: transparent;
-    border: 1px solid transparent;
+    color: #334155;
     transition: all 0.2s ease;
 }
 
-    .btn-icon-only:hover {
-        background-color: #f1f5f9;
-        color: #3b9bad;
-        border-color: #cbd5e1;
+    .custom-input:focus {
+        border-color: #3b9bad;
+        box-shadow: none; /* Quitamos el glow por defecto si va en input-group */
     }
+
+/* Ajuste específico para input groups en los filtros */
+.filter-bar .input-group:focus-within {
+    box-shadow: 0 0 0 3px rgba(59, 155, 173, 0.15) !important;
+    border-radius: 0.5rem;
+}
+
+    .filter-bar .input-group:focus-within .input-group-text,
+    .filter-bar .input-group:focus-within .custom-input {
+        border-color: #3b9bad;
+    }
+
+/* Interacción sutil en botón secundario */
+.btn-outline-secondary svg {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-outline-secondary:hover svg {
+    transform: translateY(-2px);
+}
 
 /* ----------------------------------------
-   6. TABLA JERÁRQUICA
+   6. TABLA DEL MAYOR
    ---------------------------------------- */
 .custom-table th {
     font-weight: 600;
@@ -133,58 +164,22 @@
 
 .custom-table td {
     border-bottom: 1px solid #f8fafc;
-    vertical-align: middle;
 }
 
-.custom-table tbody tr {
+.custom-table tbody tr.table-row-animate {
     transition: background-color 0.2s ease;
 }
 
-    .custom-table tbody tr:hover {
+    .custom-table tbody tr.table-row-animate:hover {
         background-color: #f8fafc;
     }
 
-/* ----------------------------------------
-   7. ETIQUETAS (Soft Badges)
-   ---------------------------------------- */
-.badge-soft-success {
-    background-color: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.2) !important;
-    color: #10b981;
-}
-
-.badge-soft-danger {
-    background-color: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.2) !important;
-    color: #ef4444;
-}
-
-.badge-soft-warning {
-    background-color: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.2) !important;
-    color: #f59e0b;
-}
-
-.badge-soft-info {
-    background-color: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.2) !important;
-    color: #3b82f6;
-}
-
-/* ----------------------------------------
-   8. INPUTS DEL MODAL
-   ---------------------------------------- */
-.custom-input {
+/* Fila de Saldo Inicial (Tratamiento especial) */
+.row-saldo-inicial {
     background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    padding: 0.6rem 1rem;
-    transition: all 0.2s ease;
-    color: #334155;
+    border-bottom: 2px dashed #cbd5e1 !important;
 }
 
-    .custom-input:focus {
-        background-color: #ffffff;
-        border-color: #3b9bad;
-        box-shadow: 0 0 0 3px rgba(59, 155, 173, 0.15);
+    .row-saldo-inicial:hover {
+        background-color: #f1f5f9;
     }

@@ -71,76 +71,80 @@
 
         <!-- KPI Cards con Colores -->
         <div class="row g-4 mb-5">
-            <!-- Facturado Este Mes - Azul -->
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-4 d-flex flex-column justify-content-center">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <p class="text-muted small fw-semibold text-uppercase mb-0">Facturado (Este Mes)</p>
-                            <div class="icon-kpi">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--secondary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="12" y1="1" x2="12" y2="23"></line>
-                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                </svg>
-                            </div>
+                <div class="card card-kpi card-kpi-primary h-100 p-4 kpi-wrapper" style="animation-delay: 0.1s;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <p class="text-muted small fw-semibold text-uppercase mb-0">Facturado (Mes)</p>
+                        <div class="icon-kpi" style="background: linear-gradient(135deg, #e0f4f7, #ffffff);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--secondary-color, #3b9bad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
                         </div>
-                        <h3 class="fw-bold mb-0">@Model.FacturadoEsteMes.ToString("N2") €</h3>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0 text-dark-heading">
+                            @Model.FacturadoEsteMes.ToString("N2") <span class="fs-6 fw-normal text-muted">€</span>
+                        </h3>
                     </div>
                 </div>
             </div>
 
-            <!-- Pendiente de Cobro - Naranja -->
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 4px solid #f59e0b !important;">
-                    <div class="card-body p-4 d-flex flex-column justify-content-center">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <p class="text-muted small fw-semibold text-uppercase mb-0">Pendiente de Cobro</p>
-                            <div class="icon-kpi">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                            </div>
+                <div class="card card-kpi card-kpi-warning h-100 p-4 kpi-wrapper" style="animation-delay: 0.2s;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <p class="text-muted small fw-semibold text-uppercase mb-0">Pdte. de Cobro</p>
+                        <div class="icon-kpi" style="background: linear-gradient(135deg, #fffbeb, #ffffff);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
                         </div>
-                        <h3 class="fw-bold mb-0" style="color: #d97706;">@Model.PendienteDeCobro.ToString("N2") €</h3>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0" style="color: #f59e0b;">
+                            @Model.PendienteDeCobro.ToString("N2") <span class="fs-6 fw-normal text-muted">€</span>
+                        </h3>
                     </div>
                 </div>
             </div>
 
-            <!-- Facturas Emitidas - Verde -->
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-4 d-flex flex-column justify-content-center">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <p class="text-muted small fw-semibold text-uppercase mb-0">Facturas Emitidas</p>
-                            <div class="icon-kpi">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--success-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                                    <polyline points="13 2 13 9 20 9"></polyline>
-                                </svg>
-                            </div>
+                <div class="card card-kpi card-kpi-success h-100 p-4 kpi-wrapper" style="animation-delay: 0.3s;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <p class="text-muted small fw-semibold text-uppercase mb-0">Facturas Emitidas</p>
+                        <div class="icon-kpi" style="background: linear-gradient(135deg, #e8f8f0, #ffffff);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--success-color, #10b981)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                <polyline points="13 2 13 9 20 9"></polyline>
+                            </svg>
                         </div>
-                        <h3 class="fw-bold mb-0">@Model.TotalFacturas</h3>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0 text-dark-heading">
+                            @Model.TotalFacturas <span class="fs-6 fw-normal text-muted">docs</span>
+                        </h3>
                     </div>
                 </div>
             </div>
 
-            <!-- Clientes Activos - Morado -->
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-4 d-flex flex-column justify-content-center">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <p class="text-muted small fw-semibold text-uppercase mb-0">Clientes Activos</p>
-                            <div class="icon-kpi">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="9" cy="7" r="4"></circle>
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                </svg>
-                            </div>
+                <div class="card card-kpi card-kpi-purple h-100 p-4 kpi-wrapper" style="animation-delay: 0.4s;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <p class="text-muted small fw-semibold text-uppercase mb-0">Clientes Activos</p>
+                        <div class="icon-kpi" style="background: linear-gradient(135deg, #f3e8ff, #ffffff);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9333ea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
                         </div>
-                        <h3 class="fw-bold mb-0">@Model.TotalClientes</h3>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0 text-dark-heading">
+                            @Model.TotalClientes <span class="fs-6 fw-normal text-muted">activos</span>
+                        </h3>
                     </div>
                 </div>
             </div>
