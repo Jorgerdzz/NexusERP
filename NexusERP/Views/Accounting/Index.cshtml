@@ -7,12 +7,12 @@
 <link rel="stylesheet" href="~/css/accounting-styles.css" asp-append-version="true" />
 
 <main class="bg-light pb-5 min-vh-100">
-    <div class="container-fluid px-4 pt-4">
+    <div class="container-fluid px-4 pt-4 dashboard-container">
 
         <!-- Page Header -->
         <div class="mb-4">
-            <h1 class="h4 fw-bold text-dark mb-1">Contabilidad y Finanzas</h1>
-            <p class="text-muted small">Gestión financiera y registros contables</p>
+            <h1 class="h3 fw-bold text-dark mb-1">Contabilidad y Finanzas</h1>
+            <p class="text-muted mb-0">Gestión financiera y registros contables</p>
         </div>
 
         <!-- Navegación del Módulo -->
@@ -35,105 +35,79 @@
 
         <!-- TARJETAS DE KPIs -->
         <div class="row g-4 mb-4">
-            <!-- Ingresos -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-3 h-100">
-                    <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-muted small fw-medium mb-1">Total Ingresos (Año)</p>
-                            <h3 class="fw-bold mb-0 text-info">@Model.TotalIngresos.ToString("N2") €</h3>
-                        </div>
-                        <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                            <i class="fas fa-arrow-trend-up fs-4"></i>
-                        </div>
-                    </div>
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <p class="text-muted small fw-semibold text-uppercase letter-spacing-wide mb-2">Total Ingresos (Año)
+                    </p>
+                    <h3 class="fw-bold mb-0 text-dark">
+                        @Model.TotalIngresos.ToString("N2") <span class="text-muted fs-6">€</span>
+                    </h3>
                 </div>
             </div>
 
-            <!-- Gastos -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-3 h-100">
-                    <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-muted small fw-medium mb-1">Total Gastos (Año)</p>
-                            <h3 class="fw-bold mb-0 text-danger">@Model.TotalGastos.ToString("N2") €</h3>
-                        </div>
-                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                            <i class="fas fa-arrow-trend-down fs-4"></i>
-                        </div>
-                    </div>
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <p class="text-muted small fw-semibold text-uppercase letter-spacing-wide mb-2">Total Gastos (Año)
+                    </p>
+                    <h3 class="fw-bold mb-0 text-dark">
+                        @Model.TotalGastos.ToString("N2") <span class="text-muted fs-6">€</span>
+                    </h3>
                 </div>
             </div>
 
-            <!-- Beneficio Neto -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-3 h-100">
-                    <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-muted small fw-medium mb-1">Resultado Neto</p>
-                            @{
-                                string colorBeneficio = Model.BeneficioNeto >= 0 ? "text-success" : "text-danger";
-                            }
-                            <h3 class="fw-bold mb-0 @colorBeneficio">@Model.BeneficioNeto.ToString("N2") €</h3>
-                        </div>
-                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                            <i class="fas fa-piggy-bank fs-4"></i>
-                        </div>
-                    </div>
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <p class="text-muted small fw-semibold text-uppercase letter-spacing-wide mb-2">Resultado Neto</p>
+                    @{
+                        string colorResultado = Model.BeneficioNeto >= 0 ? "text-success" : "text-danger";
+                    }
+                    <h3 class="fw-bold mb-0 @colorResultado">
+                        @Model.BeneficioNeto.ToString("N2") <span class="text-muted fs-6">€</span>
+                    </h3>
                 </div>
             </div>
         </div>
 
         <!-- GRÁFICOS -->
-        <div class="row g-4">
-
-            <!-- Gráfico de Donut (Gastos por Naturaleza) -->
+        <div class="row g-4 mb-4">
             <div class="col-md-5">
-                <div class="card border-0 shadow-sm rounded-3 h-100">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold text-dark mb-1">Gastos por Naturaleza</h5>
-                        <p class="text-muted small mb-4">Distribución porcentual de los gastos</p>
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h5 class="fw-bold text-dark mb-1">Gastos por Naturaleza</h5>
+                    <p class="text-muted small mb-4">Distribución porcentual de los gastos</p>
 
-                        @if (Model.TotalGastos > 0)
-                        {
-                            <div style="height: 300px; display: flex; justify-content: center;">
-                                <!-- INYECCIÓN DE DATOS VÍA DATA-ATTRIBUTES -->
-                                <canvas id="chartGastos"
-                                        data-labels='@Html.Raw(Json.Serialize(Model.NombresCuentasGasto))'
-                                        data-values='@Html.Raw(Json.Serialize(Model.ImportesGasto))'>
-                                </canvas>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="text-center py-5 text-muted">
-                                <i class="fas fa-chart-pie fs-1 text-light mb-3"></i>
-                                <p>No hay gastos registrados este año.</p>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gráfico de Barras (Evolución) -->
-            <div class="col-md-7">
-                <div class="card border-0 shadow-sm rounded-3 h-100">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold text-dark mb-1">Ingresos vs Gastos</h5>
-                        <p class="text-muted small mb-4">Comparativa mensual del ejercicio actual</p>
-
-                        <div style="height: 300px;">
-                            <!-- INYECCIÓN DE DATOS VÍA DATA-ATTRIBUTES -->
-                            <canvas id="chartEvolucion"
-                                    data-labels='@Html.Raw(Json.Serialize(Model.Meses))'
-                                    data-ingresos='@Html.Raw(Json.Serialize(Model.IngresosMensuales))'
-                                    data-gastos='@Html.Raw(Json.Serialize(Model.GastosMensuales))'>
+                    @if (Model.TotalGastos > 0)
+                    {
+                        <div style="height: 300px; display: flex; justify-content: center;">
+                            <canvas id="chartGastos"
+                                    data-labels='@Html.Raw(Json.Serialize(Model.NombresCuentasGasto))'
+                                    data-values='@Html.Raw(Json.Serialize(Model.ImportesGasto))'>
                             </canvas>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-chart-pie fs-1 text-secondary-subtle mb-3"></i>
+                            <p class="mb-0">No hay gastos registrados este año.</p>
+                        </div>
+                    }
                 </div>
             </div>
 
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h5 class="fw-bold text-dark mb-1">Ingresos vs Gastos</h5>
+                    <p class="text-muted small mb-4">Comparativa mensual del ejercicio actual</p>
+
+                    <div style="height: 300px;">
+                        <canvas id="chartEvolucion"
+                                data-labels='@Html.Raw(Json.Serialize(Model.Meses))'
+                                data-ingresos='@Html.Raw(Json.Serialize(Model.IngresosMensuales))'
+                                data-gastos='@Html.Raw(Json.Serialize(Model.GastosMensuales))'>
+                        </canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
@@ -141,3 +115,25 @@
 @section Scripts {
     <script src="~/js/dashboard-financiero.js" asp-append-version="true"></script>
 }
+
+<style>
+    .dashboard-container {
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    .letter-spacing-wide {
+        letter-spacing: 0.05em;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
