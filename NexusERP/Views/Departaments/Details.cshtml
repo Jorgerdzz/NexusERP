@@ -182,7 +182,7 @@
                                                             data-numss="@empleado.NumSeguridadSocial"
                                                             data-fechaantiguedad="@empleado.FechaAntiguedad.ToString("yyyy-MM-dd")"
                                                             data-grupo="@empleado.GrupoCotizacion"
-                                                            data-salario="@empleado.SalarioBrutoAnual.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                                            data-salario="@empleado.SalarioBrutoAnual.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
                                                             data-iban="@empleado.Iban"
                                                             data-activo="@(empleado.Activo ? "true" : "false")"
                                                             data-estadocivil="@empleado.EstadoCivil"

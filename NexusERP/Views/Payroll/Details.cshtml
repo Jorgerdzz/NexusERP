@@ -122,7 +122,7 @@
                                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-1">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                         </svg>
-                                        @det.Importe.ToString("N2") €
+                                        @det.Importe.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €
                                     </span>
                                 }
                             </td>
@@ -133,7 +133,7 @@
                                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-1">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
                                         </svg>
-                                        @det.Importe.ToString("N2") €
+                                        @det.Importe.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €
                                     </span>
                                 }
                             </td>
@@ -142,8 +142,8 @@
 
                     <tr class="total-row">
                         <td class="text-end text-uppercase">Totales:</td>
-                        <td class="text-end">@Model.TotalDevengado.ToString("N2") €</td>
-                        <td class="text-end">@Model.TotalDeducciones.ToString("N2") €</td>
+                        <td class="text-end">@Model.TotalDevengado.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €</td>
+                        <td class="text-end">@Model.TotalDeducciones.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €</td>
                     </tr>
                 </tbody>
             </table>
@@ -162,7 +162,7 @@
                     <p class="text-white-50 mb-0 small">Importe neto a cobrar</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <div class="liquido-amount">@Model.LiquidoApercibir.ToString("N2") €</div>
+                    <div class="liquido-amount">@Model.LiquidoApercibir.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €</div>
                 </div>
             </div>
         </div>
@@ -179,19 +179,19 @@
                 <div class="col-md-4">
                     <div class="base-item">
                         <span class="base-label">Base Cont. Comunes</span>
-                        <div class="base-value">@Model.BaseCotizacionCc.ToString("N2") €</div>
+                        <div class="base-value">@Model.BaseCotizacionCc.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="base-item">
                         <span class="base-label">Base Cont. Profesionales</span>
-                        <div class="base-value">@Model.BaseCotizacionCp.ToString("N2") €</div>
+                        <div class="base-value">@Model.BaseCotizacionCp.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="base-item">
                         <span class="base-label">Base Sujeta I.R.P.F. (@Model.PorcentajeIrpf%)</span>
-                        <div class="base-value">@Model.BaseIrpf.ToString("N2") €</div>
+                        <div class="base-value">@Model.BaseIrpf.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €</div>
                     </div>
                 </div>
             </div>

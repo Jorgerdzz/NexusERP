@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.Repositories;
+using NexusERP.Services;
 using NexusERP.ViewModels;
 using System.Threading.Tasks;
 
@@ -94,11 +95,11 @@ namespace NexusERP.Controllers
 
             if (resultado.exito)
             {
-                TempData["EXITO"] = resultado.mensaje;
+                AlertService.Toast(TempData, "Cuenta creada correctamente.");
             }
             else
             {
-                TempData["ERROR"] = resultado.mensaje;
+                AlertService.Error(TempData, "Error al registrar la cuenta contable.");
             }
 
             return RedirectToAction("PlanContable"); ;

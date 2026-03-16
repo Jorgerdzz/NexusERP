@@ -44,13 +44,14 @@
 
                     <div class="col-md-5 text-md-end">
                         <span class="text-muted d-block mb-2 text-uppercase fw-bold small">Salario Bruto Anual</span>
-                        <h3 class="fw-bold text-dark mb-3">@Model.SalarioBrutoAnual.ToString("N2") €</h3>
+                        <h3 class="fw-bold text-dark mb-3">@Model.SalarioBrutoAnual.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) €</h3>
+
                         <div class="d-inline-flex align-items-center gap-2 bg-success-light px-3 py-2 rounded">
                             <svg style="width: 16px; height: 16px;" class="text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             <span class="text-success small fw-medium">
-                                Mensual sugerido (14 pagas): <strong id="salarioSugerido">@Model.SalarioMensualSugerido.ToString("N2")</strong> €
+                                Mensual sugerido (14 pagas): <strong id="salarioSugerido">@Model.SalarioMensualSugerido.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)</strong> €
                             </span>
                         </div>
                     </div>

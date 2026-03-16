@@ -7,6 +7,7 @@ using NexusERP.Repositories;
 using NexusERP.ViewModels;
 using QuestPDF.Fluent;
 using System.Threading.Tasks;
+using NexusERP.Services;
 
 namespace NexusERP.Controllers
 {
@@ -73,7 +74,16 @@ namespace NexusERP.Controllers
                 Activo = true
             };
 
-            await this.repoClientes.CrearClienteAsync(nuevo);
+            bool creado = await this.repoClientes.CrearClienteAsync(nuevo);
+
+            if (creado)
+            {
+                AlertService.Toast(TempData, "Cliente guardado correctamente", "success");
+            }
+            else
+            {
+                AlertService.Error(TempData, "Hubo un error al guardar el cliente");
+            }
 
             return RedirectToAction("Clientes");
         }
@@ -124,9 +134,15 @@ namespace NexusERP.Controllers
             var res = await this.repoFacturas.GuardarFacturaYContabilizarAsync(factura, empresaId);
 
             if (res.exito)
+            {
+                AlertService.Toast(TempData, "Facutra emitida correctamente", "success");
                 return Ok();
+            }
             else
+            {
+                AlertService.Error(TempData, "Hubo un error al emitir la factura");
                 return StatusCode(500);
+            }
         }
 
         [HttpPost]
@@ -135,11 +151,11 @@ namespace NexusERP.Controllers
             bool resultado = await this.repoFacturas.CobrarFacturaAsync(idFactura);
             if (resultado)
             {
-                TempData["MENSAJE"] = "Factura cobrada correctamente";
+                AlertService.Success(TempData, "Facutra cobrada correctamente.");
             }
             else
             {
-                TempData["MENSAJE"] = "No se ha podido cobrar la factura";
+                AlertService.Error(TempData, "No se ha podido cobrar la factura.");
             }
             return RedirectToAction("Index");
         }

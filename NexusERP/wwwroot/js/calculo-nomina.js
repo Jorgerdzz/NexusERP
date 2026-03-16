@@ -128,7 +128,7 @@ function eliminarConcepto(btn) {
 }
 
 // ============================================
-// MOTOR DE CÁLCULO (Global y a prueba de fallos)
+// MOTOR DE CÁLCULO
 // ============================================
 
 function formatMoneda(val) {
@@ -233,12 +233,15 @@ function calcularNomina() {
     setVal('importe_empresa_fogasa', formatMoneda(cEmpFog));
     setVal('importe_empresa_mei', formatMoneda(cEmpMEI));
 
-    setVal('total_empresa_ss_hidden', totalEmpSS.toFixed(2));
+    // CORRECCIÓN 1: Sustituimos el punto por coma en los campos ocultos calculados
+    setVal('total_empresa_ss_hidden', totalEmpSS.toFixed(2).replace('.', ','));
+
+    // Este formatMoneda ya viene con coma, no hay problema
     setVal('coste_total_empresa', formatMoneda(totalDevengado + totalEmpSS));
 }
 
 // ============================================
-// INICIALIZACIÓN AL CARGAR LA PÁGINA
+// INICIALIZACIÓN Y PARCHE DE ENVÍO
 // ============================================
 document.addEventListener('DOMContentLoaded', function () {
     const inputSalarioBase = document.getElementById('SalarioBase');
@@ -262,4 +265,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Calcular por primera vez al entrar
     calcularNomina();
+
+    // ============================================
+    // CORRECCIÓN 2: Interceptor de formulario (Puntos por Comas)
+    // ============================================
+    const formNomina = document.querySelector('form.form-crud') || document.querySelector('form');
+
+    if (formNomina) {
+        formNomina.addEventListener('submit', function () {
+            // Buscamos TODOS los inputs numéricos (incluido el salario base y los dinámicos)
+            const inputsNumericos = this.querySelectorAll('input[type="number"], .concepto-input, #SalarioBase');
+
+            inputsNumericos.forEach(input => {
+                if (input.value) {
+                    // Cambiamos el punto por la coma antes de enviar
+                    let valorConComa = input.value.replace('.', ',');
+
+                    // Lo pasamos a type="text" para que el HTML no bloquee la coma
+                    input.type = 'text';
+                    input.value = valorConComa;
+                }
+            });
+        });
+    }
 });

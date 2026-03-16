@@ -74,8 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const mostrarAlerta = (titulo, mensaje, tipo) => {
             if (typeof Swal !== 'undefined') {
                 Swal.fire(titulo, mensaje, tipo);
-            } else {
-                alert(`${titulo}: ${mensaje}`);
             }
         };
 
@@ -145,7 +143,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         allowOutsideClick: false
                     }).then(() => { window.location.href = urlRedirect; });
                 } else {
-                    alert('¡Factura Emitida con éxito!');
                     window.location.href = urlRedirect;
                 }
             } else {

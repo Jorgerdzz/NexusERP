@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NexusERP.Enums;
 using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.Repositories;
+using NexusERP.Services;
 using NexusERP.ViewModels;
 using QuestPDF.Fluent;
-using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
@@ -213,12 +214,12 @@ namespace NexusERP.Controllers
 
             if (exito)
             {
-                TempData["EXITO"] = mensaje;
+                AlertService.Toast(TempData, "Nómina generada correctamente.");
                 return RedirectToAction("Details", new { idNomina = nomina.Id});
             }
             else
             {
-                TempData["ERROR"] = mensaje;
+                AlertService.Error(TempData, "Hubo un error al generar la nómina.");
                 return RedirectToAction("Calcular", new { empleadoId = model.EmpleadoId, mes = model.Mes, anio = model.Anio });
             }
         }
@@ -230,11 +231,11 @@ namespace NexusERP.Controllers
 
             if (resultado)
             {
-                TempData["EXITO"] = "Nómina pagada y contabilizada correctamente.";
+                AlertService.Toast(TempData, "Nómina abonada correctamente.", "success");
             }
             else
             {
-                TempData["ERROR"] = "No se ha podido procesar el pago de la nómina.";
+                AlertService.Error(TempData, "Hubo un error al abonar la nómina.");
             }
 
             return RedirectToAction("Index");
