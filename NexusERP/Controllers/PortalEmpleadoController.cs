@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NexusERP.Extensions;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
+using System.Security.Claims;
 
 namespace NexusERP.Controllers
 {
+    [Authorize(Policy = "EMPLEADO")]
     public class PortalEmpleadoController : Controller
     {
         private PayrollRepository repoNominas;
@@ -17,17 +20,18 @@ namespace NexusERP.Controllers
 
         public IActionResult Index()
         {
-            UsuarioSessionModel usuarioActual = HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
-            ViewBag.NombreEmpleado = usuarioActual.Nombre;
+            string nombreUsuario = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+            ViewBag.NombreEmpleado = nombreUsuario;
             return View();
         }
 
         public async Task<IActionResult> MisNominas(int? mes, int? anio)
         {
-            UsuarioSessionModel usuarioActual = HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
+            string idEmpleadoString = HttpContext.User.FindFirstValue("EmpleadoId");
+            int idEmpleado = int.Parse(idEmpleadoString);
             int mesConsulta = mes ?? DateTime.Now.Month;
             int anioConsulta = anio ?? DateTime.Now.Year;
-            Nomina nomina = await this.repoNominas.GetNominaEmpleadoPorMesAsync(usuarioActual.EmpleadoId, mesConsulta, anioConsulta);
+            Nomina nomina = await this.repoNominas.GetNominaEmpleadoPorMesAsync(idEmpleado, mesConsulta, anioConsulta);
             MisNominasViewModel model = new MisNominasViewModel
             {
                 MesSeleccionado = mesConsulta,

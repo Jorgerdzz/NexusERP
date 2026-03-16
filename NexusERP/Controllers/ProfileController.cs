@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using NexusERP.Extensions;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.Services;
 using NexusERP.ViewModels;
+using System.Security.Claims;
 
 namespace NexusERP.Controllers
 {
@@ -18,8 +21,9 @@ namespace NexusERP.Controllers
 
         public async Task<IActionResult> Index()
         {
-            UsuarioSessionModel usuarioActual = HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
-            Usuario user = await this.repo.GetPerfilUsuarioAsync(usuarioActual.IdUsuario);
+            string idUsuarioString = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int idUsuario = int.Parse(idUsuarioString);
+            Usuario user = await this.repo.GetPerfilUsuarioAsync(idUsuario);
             if (user == null) return NotFound();
             MiPerfilViewModel model = new MiPerfilViewModel
             {
@@ -58,16 +62,29 @@ namespace NexusERP.Controllers
 
             if (actualizado)
             {
-                UsuarioSessionModel usuarioActual = HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
-                usuarioActual.Nombre = model.NombreEmpresa;
-                usuarioActual.Email = model.Email;
-                HttpContext.Session.SetObject("USUARIO_LOGUEADO", usuarioActual);
+  
+                var identity = (ClaimsIdentity)User.Identity;
+
+                var claimNombreAntiguo = identity.FindFirst(ClaimTypes.Name);
+                var claimEmailAntiguo = identity.FindFirst(ClaimTypes.Email);
+
+                if (claimNombreAntiguo != null) identity.RemoveClaim(claimNombreAntiguo);
+                if (claimEmailAntiguo != null) identity.RemoveClaim(claimEmailAntiguo);
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, model.NombreUsuario));
+                identity.AddClaim(new Claim(ClaimTypes.Email, model.Email));
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity));
+
                 AlertService.Toast(TempData, "Perfil actualizado correctamente", "success");
             }
             else
             {
-                AlertService.Error(TempData, "Hubo un error al guardar");
+                AlertService.Error(TempData, "Hubo un error al guardar o el email ya existe.");
             }
+
             return RedirectToAction("Index");
         }
     }

@@ -1,7 +1,14 @@
 ﻿@{
     string controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
-    UsuarioSessionModel usuarioActual = Context.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
-    string inicialesUsuario = usuarioActual.inicialesUsuario;
+    // UsuarioSessionModel usuarioActual = Context.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
+    // string inicialesUsuario = usuarioActual.inicialesUsuario;
+
+    string nombreUsuario = User.FindFirst(ClaimTypes.Name)?.Value;
+    string inicialesUsuario = User.FindFirst("Iniciales").Value;
+    string nombreEmpresa = User.FindFirst("NombreEmpresa").Value;
+    bool isAdmin = User.IsInRole(RolesUsuario.Admin.ToString());
+
+
     var alert = TempData.GetAlert();
 }
 
@@ -45,7 +52,7 @@
 
             <nav class="sidebar-nav d-flex flex-column">
 
-                @if (usuarioActual.Rol == RolesUsuario.Admin)
+                @if (isAdmin)
                 {
                     <a asp-controller="Dashboard" asp-action="Index" class="sidebar-link @(controladorActual == "Dashboard" ? "active" : "")">
                         <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -127,14 +134,14 @@
                         <button class="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown">
                             <div class="user-avatar">@inicialesUsuario</div>
                             <div class="text-start d-none d-sm-block">
-                                <div class="fw-bold" style="font-size: 0.9rem; line-height: 1.2">@usuarioActual.Nombre</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">@usuarioActual.NombreEmpresa</div>
+                                <div class="fw-bold" style="font-size: 0.9rem; line-height: 1.2">@nombreUsuario</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">@nombreEmpresa</div>
                             </div>
                             <svg width="16" height="16" class="text-muted ms-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                             <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index">Mi Perfil</a></li>
-                            @if(usuarioActual.Rol == RolesUsuario.Admin)
+                            @if(isAdmin)
                             {
                                 <li><a class="dropdown-item" asp-controller="Settings" asp-action="Index">Configuración</a></li>
                                 

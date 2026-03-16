@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NexusERP.DTOs;
-using NexusERP.Enums;
-using NexusERP.Filters;
+using Microsoft.AspNetCore.Authorization;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
 using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
 {
-    [AuthorizeUser(Rol = RolesUsuario.Admin)]
+    [Authorize(Policy = "ADMIN")]
     public class ReportsController : Controller
     {
         private ReportsRepository repo;

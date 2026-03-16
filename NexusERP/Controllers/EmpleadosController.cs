@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.SqlServer.Server;
 using NexusERP.Enums;
-using NexusERP.Filters;
+using Microsoft.AspNetCore.Authorization;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.Services;
@@ -13,7 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NexusERP.Controllers
 {
-    [AuthorizeUser(Rol = RolesUsuario.Admin)]
+    [Authorize(Policy = "ADMIN")]
     public class EmpleadosController : Controller
     {
         private EmpleadosRepository repoEmpleados;

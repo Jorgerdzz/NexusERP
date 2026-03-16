@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NexusERP.DTOs;
-using NexusERP.Enums;
 using NexusERP.Extensions;
-using NexusERP.Filters;
+using Microsoft.AspNetCore.Authorization;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
 {
-    [AuthorizeUser(Rol = RolesUsuario.Admin)]
+    [Authorize(Policy = "ADMIN")]
     public class DashboardController : Controller
     {
         private DashboardRepository repo;
@@ -26,11 +26,11 @@ namespace NexusERP.Controllers
 
             DashboardMetricsDto estadisticas = await this.repo.GetEstadisticasAsync(anioActual);
 
-            UsuarioSessionModel user = HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
+            string nombreUsuario = HttpContext.User.FindFirstValue(ClaimTypes.Name);
 
             HomeDashboardViewModel model = new HomeDashboardViewModel
             {
-                NombreUsuario = user.Nombre,
+                NombreUsuario = nombreUsuario,
                 TotalFacturadoAnual = estadisticas.TotalFacturadoAnual,
                 TotalGastoSalarial = estadisticas.TotalGastoSalarial,
                 FacturasPendientes = estadisticas.FacturasPendientes,

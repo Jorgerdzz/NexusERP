@@ -14,16 +14,17 @@ namespace NexusERP.Helpers
 
         public int GetEmpresaIdSession()
         {
-            if (this.contextAccessor.HttpContext == null)
+            if (this.contextAccessor.HttpContext?.User == null)
             {
                 return 0;
             }
-            UsuarioSessionModel usuarioActual =
-                this.contextAccessor.HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
 
-            if (usuarioActual != null)
+            var claimEmpresaId = this.contextAccessor.HttpContext.User.FindFirst("EmpresaId");
+
+            // Si existe y es un número válido, lo devolvemos
+            if (claimEmpresaId != null && int.TryParse(claimEmpresaId.Value, out int empresaId))
             {
-                return usuarioActual.EmpresaId;
+                return empresaId;
             }
 
             return 0;

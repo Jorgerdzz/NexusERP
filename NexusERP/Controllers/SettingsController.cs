@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NexusERP.Enums;
 using NexusERP.Extensions;
-using NexusERP.Filters;
+using Microsoft.AspNetCore.Authorization;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.Services;
 using NexusERP.ViewModels;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace NexusERP.Controllers
 {
-    [AuthorizeUser(Rol = RolesUsuario.Admin)]
+    [Authorize(Policy = "ADMIN")]
     public class SettingsController : Controller
     {
         private SettingsRepository repo;
@@ -22,8 +22,9 @@ namespace NexusERP.Controllers
 
         public async Task<IActionResult> Index()
         {
-            UsuarioSessionModel user = HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
-            Empresa empresa = await this.repo.GetEmpresaAsync(user.EmpresaId);
+            string idEmpresaString = HttpContext.User.FindFirstValue("EmpresaId");
+            int idEmpresa = int.Parse(idEmpresaString);
+            Empresa empresa = await this.repo.GetEmpresaAsync(idEmpresa);
             if (empresa == null) return NotFound();
             SettingsViewModel model = new SettingsViewModel
             {

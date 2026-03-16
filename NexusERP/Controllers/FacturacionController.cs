@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NexusERP.Enums;
-using NexusERP.Filters;
+using Microsoft.AspNetCore.Authorization;
 using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.Repositories;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
 {
-    [AuthorizeUser(Rol = RolesUsuario.Admin)]
+    [Authorize(Policy = "ADMIN")]
     public class FacturacionController : Controller
     {
         private ClienteRepository repoClientes;

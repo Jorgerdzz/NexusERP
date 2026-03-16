@@ -1,33 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using NexusERP.Enums;
-using NexusERP.Extensions;
-using NexusERP.Models;
+﻿//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Mvc.Filters;
+//using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace NexusERP.Filters
-{
-    public class AuthorizeUserAttribute: ActionFilterAttribute
-    {
-        public RolesUsuario Rol { get; set; } = RolesUsuario.Ninguno;
+//namespace NexusERP.Filters
+//{
+//    public class AuthorizeUserAttribute: AuthorizeAttribute, IAuthorizationFilter
+//    {
+//        public void OnAuthorization(AuthorizationFilterContext context)
+//        {
+//            var user = context.HttpContext.User;
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            UsuarioSessionModel usuarioActual = context.HttpContext.Session.GetObject<UsuarioSessionModel>("USUARIO_LOGUEADO");
+//            string controller =
+//                context.RouteData.Values["controller"].ToString();
 
-            if (usuarioActual == null)
-            {
-                context.Result = new RedirectToActionResult("LogIn", "Account", null);
-                return; 
-            }
+//            string action =
+//                context.RouteData.Values["action"].ToString();
 
-            if (Rol != RolesUsuario.Ninguno && usuarioActual.Rol != Rol)
-            {
-                context.Result = new RedirectToActionResult("AccessDenied", "Account", null);
-                return; 
-            }
+//            var id =
+//                context.RouteData.Values["idUsuario"];
 
-            base.OnActionExecuting(context);
-        }
+//            ITempDataProvider provider =
+//                context.HttpContext.RequestServices.GetService<ITempDataProvider>();
 
-    }
-}
+//            var tempData = provider.LoadTempData(context.HttpContext);
+
+//            tempData["controller"] = controller;
+//            tempData["action"] = action;
+
+//            if (id != null)
+//            {
+//                tempData["idUsuario"] = id.ToString();
+//            }
+//            else
+//            {
+//                //ELIMINAMOS LA CLAVE PARA QUE NO SE QUEDE ENTRE PETICIONES
+//                tempData.Remove("idUsuario");
+//            }
+
+//            provider.SaveTempData(context.HttpContext, tempData);
+
+//            if (user.Identity.IsAuthenticated == false)
+//            {
+//                context.Result = GetRoute("Account", "LogIn");
+//            }
+//        }
+
+//        private RedirectToRouteResult GetRoute
+//            (string controller, string action)
+//        {
+//            RouteValueDictionary ruta =
+//                new RouteValueDictionary(new
+//                {
+//                    controller = controller,
+//                    action = action
+//                });
+//            RedirectToRouteResult result =
+//                new RedirectToRouteResult(ruta);
+//            return result;
+//        }
+
+//    }
+//}

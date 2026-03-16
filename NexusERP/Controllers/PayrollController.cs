@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NexusERP.Enums;
-using NexusERP.Filters;
 using NexusERP.Helpers;
 using NexusERP.Models;
 using NexusERP.Repositories;
 using NexusERP.ViewModels;
 using QuestPDF.Fluent;
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
 {
-    [AuthorizeUser(Rol = RolesUsuario.Admin)]
+    [Authorize(Policy = "ADMIN")]
     public class PayrollController : Controller
     {
         private PayrollRepository repoNominas;
