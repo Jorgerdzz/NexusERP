@@ -3,7 +3,7 @@
     ViewData["Title"] = $"Factura {Model.NumeroFactura}";
 
     // Cálculos rápidos para la vista
-    decimal baseImponible = Model.FacturaDetalles.Sum(l => l.Cantidad * l.PrecioUnitario);
+    decimal baseImponible = Model.FacturaDetalles?.Sum(l => l.Cantidad * l.PrecioUnitario) ?? 0;
     decimal cuotaIva = Model.IvaTotal;
     decimal totalFactura = baseImponible + cuotaIva;
 }

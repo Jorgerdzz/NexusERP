@@ -27,9 +27,9 @@ namespace NexusERP.Repositories
             int idEmpresa = this.contextAccessor.GetEmpresaIdSession();
 
             return await this.context.Facturas
+                .Include(f => f.FacturaDetalles)
                 .Include(f => f.Cliente)
                 .Include(f => f.Empresa)
-                .Include(f => f.FacturaDetalles)
                 .FirstOrDefaultAsync(f => f.Id == idFactura && f.EmpresaId == idEmpresa);
         }
 

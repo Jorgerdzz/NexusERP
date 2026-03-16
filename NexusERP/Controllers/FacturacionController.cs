@@ -48,9 +48,9 @@ namespace NexusERP.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Details(int idFactura)
+        public async Task<IActionResult> Details(int id)
         {
-            Factura factura = await this.repoFacturas.GetFacturaAsync(idFactura);
+            Factura factura = await this.repoFacturas.GetFacturaAsync(id);
             return View(factura);
         }
 
@@ -135,13 +135,12 @@ namespace NexusERP.Controllers
 
             if (res.exito)
             {
-                AlertService.Toast(TempData, "Facutra emitida correctamente", "success");
-                return Ok();
+                string urlDestino = Url.Action("Details", "Facturacion", new { id = factura.Id });
+                return Json(new { exito = true, urlRedireccion = urlDestino });
             }
             else
             {
-                AlertService.Error(TempData, "Hubo un error al emitir la factura");
-                return StatusCode(500);
+                return BadRequest(new { exito = false, mensaje = "Hubo un error al guardar o contabilizar la factura." });
             }
         }
 
@@ -151,7 +150,7 @@ namespace NexusERP.Controllers
             bool resultado = await this.repoFacturas.CobrarFacturaAsync(idFactura);
             if (resultado)
             {
-                AlertService.Success(TempData, "Facutra cobrada correctamente.");
+                AlertService.Toast(TempData, "Facutra cobrada correctamente.");
             }
             else
             {
