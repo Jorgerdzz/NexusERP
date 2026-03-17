@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NexusERP.Enums;
 using NexusERP.Extensions;
 using NexusERP.Models;
 using NexusERP.Repositories;
@@ -8,7 +9,6 @@ using System.Security.Claims;
 
 namespace NexusERP.Controllers
 {
-    [Authorize(Policy = "EMPLEADO")]
     public class PortalEmpleadoController : Controller
     {
         private PayrollRepository repoNominas;
@@ -18,6 +18,7 @@ namespace NexusERP.Controllers
             this.repoNominas = repoNominas;
         }
 
+        [Authorize(Policy = "EMPLEADO")]
         public IActionResult Index()
         {
             string nombreUsuario = HttpContext.User.FindFirstValue(ClaimTypes.Name);
@@ -25,13 +26,25 @@ namespace NexusERP.Controllers
             return View();
         }
 
-        public async Task<IActionResult> MisNominas(int? mes, int? anio)
+        [Authorize(Policy = "DESCARGARPDF")]
+        public async Task<IActionResult> MisNominas(int? mes, int? anio, int? empleadoId)
         {
-            string idEmpleadoString = HttpContext.User.FindFirstValue("EmpleadoId");
-            int idEmpleado = int.Parse(idEmpleadoString);
+            int idEmpleadoFinal;
+
+            if (User.IsInRole(RolesUsuario.Admin.ToString()) && empleadoId.HasValue)
+            {
+                idEmpleadoFinal = empleadoId.Value;
+                ViewBag.EmpleadoId = empleadoId.Value;
+            }
+            else
+            {
+                string idEmpleadoString = HttpContext.User.FindFirstValue("EmpleadoId");
+                idEmpleadoFinal = int.Parse(idEmpleadoString);
+            }
+
             int mesConsulta = mes ?? DateTime.Now.Month;
             int anioConsulta = anio ?? DateTime.Now.Year;
-            Nomina nomina = await this.repoNominas.GetNominaEmpleadoPorMesAsync(idEmpleado, mesConsulta, anioConsulta);
+            Nomina nomina = await this.repoNominas.GetNominaEmpleadoPorMesAsync(idEmpleadoFinal, mesConsulta, anioConsulta);
             MisNominasViewModel model = new MisNominasViewModel
             {
                 MesSeleccionado = mesConsulta,

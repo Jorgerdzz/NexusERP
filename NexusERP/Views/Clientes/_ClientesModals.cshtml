@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form asp-action="CrearCliente" asp-controller="Facturacion" method="post">
+            <form asp-action="Create" asp-controller="Clientes" method="post">
                 <div class="modal-body py-4">
                     @Html.AntiForgeryToken()
 
@@ -44,7 +44,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form asp-action="EditarCliente" asp-controller="Facturacion" method="post">
+            <form asp-action="Edit" asp-controller="Clientes" method="post">
                 <div class="modal-body py-4">
                     @Html.AntiForgeryToken()
 

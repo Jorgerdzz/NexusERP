@@ -1,0 +1,124 @@
+﻿/* ============================================
+       TABLA DE CLIENTES
+       ============================================ */
+
+.table-minimalist {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    .table-minimalist thead {
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    }
+
+        .table-minimalist thead th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 1rem 1.25rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+    .table-minimalist tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .table-minimalist tbody tr:hover {
+            background-color: #f8fafc;
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+    .table-minimalist tbody td {
+        padding: 1.25rem;
+        vertical-align: middle;
+        color: #334155;
+    }
+
+/* Badges de estado */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-activo {
+    background: linear-gradient(135deg, #e8f8f0, #d1fae5);
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.status-inactivo {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ============================================
+       BOTONES DE ACCIÓN (SVG)
+       ============================================ */
+.btn-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: #64748b;
+}
+
+    .btn-action-icon:hover {
+        background-color: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .btn-action-icon.details:hover {
+        background-color: #e0f4f7;
+        border-color: #3b9bad;
+        color: #3b9bad;
+    }
+
+    .btn-action-icon.edit:hover {
+        background-color: #fffbeb;
+        border-color: #f59e0b;
+        color: #f59e0b;
+    }
+
+    .btn-action-icon.delete:hover {
+        background-color: red;
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+
+/* ============================================
+       ANIMACIONES
+       ============================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kpi-wrapper {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}

@@ -2,6 +2,18 @@
 
 @{
     ViewData["Title"] = "Mis Nóminas";
+
+    if (User.IsInRole(RolesUsuario.Admin.ToString()))
+    {
+        Layout = "_LayoutERP";
+        ViewData["ActiveMenu"] = "Payroll";
+    }
+    else
+    {
+        Layout = "_LayoutERP";
+        ViewData["ActiveMenu"] = "NominasEmpleado";
+    }
+
 }
 
 <div class="container-fluid py-4 min-vh-100" style="background-color: #f8fafc;">
@@ -23,6 +35,10 @@
                     </div>
 
                     <form asp-action="MisNominas" method="get" class="row g-3 align-items-end">
+                        @if (ViewBag.EmpleadoId != null)
+                        {
+                            <input type="hidden" name="empleadoId" value="@ViewBag.EmpleadoId" />
+                        }
                         <div class="col-md-5">
                             <label class="form-label small fw-bold text-muted text-uppercase mb-2" style="letter-spacing: 0.5px;">Mes</label>
                             <select name="mes" class="form-select shadow-none py-2 form-select-payroll" style="border-radius: 0.5rem; border-color: #cbd5e1; background-color: #f8fafc;">

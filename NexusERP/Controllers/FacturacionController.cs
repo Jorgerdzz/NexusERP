@@ -54,40 +54,6 @@ namespace NexusERP.Controllers
             return View(factura);
         }
 
-        public async Task<IActionResult> Clientes()
-        {
-            List<Cliente> clientes = await this.repoClientes.GetClientesAsync();
-            return View(clientes);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CrearCliente(string razonSocial, string cifNif, string email)
-        {
-            int empresaId = this.contextAccessor.GetEmpresaIdSession();
-
-            Cliente nuevo = new Cliente
-            {
-                EmpresaId = empresaId,
-                RazonSocial = razonSocial,
-                CifNif = cifNif,
-                Email = email,
-                Activo = true
-            };
-
-            bool creado = await this.repoClientes.CrearClienteAsync(nuevo);
-
-            if (creado)
-            {
-                AlertService.Toast(TempData, "Cliente guardado correctamente", "success");
-            }
-            else
-            {
-                AlertService.Error(TempData, "Hubo un error al guardar el cliente");
-            }
-
-            return RedirectToAction("Clientes");
-        }
-
         public async Task<IActionResult> NuevaFactura()
         {
             ViewBag.Clientes = await this.repoClientes.GetClientesAsync();
