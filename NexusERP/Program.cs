@@ -40,6 +40,7 @@ builder.Services.AddTransient<ReportsRepository>();
 builder.Services.AddTransient<DashboardRepository>();
 builder.Services.AddTransient<ProfileRepository>();
 builder.Services.AddTransient<SettingsRepository>();
+builder.Services.AddTransient<SearchRepository>();
 
 //POLICIES
 builder.Services.AddAuthorization(options =>
