@@ -41,6 +41,12 @@ namespace NexusERP.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            Empleado empleado = await this.repoEmpleados.FindEmpleadoAsync(id);
+            return View(empleado);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateEmpleadoViewModel model)

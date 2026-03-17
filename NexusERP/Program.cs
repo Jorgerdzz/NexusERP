@@ -48,6 +48,10 @@ builder.Services.AddAuthorization(options =>
     //DEBEMOS CREAR LAS POLICIES QUE NECESITEMOS PARA LOS ROLES
     options.AddPolicy("ADMIN", policy => policy.RequireRole(RolesUsuario.Admin.ToString()));
     options.AddPolicy("EMPLEADO", policy => policy.RequireRole(RolesUsuario.Empleado.ToString()));
+    options.AddPolicy("DESCARGARPDF", policy => policy.RequireRole(
+        RolesUsuario.Empleado.ToString(),
+        RolesUsuario.Admin.ToString()
+    ));
 });
 
 string connectionString = builder.Configuration.GetConnectionString("NexusConnection");

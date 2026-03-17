@@ -247,6 +247,7 @@ namespace NexusERP.Controllers
             return View(nomina);
         }
 
+        [Authorize(Policy = "DESCARGARPDF")]
         public async Task<IActionResult> DescargarPdf(int idNomina)
         {
             Nomina nomina = await this.repoNominas.GetNominaEmpleado(idNomina);
