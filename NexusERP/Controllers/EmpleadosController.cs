@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Globalization;
 
 namespace NexusERP.Controllers
 {
@@ -190,11 +191,11 @@ namespace NexusERP.Controllers
 
             if (errores.Any())
             {
-                TempData["ErrorMessage"] = $"Importación completada con errores. Insertados: {empleadosImportados}";
+                AlertService.Error(TempData, $"Importación completada con errores. Insertados: {empleadosImportados}");
             }
             else
             {
-                TempData["SuccessMessage"] = $"Se importaron {empleadosImportados} empleados correctamente.";
+                AlertService.Toast(TempData, $"Se importaron {empleadosImportados} empleados correctamente.");
             }
 
             return RedirectToAction("Details", "Departaments", new { id = departamentoId });
@@ -290,7 +291,149 @@ namespace NexusERP.Controllers
             return RedirectToAction("Index");
         }
 
-        private EstadoCivil GetEstadoCivil(string estadoCivilStr)
+
+    [HttpGet]
+    public IActionResult DescargarPlantillaCsvGlobal()
+    {
+        var csv = new StringBuilder();
+        // Añadimos "Departamento" como primera columna
+        csv.AppendLine("Departamento,Nombre,Apellidos,DNI,EmailCorporativo,FechaNacimiento,NumSeguridadSocial,FechaAntiguedad,GrupoCotizacion,SalarioBrutoAnual,IBAN,EstadoCivil,NumeroHijos,PorcentajeDiscapacidad");
+
+        // Fila de ejemplo
+        csv.AppendLine("Recursos Humanos,Juan,Perez,12345678A,juan@empresa.com,1990-05-10,123456789012,2022-01-01,5,25000,ES7620770024003102575766,1,0,0");
+
+        return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", "PlantillaGlobalEmpleados.csv");
+    }
+
+    // 2. EL BUSCADOR "INTELIGENTE" DE DEPARTAMENTOS
+    private int? BuscarDepartamentoInteligente(string nombreCsv, List<Departamento> departamentosBD)
+    {
+        if (string.IsNullOrWhiteSpace(nombreCsv)) return null;
+
+        // Función rápida para limpiar textos (quita tildes y lo pasa a minúsculas)
+        string LimpiarTexto(string texto)
+        {
+            var normalizedString = texto.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC).ToLower().Trim();
+        }
+
+        string textoLimpio = LimpiarTexto(nombreCsv);
+
+        // Diccionario de Alias (Puedes añadir los que quieras)
+        var alias = new Dictionary<string, string>
+        {
+            { "rrhh", "recursos humanos" },
+            { "it", "informatica" },
+            { "sistemas", "informatica" },
+            { "admin", "administracion" },
+            { "mkt", "marketing" }
+        };
+
+        // Si el usuario escribió un alias, lo traducimos al nombre real
+        if (alias.ContainsKey(textoLimpio))
+        {
+            textoLimpio = alias[textoLimpio];
+        }
+
+        // Buscamos en la Base de Datos comparando los textos limpios
+        var dept = departamentosBD.FirstOrDefault(d => LimpiarTexto(d.Nombre) == textoLimpio);
+
+        return dept?.Id;
+    }
+
+    // 3. LA IMPORTACIÓN GLOBAL
+    [HttpPost]
+    public async Task<IActionResult> ImportCsvGlobal(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            AlertService.Error(TempData, "Debes seleccionar un archivo CSV.");
+            return RedirectToAction("Index");
+        }
+
+        int empleadosImportados = 0;
+        List<string> errores = new List<string>();
+
+        var departamentosBD = await this.repoDepartamentos.GetDepartamentosAsync(); // Ajusta este método a tu repositorio
+
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+            int fila = 0;
+            while (!reader.EndOfStream)
+            {
+                var linea = await reader.ReadLineAsync();
+                fila++;
+
+                if (fila == 1) continue; // Saltar cabecera
+
+                var valores = linea.Split(',');
+
+                try
+                {
+                    // Buscamos el departamento con la función inteligente (Índice 0)
+                    int? idDept = BuscarDepartamentoInteligente(valores[0], departamentosBD);
+
+                    if (idDept == null)
+                    {
+                        errores.Add($"Fila {fila}: El departamento '{valores[0]}' no existe en la empresa.");
+                        continue;
+                    }
+
+                    // OJO: Los índices se desplazan +1 respecto a tu código anterior
+                    var empleado = new Empleado
+                    {
+                        DepartamentoId = idDept.Value,
+                        Nombre = valores[1],
+                        Apellidos = valores[2],
+                        Dni = valores[3],
+                        EmailCorporativo = valores[4],
+                        FechaNacimiento = DateOnly.Parse(valores[5]),
+                        NumSeguridadSocial = valores[6],
+                        FechaAntiguedad = DateOnly.Parse(valores[7]),
+                        GrupoCotizacion = int.Parse(valores[8]),
+                        SalarioBrutoAnual = decimal.Parse(valores[9]),
+                        Iban = valores[10]?.Replace(" ", "").ToUpper(),
+                        EstadoCivil = (int)GetEstadoCivil(valores[11]),
+                        NumeroHijos = int.Parse(valores[12]),
+                        PorcentajeDiscapacidad = int.Parse(valores[13]),
+                        Activo = true
+                    };
+
+                    bool exito = await repoEmpleados.CreateEmpleadoAsync(empleado);
+
+                    if (exito) empleadosImportados++;
+                    else errores.Add($"Fila {fila}: Error al insertar en base de datos.");
+                }
+                catch (Exception ex)
+                {
+                    errores.Add($"Fila {fila}: Error de formato. Revisa fechas o números. ({ex.Message})");
+                }
+            }
+        }
+
+        if (errores.Any())
+        {
+            // Puedes mostrar los errores en el TempData o usar tu AlertService
+            AlertService.Warning(TempData, errores.First());
+        }
+        else
+        {
+            AlertService.Toast(TempData, $"Se importaron {empleadosImportados} empleados correctamente.");
+        }
+
+        return RedirectToAction("Index");
+    }
+
+    private EstadoCivil GetEstadoCivil(string estadoCivilStr)
         {
             return estadoCivilStr.ToLower() switch
             {

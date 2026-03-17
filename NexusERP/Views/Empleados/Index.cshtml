@@ -18,32 +18,48 @@
 
 <div class="container-fluid py-4">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
         <div>
             <h1 class="page-title fw-bold mb-1">Todos los Empleados</h1>
             <p class="text-muted-custom mb-0">@totalEmpleados empleados en total</p>
         </div>
 
-        <form action="/Empleados/Index" method="get">
-            <select name="idDepartamento" class="form-select text-muted-custom shadow-sm border-0"
-                    style="border-radius: 0.5rem; background-color: #f8fafc;" onchange="this.form.submit()">
-                <option>Todos los Departamentos</option>
-                @if (Model.Departamentos != null)
-                {
-                    @foreach (Departamento dept in Model.Departamentos)
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <form action="/Empleados/Index" method="get" class="me-2">
+                <select name="idDepartamento" class="form-select text-muted-custom shadow-sm border-0"
+                        style="border-radius: 0.5rem; background-color: #f8fafc; min-width: 200px;" onchange="this.form.submit()">
+                    <option>Todos los Departamentos</option>
+                    @if (Model.Departamentos != null)
                     {
-                        if (ViewBag.DepartamentoSeleccionado != null && ViewBag.DepartamentoSeleccionado == dept.Id)
+                        @foreach (var dept in Model.Departamentos)
                         {
-                            <option value="@dept.Id" selected>@dept.Nombre</option>
-                        }
-                        else
-                        {
-                            <option value="@dept.Id">@dept.Nombre</option>
+                            if (ViewBag.DepartamentoSeleccionado != null && ViewBag.DepartamentoSeleccionado == dept.Id)
+                            {
+                                <option value="@dept.Id" selected>@dept.Nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@dept.Id">@dept.Nombre</option>
+                            }
                         }
                     }
-                }
-            </select>
-        </form>
+                </select>
+            </form>
+
+            <a asp-controller="Empleados" asp-action="DescargarPlantillaCsvGlobal" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 fw-medium" style="border-radius: 0.5rem;">
+                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Plantilla CSV
+            </a>
+
+            <button class="btn btn-primary-custom d-flex align-items-center gap-2 px-3 fw-medium" data-bs-toggle="modal" data-bs-target="#modal-import-csv-global" style="border-radius: 0.5rem;">
+                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Importar Global
+            </button>
+        </div>
     </div>
 
     @if (Model != null)
@@ -272,6 +288,31 @@
                 </form>
             </div>
 
+        </div>
+    </div>
+</div>
+
+@* Modal: Importar CSV Global *@
+<div class="modal fade" id="modal-import-csv-global" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark">Importar Empleados Global</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Empleados" asp-action="ImportCsvGlobal" method="post" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <div class="alert bg-light border text-muted small mb-4">
+                        <i class="fas fa-info-circle me-1"></i> El sistema intentará asignar automáticamente los departamentos. Asegúrate de que los nombres coincidan con los de la empresa (se aceptan alias como 'RRHH' o 'IT').
+                    </div>
+                    <label class="form-label fw-medium text-dark">Archivo CSV</label>
+                    <input type="file" name="file" class="form-control shadow-none" accept=".csv" required>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 pb-4 px-4 d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary-custom fw-medium">Importar Archivo</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
