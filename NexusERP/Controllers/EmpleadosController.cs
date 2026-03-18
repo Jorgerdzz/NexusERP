@@ -300,17 +300,16 @@ namespace NexusERP.Controllers
         csv.AppendLine("Departamento,Nombre,Apellidos,DNI,EmailCorporativo,FechaNacimiento,NumSeguridadSocial,FechaAntiguedad,GrupoCotizacion,SalarioBrutoAnual,IBAN,EstadoCivil,NumeroHijos,PorcentajeDiscapacidad");
 
         // Fila de ejemplo
-        csv.AppendLine("Recursos Humanos,Juan,Perez,12345678A,juan@empresa.com,1990-05-10,123456789012,2022-01-01,5,25000,ES7620770024003102575766,1,0,0");
+        csv.AppendLine("Recursos Humanos,Juan,Perez,12345678A,juan@empresa.com,1990-05-10,123456789012,2022-01-01,5,25000,ES7620770024003102575766,soltero,0,0");
 
         return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", "PlantillaGlobalEmpleados.csv");
     }
 
-    // 2. EL BUSCADOR "INTELIGENTE" DE DEPARTAMENTOS
+
     private int? BuscarDepartamentoInteligente(string nombreCsv, List<Departamento> departamentosBD)
     {
         if (string.IsNullOrWhiteSpace(nombreCsv)) return null;
 
-        // Función rápida para limpiar textos (quita tildes y lo pasa a minúsculas)
         string LimpiarTexto(string texto)
         {
             var normalizedString = texto.Normalize(NormalizationForm.FormD);
@@ -328,7 +327,7 @@ namespace NexusERP.Controllers
 
         string textoLimpio = LimpiarTexto(nombreCsv);
 
-        // Diccionario de Alias (Puedes añadir los que quieras)
+        // Diccionario de Alias 
         var alias = new Dictionary<string, string>
         {
             { "rrhh", "recursos humanos" },
@@ -338,7 +337,7 @@ namespace NexusERP.Controllers
             { "mkt", "marketing" }
         };
 
-        // Si el usuario escribió un alias, lo traducimos al nombre real
+
         if (alias.ContainsKey(textoLimpio))
         {
             textoLimpio = alias[textoLimpio];
@@ -350,7 +349,7 @@ namespace NexusERP.Controllers
         return dept?.Id;
     }
 
-    // 3. LA IMPORTACIÓN GLOBAL
+
     [HttpPost]
     public async Task<IActionResult> ImportCsvGlobal(IFormFile file)
     {
@@ -363,7 +362,7 @@ namespace NexusERP.Controllers
         int empleadosImportados = 0;
         List<string> errores = new List<string>();
 
-        var departamentosBD = await this.repoDepartamentos.GetDepartamentosAsync(); // Ajusta este método a tu repositorio
+        var departamentosBD = await this.repoDepartamentos.GetDepartamentosAsync();
 
         using (var reader = new StreamReader(file.OpenReadStream()))
         {
@@ -375,11 +374,10 @@ namespace NexusERP.Controllers
 
                 if (fila == 1) continue; // Saltar cabecera
 
-                var valores = linea.Split(',');
+                var valores = linea.Contains(';') ? linea.Split(';') : linea.Split(',');
 
                 try
                 {
-                    // Buscamos el departamento con la función inteligente (Índice 0)
                     int? idDept = BuscarDepartamentoInteligente(valores[0], departamentosBD);
 
                     if (idDept == null)
@@ -388,7 +386,6 @@ namespace NexusERP.Controllers
                         continue;
                     }
 
-                    // OJO: Los índices se desplazan +1 respecto a tu código anterior
                     var empleado = new Empleado
                     {
                         DepartamentoId = idDept.Value,
@@ -422,7 +419,6 @@ namespace NexusERP.Controllers
 
         if (errores.Any())
         {
-            // Puedes mostrar los errores en el TempData o usar tu AlertService
             AlertService.Warning(TempData, errores.First());
         }
         else

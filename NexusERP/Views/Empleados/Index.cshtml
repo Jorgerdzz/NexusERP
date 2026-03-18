@@ -25,6 +25,20 @@
         </div>
 
         <div class="d-flex flex-wrap align-items-center gap-2">
+            <a asp-controller="Empleados" asp-action="DescargarPlantillaCsvGlobal" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 fw-medium" style="border-radius: 0.5rem;">
+                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Plantilla CSV
+            </a>
+
+            <button class="btn btn-primary-custom d-flex align-items-center gap-2 px-3 fw-medium" data-bs-toggle="modal" data-bs-target="#modal-import-csv-global" style="border-radius: 0.5rem;">
+                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Importar Global
+            </button>
+
             <form action="/Empleados/Index" method="get" class="me-2">
                 <select name="idDepartamento" class="form-select text-muted-custom shadow-sm border-0"
                         style="border-radius: 0.5rem; background-color: #f8fafc; min-width: 200px;" onchange="this.form.submit()">
@@ -45,20 +59,6 @@
                     }
                 </select>
             </form>
-
-            <a asp-controller="Empleados" asp-action="DescargarPlantillaCsvGlobal" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 fw-medium" style="border-radius: 0.5rem;">
-                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Plantilla CSV
-            </a>
-
-            <button class="btn btn-primary-custom d-flex align-items-center gap-2 px-3 fw-medium" data-bs-toggle="modal" data-bs-target="#modal-import-csv-global" style="border-radius: 0.5rem;">
-                <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                Importar Global
-            </button>
         </div>
     </div>
 
