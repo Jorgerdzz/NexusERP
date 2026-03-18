@@ -41,7 +41,6 @@ namespace NexusERP.Controllers
 
             if (resultado.exito && resultado.usuarioCreado != null)
             {
-                AlertService.Toast(TempData, resultado.mensaje);
                 return RedirectToAction("LogIn");
             }
             else

@@ -250,8 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Prellenar salario base con el sugerido si está vacío
     if (inputSalarioBase && salarioSugeridoText) {
         let textoSugerido = salarioSugeridoText.innerText;
-        let sugeridoStr = textoSugerido.replace(/\./g, '').replace(/\s/g, '').replace(',', '.');
-        let sugeridoVal = parseFloat(sugeridoStr) || 0;
+        let sugeridoVal = parseFloat(textoSugerido) || 0;
 
         if (!inputSalarioBase.value || parseFloat(inputSalarioBase.value) === 0) {
             inputSalarioBase.value = sugeridoVal.toFixed(2);
