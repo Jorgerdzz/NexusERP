@@ -66,19 +66,54 @@
     font-size: 0.75rem;
 }
 
-/* --- BOTONES DE ACCIÓN --- */
-.btn-action {
-    color: #94a3b8;
-    background: transparent;
-    border: none;
-    padding: 0.25rem 0.5rem;
-    transition: color 0.2s ease;
+/* ============================================
+   BOTONES DE ACCIÓN (Estilo SaaS Premium)
+   ============================================ */
+
+.btn-action-modern {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px; /* Bordes ligeramente redondeados */
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: #94a3b8; /* Gris muy suave por defecto */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
 }
 
-    .btn-action:hover {
-        color: #475569;
+    /* Hover base: Si no tiene clase específica, gris claro */
+    .btn-action-modern:hover {
+        background-color: #f8fafc;
+        border-color: #e2e8f0;
+        color: #334155;
     }
 
-.btn-action-delete:hover {
-    color: #ef4444; /* Rojo al pasar el ratón por borrar */
-}
+    .btn-action-modern.btn-details:hover {
+        background-color: #f0f9ff;
+        border-color: #bae6fd;
+        color: #0284c7;
+    }
+
+    /* Hover Lápiz (Editar) -> Naranja Suave */
+    .btn-action-modern.btn-edit:hover {
+        background-color: #fffbeb;
+        border-color: #fde68a;
+        color: #d97706;
+    }
+
+    /* Hover Papelera (Eliminar) -> Rojo Suave */
+    .btn-action-modern.btn-delete:hover {
+        background-color: #fef2f2;
+        border-color: #fecaca;
+        color: #dc2626;
+    }
+
+    /* Efecto de clic (Hundimiento) */
+    .btn-action-modern:active {
+        transform: scale(0.92);
+    }
