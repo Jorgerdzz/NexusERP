@@ -100,7 +100,7 @@ namespace NexusERP.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                TempData["ErrorMessage"] = "Debes seleccionar un archivo CSV.";
+                AlertService.Error(TempData, "Debes seleccionar un archivo CSV.");
                 return RedirectToAction("Details", "Departaments", new { id = departamentoId });
             }
 
@@ -116,11 +116,17 @@ namespace NexusERP.Controllers
                     var linea = await reader.ReadLineAsync();
                     fila++;
 
-                    // Saltar cabecera
-                    if (fila == 1)
-                        continue;
+                    // 1. Saltar cabecera
+                    if (fila == 1) continue;
 
-                    var valores = linea.Split(',');
+                    // 2. PROTECCIÓN 1: Ignorar líneas fantasma vacías de Excel
+                    if (string.IsNullOrWhiteSpace(linea)) continue;
+
+                    // 3. PROTECCIÓN 2: Separador inteligente (Coma o Punto y Coma)
+                    var valores = linea.Contains(';') ? linea.Split(';') : linea.Split(',');
+
+                    // 4. PROTECCIÓN 3: Si la línea solo tiene ;;;;;; la ignoramos
+                    if (valores.Length < 13) continue;
 
                     try
                     {
@@ -137,6 +143,7 @@ namespace NexusERP.Controllers
                             GrupoCotizacion = (GrupoCotizacion)int.Parse(valores[7]),
                             SalarioBrutoAnual = decimal.Parse(valores[8]),
                             IBAN = valores[9],
+                            // PROTECCIÓN 4: Leemos el número directamente, igual que en el global
                             EstadoCivil = GetEstadoCivil(valores[10]),
                             NumeroHijos = int.Parse(valores[11]),
                             PorcentajeDiscapacidad = int.Parse(valores[12])
@@ -147,7 +154,7 @@ namespace NexusERP.Controllers
 
                         if (!Validator.TryValidateObject(model, context, results, true))
                         {
-                            errores.Add($"Fila {fila}: Datos inválidos.");
+                            errores.Add($"Fila {fila}: Faltan datos obligatorios o el formato es incorrecto.");
                             continue;
                         }
 
@@ -164,10 +171,10 @@ namespace NexusERP.Controllers
                             GrupoCotizacion = (int)model.GrupoCotizacion,
                             SalarioBrutoAnual = model.SalarioBrutoAnual,
                             Iban = model.IBAN?.Replace(" ", "").ToUpper(),
-                            EstadoCivil = (int)model.EstadoCivil,
+                            EstadoCivil = (int)model.EstadoCivil, // Ya es un int
                             NumeroHijos = model.NumeroHijos,
                             PorcentajeDiscapacidad = model.PorcentajeDiscapacidad,
-                            Activo = (model.Activo == EstadoEmpleado.Activo)
+                            Activo = true // Por defecto activo
                         };
 
                         bool exito = await repoEmpleados.CreateEmpleadoAsync(empleado);
@@ -178,28 +185,28 @@ namespace NexusERP.Controllers
                         }
                         else
                         {
-                            errores.Add($"Fila {fila}: Error al insertar en base de datos.");
+                            errores.Add($"Fila {fila}: El DNI o Email ya existe en la base de datos.");
                         }
-
                     }
                     catch (Exception ex)
                     {
-                        errores.Add($"Fila {fila}: {ex.Message}");
+                        errores.Add($"Fila {fila}: Error de formato. {ex.Message}");
                     }
                 }
             }
 
+            // 5. RESPUESTA AL USUARIO
             if (errores.Any())
             {
-                AlertService.Error(TempData, $"Importación completada con errores. Insertados: {empleadosImportados}");
+                // Te muestro el primer error concreto para que sepas por qué ha fallado si vuelve a pasar
+                AlertService.Warning(TempData, $"Se importaron {empleadosImportados}. Falló alguna fila: {errores.First()}");
             }
             else
             {
-                AlertService.Toast(TempData, $"Se importaron {empleadosImportados} empleados correctamente.");
+                AlertService.Success(TempData, $"Se importaron {empleadosImportados} empleados correctamente.");
             }
 
             return RedirectToAction("Details", "Departaments", new { id = departamentoId });
-
         }
 
         [HttpGet]
@@ -209,7 +216,7 @@ namespace NexusERP.Controllers
 
             csv.AppendLine("Nombre,Apellidos,DNI,EmailCorporativo,FechaNacimiento,NumSeguridadSocial,FechaAntiguedad,GrupoCotizacion,SalarioBrutoAnual,IBAN,EstadoCivil,NumeroHijos,PorcentajeDiscapacidad");
 
-            csv.AppendLine("Juan,Perez,12345678A,juan@empresa.com,1990-05-10,123456789012,2022-01-01,5,25000,ES7620770024003102575766,1,0,0");
+            csv.AppendLine("Juan,Perez,12345678A,juan@empresa.com,1990-05-10,123456789012,2022-01-01,5,25000,ES7620770024003102575766,soltero,0,0");
 
             return File(
                 Encoding.UTF8.GetBytes(csv.ToString()),

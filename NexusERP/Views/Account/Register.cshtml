@@ -164,7 +164,32 @@
             const backBtn = $('#backBtn');
             const form = $('#registerForm');
 
-            // Validar y continuar al paso 2
+            const serverErrors = $('.validation-summary-errors ul li');
+            if (serverErrors.length > 0) {
+                let errorMessages = "";
+                serverErrors.each(function () {
+                    let text = $(this).text().trim();
+                    if (text !== "") {
+                        errorMessages += text + "\n";
+                    }
+                });
+
+                if (errorMessages !== "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en el registro',
+                        text: errorMessages,
+                        confirmButtonColor: '#3b9bad'
+                    });
+
+                    accountStep.addClass('d-none');
+                    companyStep.removeClass('d-none');
+                    step1.removeClass('step-active').addClass('step-inactive');
+                    step2.removeClass('step-inactive').addClass('step-active');
+                }
+            }
+
+            // 2. VALIDAR Y CONTINUAR AL PASO 2
             continueBtn.on('click', function () {
                 let esValidoPaso1 = true;
                 let datosUsuario = ['NombreUsuario', 'Email', 'Password'];
@@ -183,25 +208,38 @@
                         confirmButtonColor: '#3b9bad'
                     });
                     return;
-                };
+                }
 
                 // Cambiar de paso
                 accountStep.addClass('d-none');
                 companyStep.removeClass('d-none');
-
-                // Actualizar indicadores
                 step1.removeClass('step-active').addClass('step-inactive');
                 step2.removeClass('step-inactive').addClass('step-active');
             });
 
-            // Volver al paso 1
+            // 3. VOLVER AL PASO 1
             backBtn.on('click', function () {
                 companyStep.addClass('d-none');
                 accountStep.removeClass('d-none');
-
-                // Actualizar indicadores
                 step2.removeClass('step-active').addClass('step-inactive');
                 step1.removeClass('step-inactive').addClass('step-active');
+            });
+
+            form.on('submit', function (e) {
+                // Comprobamos que el paso 2 esté bien relleno
+                if (!form.valid()) {
+                    e.preventDefault(); // Si faltan datos, detenemos el envío
+                    return;
+                }
+                Swal.fire({
+                    title: 'Creando tu cuenta...',
+                    html: 'Configurando tu entorno de trabajo.<br>Por favor, espera.',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
             });
         });
     </script>

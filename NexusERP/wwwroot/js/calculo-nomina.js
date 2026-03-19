@@ -266,25 +266,40 @@ document.addEventListener('DOMContentLoaded', function () {
     calcularNomina();
 
     // ============================================
-    // CORRECCIÓN 2: Interceptor de formulario (Puntos por Comas)
+    // CORRECCIÓN 2: Interceptor de formulario (Solución exclusiva Salario Base)
     // ============================================
     const formNomina = document.querySelector('form.form-crud') || document.querySelector('form');
 
     if (formNomina) {
         formNomina.addEventListener('submit', function () {
-            // Buscamos TODOS los inputs numéricos (incluido el salario base y los dinámicos)
-            const inputsNumericos = this.querySelectorAll('input[type="number"], .concepto-input, #SalarioBase');
 
-            inputsNumericos.forEach(input => {
+            // 1. Buscamos todos los inputs numéricos EXCEPTO el Salario Base
+            const otrosInputs = this.querySelectorAll('input[type="number"]:not(#SalarioBase), .concepto-input:not(#SalarioBase)');
+
+            // A los demás inputs les aplicamos tu lógica original (cambiar punto por coma)
+            otrosInputs.forEach(input => {
                 if (input.value) {
-                    // Cambiamos el punto por la coma antes de enviar
                     let valorConComa = input.value.replace('.', ',');
-
-                    // Lo pasamos a type="text" para que el HTML no bloquee la coma
                     input.type = 'text';
                     input.value = valorConComa;
                 }
             });
+
+            // 2. Tratamiento EXCLUSIVO para el Salario Base
+            const inputSalarioBase = document.getElementById('SalarioBase');
+            if (inputSalarioBase && inputSalarioBase.value) {
+                let valorSalario = inputSalarioBase.value.toString();
+
+                // Si el salario tiene una coma visual (ej: "2500,50"), la convertimos al punto universal
+                if (valorSalario.includes(',')) {
+                    valorSalario = valorSalario.replace(/\./g, '').replace(',', '.');
+                }
+
+                // Lo pasamos a texto y forzamos que se envíe limpio al servidor como "2500.50"
+                inputSalarioBase.type = 'text';
+                inputSalarioBase.value = parseFloat(valorSalario).toFixed(2);
+            }
+
         });
     }
 });

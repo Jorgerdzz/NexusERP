@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace NexusERP.Controllers
 {
-    [Authorize(Policy = "ADMIN")]
     public class PayrollController : Controller
     {
         private PayrollRepository repoNominas;
@@ -23,6 +22,7 @@ namespace NexusERP.Controllers
             this.contextAccessor = contextAccessor;
         }
 
+        [Authorize(Policy = "ADMIN")]
         public async Task<IActionResult> Index(int? mes, int? anio)
         {
             int mesFiltro = mes ?? DateTime.Now.Month;
@@ -63,6 +63,7 @@ namespace NexusERP.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "ADMIN")]
         public async Task<IActionResult> Calcular(int empleadoId, int mes, int anio)
         {
             Empleado empleado = await this.repoNominas.GetEmpleadoParaNominaAsync(empleadoId);
@@ -131,6 +132,7 @@ namespace NexusERP.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "ADMIN")]
         public async Task<IActionResult> GuardarNomina(CalcularNominaViewModel model)
         {
             int idEmpresa = this.contextAccessor.GetEmpresaIdSession();
@@ -225,6 +227,7 @@ namespace NexusERP.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "ADMIN")]
         public async Task<IActionResult> RegistrarPago(int idNomina)
         {
             bool resultado = await this.repoNominas.PagarNominaAsync(idNomina);
@@ -241,6 +244,7 @@ namespace NexusERP.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Policy = "ADMIN")]
         public async Task<IActionResult> Details(int idNomina)
         {
             Nomina nomina = await this.repoNominas.GetNominaEmpleado(idNomina);
